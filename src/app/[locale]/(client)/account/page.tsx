@@ -1,15 +1,18 @@
-import { BadgeCheck, ShieldAlert } from "lucide-react";
+import { BadgeCheck, Plus, ShieldAlert, Store } from "lucide-react";
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-import { LocaleSwitcher } from "@/components/locale-switcher";
 import { ResendVerificationButton } from "@/components/auth/resend-verification-button";
 import { SignOutButton } from "@/components/auth/sign-out-button";
+import { LocaleSwitcher } from "@/components/locale-switcher";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link, redirect } from "@/i18n/navigation";
 import { resolveLocaleParam } from "@/i18n/params";
 import { getCurrentActor } from "@/modules/auth";
+import { listSalonsForActor } from "@/modules/salons";
 
 const ROLE_KEYS = {
   OWNER: "roles.OWNER",
@@ -35,8 +38,11 @@ export default async function AccountPage({ params }: PageProps<"/[locale]/accou
     });
   }
 
-  const t = await getTranslations("account");
-  const common = await getTranslations("common");
+  const [t, common, salons] = await Promise.all([
+    getTranslations("account"),
+    getTranslations("common"),
+    listSalonsForActor(actor),
+  ]);
 
   return (
     <main className="flex flex-1 flex-col">
@@ -93,23 +99,40 @@ export default async function AccountPage({ params }: PageProps<"/[locale]/accou
           <Card>
             <CardHeader>
               <CardTitle>{t("memberships")}</CardTitle>
-              {actor.platformRole === "SUPER_ADMIN" ? (
-                <CardDescription>{t("platformAdmin")}</CardDescription>
-              ) : null}
+              <CardDescription>
+                {actor.platformRole === "SUPER_ADMIN" ? t("platformAdmin") : t("membershipsHint")}
+              </CardDescription>
             </CardHeader>
-            <CardContent className="text-sm">
-              {actor.memberships.length === 0 ? (
+            <CardContent className="space-y-3 text-sm">
+              {salons.length === 0 ? (
                 <p className="text-muted-foreground">{t("noMemberships")}</p>
               ) : (
-                <ul className="space-y-1">
-                  {actor.memberships.map((m) => (
-                    <li key={m.salonId} className="flex justify-between gap-4">
-                      <span className="font-mono text-xs">{m.salonId}</span>
-                      <span>{t(ROLE_KEYS[m.role])}</span>
+                <ul className="space-y-2">
+                  {salons.map((salon) => (
+                    <li key={salon.id} className="flex items-center justify-between gap-3">
+                      <Link
+                        href={`/admin/${salon.slug}`}
+                        className="flex items-center gap-2 font-medium hover:underline"
+                      >
+                        <Store className="size-4 text-muted-foreground" aria-hidden />
+                        {salon.name}
+                      </Link>
+                      <Badge variant="secondary">{t(ROLE_KEYS[salon.role])}</Badge>
                     </li>
                   ))}
                 </ul>
               )}
+              <div className="flex flex-wrap gap-2 pt-1">
+                <Button size="sm" variant="outline" render={<Link href="/account/salons/new" />}>
+                  <Plus aria-hidden />
+                  {t("createSalon")}
+                </Button>
+                {actor.platformRole === "SUPER_ADMIN" ? (
+                  <Button size="sm" variant="ghost" render={<Link href="/platform/salons" />}>
+                    {t("openPlatform")}
+                  </Button>
+                ) : null}
+              </div>
             </CardContent>
           </Card>
         </div>

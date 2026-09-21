@@ -32,7 +32,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 2: autentikacija i role"
+    "status": "Faza 3: multi-tenant arhitektura"
   },
   "auth": {
     "fields": {
@@ -120,7 +120,10 @@
       "ADMIN": "Administrator",
       "EMPLOYEE": "Zaposleni"
     },
-    "bookingsSoon": "Vaši termini će se pojaviti ovdje kada online rezervacije budu dostupne."
+    "bookingsSoon": "Vaši termini će se pojaviti ovdje kada online rezervacije budu dostupne.",
+    "membershipsHint": "Saloni koje vodite ili u kojima radite.",
+    "createSalon": "Kreiraj salon",
+    "openPlatform": "Administracija platforme"
   },
   "emails": {
     "common": {
@@ -165,6 +168,95 @@
       "UNSUPPORTED_MEDIA_TYPE": "Ovaj tip datoteke nije podržan.",
       "RATE_LIMITED": "Previše zahtjeva. Sačekajte trenutak.",
       "INTERNAL_ERROR": "Greška na našoj strani. Pokušajte ponovo."
+    }
+  },
+  "salons": {
+    "fields": {
+      "name": "Naziv salona",
+      "slug": "Web adresa",
+      "slugHint": "Mala slova, brojevi i crtice. Ovo je vaš javni link za rezervacije.",
+      "audience": "Koga uslužujete?",
+      "timezone": "Vremenska zona",
+      "currency": "Valuta",
+      "defaultLocale": "Zadani jezik"
+    },
+    "audience": {
+      "MALE": "Muškarce",
+      "FEMALE": "Žene",
+      "UNISEX": "Muškarce i žene"
+    },
+    "validation": {
+      "nameMin": "Naziv mora imati najmanje 2 znaka.",
+      "nameMax": "Naziv je predugačak.",
+      "slug": "Koristite samo mala slova, brojeve i crtice.",
+      "timezone": "Nepoznata vremenska zona.",
+      "currency": "Unesite troslovni kod valute."
+    },
+    "errors": {
+      "slugTaken": "Ova adresa je već zauzeta. Odaberite drugu.",
+      "verifyFirst": "Potvrdite svoju email adresu prije kreiranja salona."
+    },
+    "create": {
+      "title": "Kreirajte svoj salon",
+      "subtitle": "Bit ćete vlasnik i moći ćete kasnije pozvati svoj tim.",
+      "submit": "Kreiraj salon",
+      "backToAccount": "Nazad na moj nalog"
+    }
+  },
+  "admin": {
+    "title": "Administracija salona",
+    "placeholder": "Kompletan dashboard (kalendar, zaposleni, usluge) dolazi u narednim fazama. Pristup po salonu je već zaštićen na ovoj stranici.",
+    "details": "Detalji salona",
+    "backToAccount": "Nazad na moj nalog",
+    "role": {
+      "OWNER": "Vlasnik",
+      "ADMIN": "Administrator",
+      "EMPLOYEE": "Zaposleni",
+      "PLATFORM": "Administrator platforme"
+    },
+    "status": {
+      "ACTIVE": "Aktivan",
+      "INACTIVE": "Neaktivan",
+      "SUSPENDED": "Suspendovan"
+    },
+    "audience": {
+      "MALE": "Muškarci",
+      "FEMALE": "Žene",
+      "UNISEX": "Muškarci i žene"
+    },
+    "fields": {
+      "audience": "Publika",
+      "timezone": "Vremenska zona",
+      "currency": "Valuta",
+      "defaultLocale": "Zadani jezik"
+    }
+  },
+  "platform": {
+    "badge": "Platforma",
+    "stats": {
+      "users": "Aktivni korisnici"
+    },
+    "salons": {
+      "title": "Saloni",
+      "empty": "Još nema salona.",
+      "columns": {
+        "name": "Salon",
+        "owner": "Vlasnik",
+        "members": "Članovi",
+        "created": "Kreiran",
+        "status": "Status",
+        "actions": "Akcije"
+      },
+      "status": {
+        "ACTIVE": "Aktivan",
+        "INACTIVE": "Neaktivan",
+        "SUSPENDED": "Suspendovan"
+      },
+      "actions": {
+        "ACTIVE": "Aktiviraj",
+        "INACTIVE": "Deaktiviraj",
+        "SUSPENDED": "Suspenduj"
+      }
     }
   }
 }

@@ -20,6 +20,7 @@ env:
   SMTP_HOST: localhost
   SMTP_PORT: "1025"
   MAILPIT_URL: http://localhost:8025
+  AUTH_RATE_LIMIT: "off"
 
 jobs:
   verify:
@@ -76,6 +77,9 @@ jobs:
 
       - name: Build
         run: pnpm build
+
+      - name: Seed database for E2E
+        run: pnpm db:seed
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install --with-deps chromium

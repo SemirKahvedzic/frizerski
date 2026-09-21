@@ -238,6 +238,14 @@ Services always call `authorize(ctx, permission, resource?)` first. Permission c
 
 Everything except: `User`, `Session`, `Account`, `Verification`, `NotificationPreference`, `PushSubscription`, `PlatformSetting`, `RateLimitBucket`, and pg-boss tables. `Salon` itself is the tenant root. `SalonMembership`, `AuditLog`, `Notification` and `OutboxEvent` carry a nullable `salonId` because some rows are platform-level.
 
+### Implementation notes (Phase 3)
+
+- `modules/tenant/scope.ts` holds the pure argument rewriting (`scopeArgs`) used by the Prisma extension in `prisma-tenant.ts`; it is unit-tested per operation. Any explicit reference to another salon (`where.salonId`, `data.salonId`, `Salon.where.id`) throws `TenantScopeError` (500, logged) instead of silently returning nothing.
+- `modules/tenant/models.ts` is the registry of tenant models. `tests/unit/tenant-models.test.ts` parses `prisma/schema.prisma` and fails when a model with a `salonId` column is missing from the registry, so a new table cannot bypass scoping unnoticed.
+- Convention: repositories still pass `salonId: ctx.salonId` explicitly on create (Prisma's types require it); the extension verifies it equals the context. The raw client is reserved for non-tenant models, `platformContext()` and the auth adapter.
+- `resolveTenantContext(principal, { id } | { slug })` returns `{ salonId, salonSlug, actor, role, db }`. Non-members get 404, anonymous 401, owners of a `SUSPENDED` salon 403; `SUPER_ADMIN`s resolve any salon with `role = "PLATFORM"`.
+- `SalonMembership` carries `UNIQUE (salon_id, id)`; the same pattern is applied to every tenant table added later so composite FKs can reference `(salonId, id)`.
+
 ---
 
 ## 7. Authentication and RBAC

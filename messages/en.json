@@ -32,7 +32,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 2: authentication and roles"
+    "status": "Phase 3: multi-tenant architecture"
   },
   "auth": {
     "fields": {
@@ -120,7 +120,10 @@
       "ADMIN": "Administrator",
       "EMPLOYEE": "Employee"
     },
-    "bookingsSoon": "Your appointments will appear here once online booking opens."
+    "bookingsSoon": "Your appointments will appear here once online booking opens.",
+    "membershipsHint": "Salons you own or work at.",
+    "createSalon": "Create a salon",
+    "openPlatform": "Platform admin"
   },
   "emails": {
     "common": {
@@ -165,6 +168,95 @@
       "UNSUPPORTED_MEDIA_TYPE": "This file type is not supported.",
       "RATE_LIMITED": "Too many requests. Please wait a moment.",
       "INTERNAL_ERROR": "Something went wrong on our side. Please try again."
+    }
+  },
+  "salons": {
+    "fields": {
+      "name": "Salon name",
+      "slug": "Web address",
+      "slugHint": "Lowercase letters, numbers and dashes. This is your public booking link.",
+      "audience": "Who do you serve?",
+      "timezone": "Time zone",
+      "currency": "Currency",
+      "defaultLocale": "Default language"
+    },
+    "audience": {
+      "MALE": "Men",
+      "FEMALE": "Women",
+      "UNISEX": "Men and women"
+    },
+    "validation": {
+      "nameMin": "Name must be at least 2 characters.",
+      "nameMax": "Name is too long.",
+      "slug": "Use only lowercase letters, numbers and dashes.",
+      "timezone": "Unknown time zone.",
+      "currency": "Enter a 3-letter currency code."
+    },
+    "errors": {
+      "slugTaken": "This address is already taken. Choose another one.",
+      "verifyFirst": "Please verify your email address before creating a salon."
+    },
+    "create": {
+      "title": "Create your salon",
+      "subtitle": "You will be the owner and can invite your team afterwards.",
+      "submit": "Create salon",
+      "backToAccount": "Back to my account"
+    }
+  },
+  "admin": {
+    "title": "Salon admin",
+    "placeholder": "The full dashboard (calendar, staff, services) arrives in the next phases. Tenant access is already enforced on this page.",
+    "details": "Salon details",
+    "backToAccount": "Back to my account",
+    "role": {
+      "OWNER": "Owner",
+      "ADMIN": "Administrator",
+      "EMPLOYEE": "Employee",
+      "PLATFORM": "Platform admin"
+    },
+    "status": {
+      "ACTIVE": "Active",
+      "INACTIVE": "Inactive",
+      "SUSPENDED": "Suspended"
+    },
+    "audience": {
+      "MALE": "Men",
+      "FEMALE": "Women",
+      "UNISEX": "Men and women"
+    },
+    "fields": {
+      "audience": "Audience",
+      "timezone": "Time zone",
+      "currency": "Currency",
+      "defaultLocale": "Default language"
+    }
+  },
+  "platform": {
+    "badge": "Platform",
+    "stats": {
+      "users": "Active users"
+    },
+    "salons": {
+      "title": "Salons",
+      "empty": "No salons yet.",
+      "columns": {
+        "name": "Salon",
+        "owner": "Owner",
+        "members": "Members",
+        "created": "Created",
+        "status": "Status",
+        "actions": "Actions"
+      },
+      "status": {
+        "ACTIVE": "Active",
+        "INACTIVE": "Inactive",
+        "SUSPENDED": "Suspended"
+      },
+      "actions": {
+        "ACTIVE": "Activate",
+        "INACTIVE": "Deactivate",
+        "SUSPENDED": "Suspend"
+      }
     }
   }
 }

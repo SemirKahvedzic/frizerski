@@ -89,7 +89,7 @@ export function createAuth(options: { withNextCookies: boolean }) {
       : {},
 
     rateLimit: {
-      enabled: env.NODE_ENV !== "test",
+      enabled: env.NODE_ENV !== "test" && env.AUTH_RATE_LIMIT === "on",
       window: 60,
       max: 60,
       customRules: {

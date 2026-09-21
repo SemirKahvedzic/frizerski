@@ -28,6 +28,8 @@ const serverSchema = z.object({
   BETTER_AUTH_URL: z.url().optional(),
   GOOGLE_CLIENT_ID: z.string().optional(),
   GOOGLE_CLIENT_SECRET: z.string().optional(),
+  /** Better Auth's built-in limiter; `off` only for automated test runs. */
+  AUTH_RATE_LIMIT: z.enum(["on", "off"]).default("on"),
 
   // --- Email ---
   EMAIL_PROVIDER: z.enum(["smtp", "console", "fake"]).default("smtp"),

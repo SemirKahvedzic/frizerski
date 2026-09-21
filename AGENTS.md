@@ -19,3 +19,5 @@ Read `docs/README.md` first; `docs/architecture.md` is the source of truth for s
 - All `DateTime` columns are `@db.Timestamptz(3)`; schedules use `"HH:mm"` strings interpreted in the salon timezone.
 - No user-facing literal strings in components; add keys to `messages/bs.json` and `messages/en.json`.
 - End of every phase: `pnpm check` (typecheck, lint, tests, build) and `pnpm test:e2e` must pass, and docs must be updated.
+- Salon-scoped code receives a `TenantContext` (`src/modules/tenant`) and queries through `ctx.db`; new models with a `salonId` column must be added to `TENANT_MODELS` (a unit test enforces this) and pass `salonId: ctx.salonId` explicitly on create.
+- Admin and platform mutations call `recordAudit()` inside the same transaction as the change.

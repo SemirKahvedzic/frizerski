@@ -103,6 +103,9 @@ CACHE_PROVIDER=memory                         # memory (Redis later)
 SEED_SUPER_ADMIN_EMAIL=admin@platform.local
 SEED_SUPER_ADMIN_PASSWORD=Admin12345!
 SEED_OWNER_PASSWORD=Owner12345!
+
+# --- Testing ---
+AUTH_RATE_LIMIT=on                            # "off" only for automated E2E runs (CI sets this)
 ```
 
 `src/lib/env.ts` validates all of this at boot with Zod; provider-specific keys are required only when that provider is selected.
@@ -267,7 +270,9 @@ steps:
 
 `prisma/seed.ts` is idempotent (upserts by slug/email) and creates:
 
-- Super admin `admin@platform.local`
+- Super admin `admin@platform.local` (`SEED_SUPER_ADMIN_PASSWORD`)
+- Salon owners/admins (password `SEED_OWNER_PASSWORD`): `owner@studio-example.local` (OWNER), `admin@studio-example.local` (ADMIN), `owner@barber-bros.local` (OWNER of Barber Bros)
+- Salons **Studio Example** (`studio-example`, UNISEX) and **Barber Bros** (`barber-bros`, MALE); the second salon exists to exercise tenant isolation. Employees, services, customers and bookings are added by the seed in their respective phases.
 - Salon **Studio Example** (`studio-example`), UNISEX, `Europe/Sarajevo`, `BAM`, Mon–Fri 09:00–19:00, Sat 09:00–15:00, Sun closed; settings: 30-min interval, 60-min notice, 60-day horizon, 12-h cancellation cutoff, auto-confirm on
 - Owner `owner@studio-example.local`, admin `admin@studio-example.local`, employee login `marko@studio-example.local`
 - Employees **Marko** (Mon, Tue, Fri 09:00–17:00; Thu 12:00–20:00; Sat 09:00–14:00; Wed off; lunch 13:00–13:30), **Ana** (Tue–Sat 10:00–18:00), **Sara** (Mon–Fri 09:00–15:00; vacation next Mon–Sun)

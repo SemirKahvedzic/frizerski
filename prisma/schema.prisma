@@ -63,6 +63,7 @@ model User {
   accounts    Account[]
   memberships SalonMembership[]
   invitations SalonMembership[] @relation("MembershipInvitedBy")
+  auditLogs   AuditLog[]
 
   @@map("users")
 }
@@ -133,6 +134,7 @@ model Salon {
   updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   memberships SalonMembership[]
+  auditLogs   AuditLog[]
 
   @@index([status])
   @@map("salons")
@@ -155,8 +157,43 @@ model SalonMembership {
   invitedBy User? @relation("MembershipInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
 
   @@unique([userId, salonId])
+  /// Tenant-integrity key: lets other tables reference (salonId, id) with a composite FK.
+  @@unique([salonId, id])
   @@index([salonId, role])
   @@map("salon_memberships")
+}
+
+// ---------------------------------------------------------------------------
+// Audit
+// ---------------------------------------------------------------------------
+
+/// Append-only record of admin and platform actions (docs/database.md §4.8).
+model AuditLog {
+  id          String   @id @default(uuid(7))
+  /// Null for platform-level actions.
+  salonId     String?  @map("salon_id")
+  actorUserId String?  @map("actor_user_id")
+  /// USER | SYSTEM | GUEST
+  actorType   String   @map("actor_type")
+  /// Dotted verb, e.g. `salon.created`, `service.priceChanged`.
+  action      String
+  entityType  String   @map("entity_type")
+  entityId    String   @map("entity_id")
+  before      Json?
+  after       Json?
+  metadata    Json?
+  ipAddress   String?  @map("ip_address")
+  userAgent   String?  @map("user_agent")
+  requestId   String?  @map("request_id")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon Salon? @relation(fields: [salonId], references: [id], onDelete: SetNull)
+  actor User?  @relation(fields: [actorUserId], references: [id], onDelete: SetNull)
+
+  @@index([salonId, createdAt])
+  @@index([entityType, entityId])
+  @@index([actorUserId, createdAt])
+  @@map("audit_logs")
 }
 
 // ---------------------------------------------------------------------------

@@ -76,6 +76,8 @@ Path-versioned (`/v1`). Additive changes are non-breaking; removals require `/v2
 
 Implemented in Phase 2. Cookies are prefixed `salon.` (`salon.session_token`). Verification links point to `/api/auth/verify-email?token=…&callbackURL=/{locale}/account`; reset links to `/api/auth/reset-password/{token}?callbackURL=/{locale}/reset-password`, which redirects to the page with `?token=`. `GET /api/v1/me` (session required) returns the actor: id, email, name, `emailVerified`, `locale`, `platformRole`, `memberships[]`.
 
+Implemented in Phase 3: `POST /api/v1/salons` (create, caller becomes OWNER, 5/hour per user), `GET /api/v1/salons` (caller's salons with role), `GET /api/v1/salons/:salonId` (member or platform admin), `GET /api/v1/platform/salons` (cursor-paginated, `q`, `status`), `PATCH /api/v1/platform/salons/:salonId/status`, `GET /api/v1/platform/stats`. Web pages use the same services through Server Actions (`defineAuthedAction`).
+
 Handled by Better Auth: `POST sign-up/email`, `POST sign-in/email`, `POST sign-out`, `GET session`, `POST forget-password`, `POST reset-password`, `GET verify-email`, `GET /sign-in/social?provider=google`. After sign-up we hook `onUserCreated` to create `NotificationPreference` and to link `Customer` rows with the same verified email.
 
 ---
