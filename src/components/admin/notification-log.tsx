@@ -112,8 +112,9 @@ export function NotificationLog({
                     </div>
                     {item.error ? (
                       <div className="mt-1 text-xs text-destructive">
-                        {item.status === "SKIPPED" && t.has(`skip.${item.error}` as never)
-                          ? t(`skip.${item.error}` as never)
+                        {item.status === "SKIPPED" &&
+                        t.has(`skip.${item.error.replaceAll(".", "_")}` as never)
+                          ? t(`skip.${item.error.replaceAll(".", "_")}` as never)
                           : item.error}
                       </div>
                     ) : null}

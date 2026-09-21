@@ -970,13 +970,13 @@
       "SKIPPED": "Preskočeno"
     },
     "skip": {
-      "salon.emailDisabled": "Email notifikacije su isključene u postavkama salona.",
-      "recipient.noEmail": "Primalac nema email adresu.",
-      "recipient.emailDisabled": "Primalac je isključio email notifikacije.",
-      "salon.reminder24hDisabled": "Podsjetnici 24 h prije su isključeni u postavkama salona.",
-      "salon.reminder1hDisabled": "Podsjetnici 1 h prije su isključeni u postavkama salona.",
-      "recipient.reminder24hDisabled": "Primalac je isključio podsjetnike 24 h prije.",
-      "recipient.reminder1hDisabled": "Primalac je isključio podsjetnike 1 h prije.",
+      "salon_emailDisabled": "Email notifikacije su isključene u postavkama salona.",
+      "recipient_noEmail": "Primalac nema email adresu.",
+      "recipient_emailDisabled": "Primalac je isključio email notifikacije.",
+      "salon_reminder24hDisabled": "Podsjetnici 24 h prije su isključeni u postavkama salona.",
+      "salon_reminder1hDisabled": "Podsjetnici 1 h prije su isključeni u postavkama salona.",
+      "recipient_reminder24hDisabled": "Primalac je isključio podsjetnike 24 h prije.",
+      "recipient_reminder1hDisabled": "Primalac je isključio podsjetnike 1 h prije.",
       "superseded": "Novija izmjena termina zamijenila je ovu notifikaciju."
     }
   }

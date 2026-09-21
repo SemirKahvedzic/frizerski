@@ -970,13 +970,13 @@
       "SKIPPED": "Skipped"
     },
     "skip": {
-      "salon.emailDisabled": "Email notifications are disabled in salon settings.",
-      "recipient.noEmail": "The recipient has no email address.",
-      "recipient.emailDisabled": "The recipient turned off email notifications.",
-      "salon.reminder24hDisabled": "24-hour reminders are disabled in salon settings.",
-      "salon.reminder1hDisabled": "1-hour reminders are disabled in salon settings.",
-      "recipient.reminder24hDisabled": "The recipient turned off 24-hour reminders.",
-      "recipient.reminder1hDisabled": "The recipient turned off 1-hour reminders.",
+      "salon_emailDisabled": "Email notifications are disabled in salon settings.",
+      "recipient_noEmail": "The recipient has no email address.",
+      "recipient_emailDisabled": "The recipient turned off email notifications.",
+      "salon_reminder24hDisabled": "24-hour reminders are disabled in salon settings.",
+      "salon_reminder1hDisabled": "1-hour reminders are disabled in salon settings.",
+      "recipient_reminder24hDisabled": "The recipient turned off 24-hour reminders.",
+      "recipient_reminder1hDisabled": "The recipient turned off 1-hour reminders.",
       "superseded": "A newer change to the booking replaced this notification."
     }
   }
