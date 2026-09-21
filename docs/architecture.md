@@ -251,6 +251,14 @@ Everything except: `User`, `Session`, `Account`, `Verification`, `NotificationPr
 - Salon management lives in `modules/salons`: `salon.service.ts` (profile, settings, opening hours, closures; every mutation audited with a field-level diff from `modules/audit/diff.ts`) and `public.service.ts` (anonymous read of ACTIVE salons with only public fields).
 - Admin pages under `app/[locale]/(admin)/admin/[salonSlug]/` share one `AdminShell` (sidebar on desktop, sheet on mobile) and resolve the tenant once per request through `_context.ts` (`React.cache`). Unimplemented sidebar entries render disabled with a "soon" badge until their phase lands.
 - Server Actions use `defineAuthedAction` + `resolveTenantContext` and call `updateTag("salon:{slug}")`; REST routes call `revalidateTag(tag, "max")`. The public page reads through `unstable_cache` keyed by slug and day with a 5-minute fallback, so admin edits are visible immediately while anonymous traffic never waits on the database.
+
+### Implementation notes (Phase 5)
+
+- `modules/employees` owns employees, the weekly schedule (`EmployeeSchedule` rows = shifts, `EmployeeBreak` rows = breaks inside a shift; `setSchedule` replaces the open-ended schedule atomically), time off (`EmployeeTimeOff`, entered as local dates/times and converted to UTC with the salon time zone) and blocked times (`BlockedTime`, `employeeId = null` = whole salon).
+- Account linking: `inviteEmployeeUser` links an existing user as an `EMPLOYEE` member with `employeeId`, or sends an invitation email when no account exists. Composite FKs `(salon_id, employee_id)` on `salon_memberships` and `blocked_times` are added in raw SQL because Prisma cannot mix required and optional relation fields.
+- Admin pages: Employees (list, create, detail with profile / schedule editor / time off / access) and Availability (blocked times + team absences). REST routes for staff are scheduled for the API completeness pass (Phase 14); the web UI uses Server Actions.
+- E2E suites run desktop and mobile projects in parallel, so each project edits its own seeded salon and the platform status test uses the dedicated `status-demo` salon. `tests/e2e/fixtures.ts` waits for the `HydrationMarker` after every `page.goto` so clicks never race React hydration.
+
 - `lib/time` holds the pure wall-clock/time-zone helpers (`wallClockToUtc`, `weekdayInTimeZone`, `localDateString`, …) used by the public "open now" indicator and, later, the booking engine. ESLint forbids `Date.now()` inside it.
 
 ---

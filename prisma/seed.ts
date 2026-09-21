@@ -114,6 +114,71 @@ async function upsertSalon(input: SeedSalon) {
   return salon;
 }
 
+type SeedEmployee = {
+  key: string;
+  firstName: string;
+  lastName: string;
+  position: string;
+  bio: string | null;
+  audience: Audience;
+  color: string;
+  email?: string;
+  schedule: {
+    weekday: number;
+    startTime: string;
+    endTime: string;
+    breaks: { startTime: string; endTime: string; label: string }[];
+  }[];
+};
+
+/** Employees are keyed by (salonId, email or synthetic key) so re-running the seed updates them. */
+async function upsertEmployees(salonId: string, employees: SeedEmployee[]) {
+  for (const e of employees) {
+    const email = e.email ?? `${e.key}@seed.local`;
+    const existing = await prisma.employee.findFirst({ where: { salonId, email } });
+    const data = {
+      firstName: e.firstName,
+      lastName: e.lastName,
+      position: e.position,
+      bio: e.bio,
+      audience: e.audience,
+      color: e.color,
+      email,
+      isActive: true,
+      isBookableOnline: true,
+    };
+    const employee = existing
+      ? await prisma.employee.update({ where: { id: existing.id }, data })
+      : await prisma.employee.create({ data: { salonId, ...data } });
+
+    const user = await prisma.user.findUnique({ where: { email } });
+    if (user) {
+      await prisma.employee.update({ where: { id: employee.id }, data: { userId: user.id } });
+      await prisma.salonMembership.upsert({
+        where: { userId_salonId: { userId: user.id, salonId } },
+        update: { employeeId: employee.id },
+        create: { userId: user.id, salonId, role: "EMPLOYEE", employeeId: employee.id },
+      });
+    }
+
+    await prisma.employeeSchedule.deleteMany({
+      where: { salonId, employeeId: employee.id, validFrom: null, validUntil: null },
+    });
+    for (const block of e.schedule) {
+      await prisma.employeeSchedule.create({
+        data: {
+          salonId,
+          employeeId: employee.id,
+          weekday: block.weekday,
+          startTime: block.startTime,
+          endTime: block.endTime,
+          breaks: { create: block.breaks },
+        },
+      });
+    }
+  }
+}
+
 async function main() {
   const superAdmin = await upsertUser({
     email: process.env["SEED_SUPER_ADMIN_EMAIL"] ?? "admin@platform.local",
@@ -135,6 +200,12 @@ async function main() {
     password: DEFAULT_PASSWORD,
     firstName: "Amir",
     lastName: "Begić",
+  });
+  await upsertUser({
+    email: "marko@studio-example.local",
+    password: DEFAULT_PASSWORD,
+    firstName: "Marko",
+    lastName: "Marić",
   });
   await upsertUser({
     email: "owner@barber-bros.local",
@@ -191,12 +262,113 @@ async function main() {
     },
     members: [{ email: "owner@barber-bros.local", role: "OWNER" }],
   });
-  console.log(`Salons: ${studio.slug}, ${barber.slug}`);
+  // Only the platform E2E test touches this salon's status.
+  await upsertSalon({
+    slug: "status-demo",
+    name: "Status Demo",
+    audience: "UNISEX",
+    profile: {
+      description: "Demo salon used to exercise platform status changes.",
+      category: "other",
+      address: "Demo 1",
+      city: "Sarajevo",
+      postalCode: "71000",
+      country: "BA",
+      phone: "+387 00 000 000",
+      email: "demo@status-demo.local",
+    },
+    members: [{ email: "owner@barber-bros.local", role: "OWNER" }],
+  });
+  console.log(`Salons: ${studio.slug}, ${barber.slug}, status-demo`);
+
+  await upsertEmployees(studio.id, [
+    {
+      key: "marko",
+      firstName: "Marko",
+      lastName: "Marić",
+      position: "Senior frizer",
+      bio: "15 godina iskustva, specijalista za muška šišanja i brade.",
+      audience: "MALE",
+      color: "#2563eb",
+      email: "marko@studio-example.local",
+      schedule: [
+        {
+          weekday: 0,
+          startTime: "09:00",
+          endTime: "17:00",
+          breaks: [{ startTime: "13:00", endTime: "13:30", label: "Ručak" }],
+        },
+        {
+          weekday: 1,
+          startTime: "09:00",
+          endTime: "17:00",
+          breaks: [{ startTime: "13:00", endTime: "13:30", label: "Ručak" }],
+        },
+        { weekday: 3, startTime: "12:00", endTime: "19:00", breaks: [] },
+        {
+          weekday: 4,
+          startTime: "09:00",
+          endTime: "17:00",
+          breaks: [{ startTime: "13:00", endTime: "13:30", label: "Ručak" }],
+        },
+        { weekday: 5, startTime: "09:00", endTime: "14:00", breaks: [] },
+      ],
+    },
+    {
+      key: "ana",
+      firstName: "Ana",
+      lastName: "Anić",
+      position: "Stilistica i kolorista",
+      bio: "Bojenje, balayage i svečane frizure.",
+      audience: "FEMALE",
+      color: "#db2777",
+      schedule: [1, 2, 3, 4, 5].map((weekday) => ({
+        weekday,
+        startTime: "10:00",
+        endTime: weekday === 5 ? "15:00" : "18:00",
+        breaks: [],
+      })),
+    },
+    {
+      key: "sara",
+      firstName: "Sara",
+      lastName: "Sarić",
+      position: "Frizerka",
+      bio: null,
+      audience: "UNISEX",
+      color: "#0f766e",
+      schedule: [0, 1, 2, 3, 4].map((weekday) => ({
+        weekday,
+        startTime: "09:00",
+        endTime: "15:00",
+        breaks: [],
+      })),
+    },
+  ]);
+  await upsertEmployees(barber.id, [
+    {
+      key: "dino",
+      firstName: "Dino",
+      lastName: "Kovač",
+      position: "Barber",
+      bio: null,
+      audience: "MALE",
+      color: "#475569",
+      email: "owner@barber-bros.local",
+      schedule: [0, 1, 2, 3, 4, 5].map((weekday) => ({
+        weekday,
+        startTime: "09:00",
+        endTime: weekday === 5 ? "14:00" : "17:00",
+        breaks: [],
+      })),
+    },
+  ]);
+  console.log("Employees seeded.");
 
   await prisma.platformSetting.upsert({
     where: { key: "seed.version" },
-    update: { value: { version: 4 } },
-    create: { key: "seed.version", value: { version: 4 } },
+    update: { value: { version: 5 } },
+    create: { key: "seed.version", value: { version: 5 } },
   });
 
   console.log("Seed complete.");

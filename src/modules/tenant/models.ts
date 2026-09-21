@@ -8,6 +8,11 @@ export const TENANT_MODELS = [
   "SalonSettings",
   "SalonWorkingHours",
   "SalonClosure",
+  "Employee",
+  "EmployeeSchedule",
+  "EmployeeBreak",
+  "EmployeeTimeOff",
+  "BlockedTime",
   "AuditLog",
 ] as const;
 

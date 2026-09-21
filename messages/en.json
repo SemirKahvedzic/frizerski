@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 4: salon management"
+    "status": "Phase 5: employees and schedules"
   },
   "auth": {
     "fields": {
@@ -145,6 +145,12 @@
       "intro": "We received a request to reset the password for your {appName} account. Click the button below to choose a new one.",
       "button": "Choose a new password",
       "expires": "This link is valid for 1 hour."
+    },
+    "invite": {
+      "subject": "You were invited to {salon}",
+      "title": "Join {salon}",
+      "intro": "{salon} added you as an employee on {appName}. Create your account with this email address to see your schedule and appointments.",
+      "button": "Create account"
     }
   },
   "errors": {
@@ -455,6 +461,125 @@
       "nails": "Nail studio",
       "spa": "Spa",
       "other": "Salon"
+    },
+    "team": "Our team",
+    "teamHint": "Choose your stylist when booking."
+  },
+  "employees": {
+    "title": "Employees",
+    "subtitle": "Your team, their schedules and time off.",
+    "new": "New employee",
+    "newSubtitle": "Add a team member. You can set their schedule right after.",
+    "empty": "No employees yet. Add your first team member.",
+    "backToList": "All employees",
+    "detailSubtitle": "Profile, weekly schedule, time off and account access.",
+    "badges": {
+      "inactive": "Inactive",
+      "notBookable": "Not bookable online",
+      "hasAccess": "Has login"
+    },
+    "validation": {
+      "breakInsideShift": "Breaks must be inside the shift.",
+      "blocksOverlap": "Shifts on the same day must not overlap."
+    },
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "position": "Position",
+      "positionPlaceholder": "e.g. Senior stylist",
+      "audience": "Serves",
+      "bio": "Short bio",
+      "bioHint": "Shown on your public page.",
+      "email": "Email",
+      "phone": "Phone",
+      "color": "Calendar color",
+      "colorHint": "Used to tell employees apart in the calendar.",
+      "isActive": "Active",
+      "isActiveHint": "Inactive employees are hidden everywhere and cannot be booked.",
+      "isBookableOnline": "Bookable online",
+      "isBookableOnlineHint": "Off: only the salon can book this employee."
+    },
+    "form": {
+      "profile": "Profile",
+      "save": "Save changes",
+      "create": "Create employee"
+    },
+    "delete": {
+      "button": "Delete",
+      "confirm": "Delete this employee?",
+      "yes": "Yes, delete",
+      "no": "Cancel"
+    },
+    "schedule": {
+      "title": "Weekly schedule",
+      "hint": "Add one or more shifts per day. Breaks are excluded from bookable time. Shifts are clipped to the salon's opening hours.",
+      "salonOpen": "salon {from}–{to}",
+      "salonClosed": "salon closed",
+      "dayOff": "Day off",
+      "addShift": "Add shift",
+      "removeShift": "Remove shift",
+      "shiftStart": "shift start",
+      "shiftEnd": "shift end",
+      "addBreak": "Break",
+      "break": "Break",
+      "breakStart": "break start",
+      "breakEnd": "break end",
+      "breakLabel": "Label (e.g. lunch)",
+      "removeBreak": "Remove break",
+      "copyToWeekdays": "Copy to Tue–Fri",
+      "save": "Save schedule"
+    },
+    "timeOff": {
+      "title": "Time off",
+      "hint": "Vacation, sick leave and other absences. Booked-out days disappear from availability.",
+      "empty": "No upcoming time off.",
+      "type": "Type",
+      "types": {
+        "VACATION": "Vacation",
+        "SICK": "Sick leave",
+        "PERSONAL": "Personal",
+        "OTHER": "Other"
+      },
+      "startsOn": "From",
+      "endsOn": "To",
+      "allDay": "All day",
+      "startTime": "Start time",
+      "endTime": "End time",
+      "reason": "Note",
+      "add": "Add time off",
+      "remove": "Remove"
+    },
+    "access": {
+      "title": "Account access",
+      "hint": "Link a login so this employee can see their own appointments. If the address has no account yet, an invitation email is sent.",
+      "email": "Login email",
+      "invite": "Link or invite",
+      "relink": "Link another account",
+      "linkedTo": "Linked to {email}.",
+      "resultLinked": "Account linked. The employee can now sign in and see their schedule.",
+      "resultInvited": "No account with this email yet. An invitation to register was sent."
+    }
+  },
+  "availability": {
+    "title": "Availability",
+    "subtitle": "Blocked times and upcoming absences across the team. Times are in {timezone}.",
+    "blocked": {
+      "title": "Blocked times",
+      "hint": "Manually block a period for one employee or the whole salon. Nothing can be booked inside it.",
+      "empty": "No upcoming blocked times.",
+      "wholeSalon": "Whole salon",
+      "employee": "Employee",
+      "date": "Date",
+      "from": "From",
+      "to": "To",
+      "reason": "Reason",
+      "add": "Block time",
+      "remove": "Remove"
+    },
+    "timeOff": {
+      "title": "Upcoming time off",
+      "hint": "Managed on each employee's page.",
+      "empty": "Nobody is away in the coming period."
     }
   }
 }

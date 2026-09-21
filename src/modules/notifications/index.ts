@@ -12,3 +12,4 @@ export {
   sendPasswordResetEmail,
   sendVerificationEmail,
 } from "@/modules/notifications/email/templates/auth";
+export { sendEmployeeInviteEmail } from "@/modules/notifications/email/templates/invite";

@@ -272,7 +272,8 @@ steps:
 
 - Super admin `admin@platform.local` (`SEED_SUPER_ADMIN_PASSWORD`)
 - Salon owners/admins (password `SEED_OWNER_PASSWORD`): `owner@studio-example.local` (OWNER), `admin@studio-example.local` (ADMIN), `owner@barber-bros.local` (OWNER of Barber Bros)
-- Salons **Studio Example** (`studio-example`, UNISEX, Mon–Fri 09:00–19:00, Sat 09:00–15:00) and **Barber Bros** (`barber-bros`, MALE, default hours), both with descriptions, addresses, contacts and default booking settings; the second salon exists to exercise tenant isolation and is the one E2E tests edit. Employees, services, customers and bookings are added by the seed in their respective phases.
+- Salons **Studio Example** (`studio-example`, UNISEX, Mon–Fri 09:00–19:00, Sat 09:00–15:00) and **Barber Bros** (`barber-bros`, MALE, default hours), both with descriptions, addresses, contacts and default booking settings; the second salon exists to exercise tenant isolation. **Status Demo** (`status-demo`) exists only for the platform status E2E test.
+- Employees: Studio Example has **Marko** (Mon/Tue/Fri 09–17 with lunch 13:00–13:30, Thu 12–19, Sat 09–14; login `marko@studio-example.local`, role EMPLOYEE), **Ana** (Tue–Sat 10–18, Sat until 15) and **Sara** (Mon–Fri 09–15); Barber Bros has **Dino** (the owner, Mon–Sat). Services, customers and bookings are added by the seed in their respective phases.
 - Salon **Studio Example** (`studio-example`), UNISEX, `Europe/Sarajevo`, `BAM`, Mon–Fri 09:00–19:00, Sat 09:00–15:00, Sun closed; settings: 30-min interval, 60-min notice, 60-day horizon, 12-h cancellation cutoff, auto-confirm on
 - Owner `owner@studio-example.local`, admin `admin@studio-example.local`, employee login `marko@studio-example.local`
 - Employees **Marko** (Mon, Tue, Fri 09:00–17:00; Thu 12:00–20:00; Sat 09:00–14:00; Wed off; lunch 13:00–13:30), **Ana** (Tue–Sat 10:00–18:00), **Sara** (Mon–Fri 09:00–15:00; vacation next Mon–Sun)

@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 4: upravljanje salonom"
+    "status": "Faza 5: zaposleni i rasporedi"
   },
   "auth": {
     "fields": {
@@ -145,6 +145,12 @@
       "intro": "Primili smo zahtjev za reset lozinke vašeg {appName} naloga. Kliknite na dugme ispod da odaberete novu.",
       "button": "Odaberi novu lozinku",
       "expires": "Ovaj link vrijedi 1 sat."
+    },
+    "invite": {
+      "subject": "Pozvani ste u {salon}",
+      "title": "Pridružite se salonu {salon}",
+      "intro": "{salon} vas je dodao kao zaposlenog na {appName}. Napravite nalog sa ovom email adresom da vidite svoj raspored i termine.",
+      "button": "Napravi nalog"
     }
   },
   "errors": {
@@ -455,6 +461,125 @@
       "nails": "Studio za nokte",
       "spa": "Spa",
       "other": "Salon"
+    },
+    "team": "Naš tim",
+    "teamHint": "Odaberite svog frizera pri rezervaciji."
+  },
+  "employees": {
+    "title": "Zaposleni",
+    "subtitle": "Vaš tim, rasporedi i odsustva.",
+    "new": "Novi zaposleni",
+    "newSubtitle": "Dodajte člana tima. Raspored možete postaviti odmah nakon toga.",
+    "empty": "Još nema zaposlenih. Dodajte prvog člana tima.",
+    "backToList": "Svi zaposleni",
+    "detailSubtitle": "Profil, sedmični raspored, odsustva i pristup nalogu.",
+    "badges": {
+      "inactive": "Neaktivan",
+      "notBookable": "Nije dostupan online",
+      "hasAccess": "Ima pristup"
+    },
+    "validation": {
+      "breakInsideShift": "Pauze moraju biti unutar smjene.",
+      "blocksOverlap": "Smjene istog dana se ne smiju preklapati."
+    },
+    "fields": {
+      "firstName": "Ime",
+      "lastName": "Prezime",
+      "position": "Pozicija",
+      "positionPlaceholder": "npr. Senior frizer",
+      "audience": "Uslužuje",
+      "bio": "Kratka biografija",
+      "bioHint": "Prikazuje se na javnoj stranici.",
+      "email": "Email",
+      "phone": "Telefon",
+      "color": "Boja u kalendaru",
+      "colorHint": "Služi za razlikovanje zaposlenih u kalendaru.",
+      "isActive": "Aktivan",
+      "isActiveHint": "Neaktivni zaposleni su svugdje sakriveni i ne mogu se rezervisati.",
+      "isBookableOnline": "Dostupan za online rezervaciju",
+      "isBookableOnlineHint": "Isključeno: samo salon može zakazati ovog zaposlenog."
+    },
+    "form": {
+      "profile": "Profil",
+      "save": "Sačuvaj promjene",
+      "create": "Kreiraj zaposlenog"
+    },
+    "delete": {
+      "button": "Obriši",
+      "confirm": "Obrisati ovog zaposlenog?",
+      "yes": "Da, obriši",
+      "no": "Odustani"
+    },
+    "schedule": {
+      "title": "Sedmični raspored",
+      "hint": "Dodajte jednu ili više smjena po danu. Pauze se izuzimaju iz dostupnog vremena. Smjene se ograničavaju radnim vremenom salona.",
+      "salonOpen": "salon {from}–{to}",
+      "salonClosed": "salon ne radi",
+      "dayOff": "Slobodan dan",
+      "addShift": "Dodaj smjenu",
+      "removeShift": "Ukloni smjenu",
+      "shiftStart": "početak smjene",
+      "shiftEnd": "kraj smjene",
+      "addBreak": "Pauza",
+      "break": "Pauza",
+      "breakStart": "početak pauze",
+      "breakEnd": "kraj pauze",
+      "breakLabel": "Naziv (npr. ručak)",
+      "removeBreak": "Ukloni pauzu",
+      "copyToWeekdays": "Kopiraj na uto–pet",
+      "save": "Sačuvaj raspored"
+    },
+    "timeOff": {
+      "title": "Odsustva",
+      "hint": "Godišnji odmor, bolovanje i druga odsustva. Ti dani nestaju iz dostupnosti.",
+      "empty": "Nema predstojećih odsustava.",
+      "type": "Tip",
+      "types": {
+        "VACATION": "Godišnji odmor",
+        "SICK": "Bolovanje",
+        "PERSONAL": "Privatno",
+        "OTHER": "Ostalo"
+      },
+      "startsOn": "Od",
+      "endsOn": "Do",
+      "allDay": "Cijeli dan",
+      "startTime": "Od (vrijeme)",
+      "endTime": "Do (vrijeme)",
+      "reason": "Napomena",
+      "add": "Dodaj odsustvo",
+      "remove": "Ukloni"
+    },
+    "access": {
+      "title": "Pristup nalogu",
+      "hint": "Povežite nalog kako bi zaposleni vidio svoje termine. Ako adresa još nema nalog, šalje se pozivnica.",
+      "email": "Email za prijavu",
+      "invite": "Poveži ili pozovi",
+      "relink": "Poveži drugi nalog",
+      "linkedTo": "Povezan sa {email}.",
+      "resultLinked": "Nalog je povezan. Zaposleni se sada može prijaviti i vidjeti raspored.",
+      "resultInvited": "Nalog sa ovim emailom još ne postoji. Pozivnica za registraciju je poslana."
+    }
+  },
+  "availability": {
+    "title": "Dostupnost",
+    "subtitle": "Blokirani termini i predstojeća odsustva tima. Vremena su u zoni {timezone}.",
+    "blocked": {
+      "title": "Blokirani termini",
+      "hint": "Ručno blokirajte period za jednog zaposlenog ili cijeli salon. Unutar njega se ništa ne može rezervisati.",
+      "empty": "Nema predstojećih blokada.",
+      "wholeSalon": "Cijeli salon",
+      "employee": "Zaposleni",
+      "date": "Datum",
+      "from": "Od",
+      "to": "Do",
+      "reason": "Razlog",
+      "add": "Blokiraj",
+      "remove": "Ukloni"
+    },
+    "timeOff": {
+      "title": "Predstojeća odsustva",
+      "hint": "Uređuje se na stranici svakog zaposlenog.",
+      "empty": "Niko nije odsutan u narednom periodu."
     }
   }
 }

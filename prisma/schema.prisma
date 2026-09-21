@@ -40,6 +40,18 @@ enum SalonStatus {
   SUSPENDED
 }
 
+enum TimeOffType {
+  VACATION
+  SICK
+  PERSONAL
+  OTHER
+}
+
+enum BlockedTimeSource {
+  MANUAL
+  EXTERNAL
+}
+
 // ---------------------------------------------------------------------------
 // Identity (Better Auth core tables + application fields)
 // ---------------------------------------------------------------------------
@@ -65,6 +77,7 @@ model User {
   invitations SalonMembership[] @relation("MembershipInvitedBy")
   auditLogs   AuditLog[]
   closures    SalonClosure[]
+  employees   Employee[]
 
   @@map("users")
 }
@@ -157,9 +170,128 @@ model Salon {
   closures     SalonClosure[]
   memberships  SalonMembership[]
   auditLogs    AuditLog[]
+  employees    Employee[]
+  schedules    EmployeeSchedule[]
+  breaks       EmployeeBreak[]
+  timeOff      EmployeeTimeOff[]
+  blockedTimes BlockedTime[]
 
   @@index([status])
   @@map("salons")
+}
+
+// ---------------------------------------------------------------------------
+// Staff (docs/database.md §4.3)
+// ---------------------------------------------------------------------------
+
+model Employee {
+  id               String   @id @default(uuid(7))
+  salonId          String   @map("salon_id")
+  /// Set when the employee has a login (linked through SalonMembership).
+  userId           String?  @map("user_id")
+  firstName        String   @map("first_name")
+  lastName         String   @map("last_name")
+  position         String?
+  bio              String?
+  email            String?
+  phone            String?
+  audience         Audience @default(UNISEX)
+  /// Calendar color (hex)
+  color            String?
+  isActive         Boolean  @default(true) @map("is_active")
+  isBookableOnline Boolean  @default(true) @map("is_bookable_online")
+  sortOrder        Int      @default(0) @map("sort_order")
+  createdAt        DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt        DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon     Salon              @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  user      User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
+  schedules EmployeeSchedule[]
+  timeOff   EmployeeTimeOff[]
+
+  @@unique([salonId, id])
+  @@index([salonId, isActive, sortOrder])
+  @@map("employees")
+}
+
+/// Recurring weekly working interval. Several rows per weekday = split shifts.
+model EmployeeSchedule {
+  id         String    @id @default(uuid(7))
+  salonId    String    @map("salon_id")
+  employeeId String    @map("employee_id")
+  /// 0 = Monday … 6 = Sunday
+  weekday    Int
+  startTime  String    @map("start_time")
+  endTime    String    @map("end_time")
+  validFrom  DateTime? @map("valid_from") @db.Date
+  validUntil DateTime? @map("valid_until") @db.Date
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon    Salon           @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  employee Employee        @relation(fields: [salonId, employeeId], references: [salonId, id], onDelete: Cascade)
+  breaks   EmployeeBreak[]
+
+  @@unique([salonId, id])
+  @@index([employeeId, weekday])
+  @@map("employee_schedules")
+}
+
+/// Recurring break inside a schedule interval.
+model EmployeeBreak {
+  id         String  @id @default(uuid(7))
+  salonId    String  @map("salon_id")
+  scheduleId String  @map("schedule_id")
+  startTime  String  @map("start_time")
+  endTime    String  @map("end_time")
+  label      String?
+
+  salon    Salon            @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  schedule EmployeeSchedule @relation(fields: [salonId, scheduleId], references: [salonId, id], onDelete: Cascade)
+
+  @@unique([salonId, id])
+  @@map("employee_breaks")
+}
+
+/// Multi-day or partial-day absence.
+model EmployeeTimeOff {
+  id          String      @id @default(uuid(7))
+  salonId     String      @map("salon_id")
+  employeeId  String      @map("employee_id")
+  type        TimeOffType
+  startsAt    DateTime    @map("starts_at") @db.Timestamptz(3)
+  endsAt      DateTime    @map("ends_at") @db.Timestamptz(3)
+  allDay      Boolean     @default(true) @map("all_day")
+  reason      String?
+  createdById String?     @map("created_by_id")
+  createdAt   DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon    Salon    @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [salonId, employeeId], references: [salonId, id], onDelete: Cascade)
+
+  @@unique([salonId, id])
+  @@index([employeeId, startsAt, endsAt])
+  @@map("employee_time_off")
+}
+
+/// Ad-hoc block for one employee (employeeId set) or the whole salon (null).
+/// The composite FK to Employee is added in raw SQL (nullable column).
+model BlockedTime {
+  id          String            @id @default(uuid(7))
+  salonId     String            @map("salon_id")
+  employeeId  String?           @map("employee_id")
+  startsAt    DateTime          @map("starts_at") @db.Timestamptz(3)
+  endsAt      DateTime          @map("ends_at") @db.Timestamptz(3)
+  reason      String?
+  source      BlockedTimeSource @default(MANUAL)
+  externalRef String?           @map("external_ref")
+  createdById String?           @map("created_by_id")
+  createdAt   DateTime          @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon Salon @relation(fields: [salonId], references: [id], onDelete: Cascade)
+
+  @@unique([salonId, id])
+  @@index([salonId, employeeId, startsAt])
+  @@map("blocked_times")
 }
 
 /// Booking and notification policy; one row per salon (docs/database.md §4.2).

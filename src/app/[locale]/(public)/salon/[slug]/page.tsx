@@ -131,6 +131,38 @@ export default async function PublicSalonPage({ params }: PageProps<"/[locale]/s
           </div>
         </div>
 
+        {salon.employees.length > 0 ? (
+          <section className="mt-8" data-testid="public-team">
+            <h2 className="text-xl font-semibold tracking-tight">{t("team")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t("teamHint")}</p>
+            <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              {salon.employees.map((e) => (
+                <li key={e.id} className="flex items-start gap-3 rounded-xl border bg-card p-4">
+                  <span
+                    className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+                    style={{ backgroundColor: e.color ?? "#475569" }}
+                    aria-hidden
+                  >
+                    {e.firstName.charAt(0)}
+                    {e.lastName.charAt(0)}
+                  </span>
+                  <div className="min-w-0">
+                    <div className="font-medium">
+                      {e.firstName} {e.lastName}
+                    </div>
+                    {e.position ? (
+                      <div className="text-xs text-muted-foreground">{e.position}</div>
+                    ) : null}
+                    {e.bio ? (
+                      <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{e.bio}</p>
+                    ) : null}
+                  </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
         <div className="mt-8 grid gap-6 lg:grid-cols-3">
           <Card className="lg:col-span-1">
             <CardHeader>

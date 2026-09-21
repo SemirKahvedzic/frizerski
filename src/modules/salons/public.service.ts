@@ -8,6 +8,16 @@ import type { Closure, WorkingDay } from "@/modules/salons/salon.service";
  * Uses the raw client on purpose: there is no actor, and only public fields
  * are selected.
  */
+export type PublicEmployee = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  position: string | null;
+  bio: string | null;
+  audience: "MALE" | "FEMALE" | "UNISEX";
+  color: string | null;
+};
+
 export type PublicSalon = {
   id: string;
   slug: string;
@@ -33,6 +43,7 @@ export type PublicSalon = {
   workingHours: WorkingDay[];
   /** Closures ending on or after `fromDate`. */
   closures: Closure[];
+  employees: PublicEmployee[];
   booking: {
     allowGuestBooking: boolean;
     cancellationCutoffHours: number;
@@ -82,11 +93,24 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
         take: 20,
         select: { id: true, startsOn: true, endsOn: true, reason: true },
       },
+      employees: {
+        where: { isActive: true, isBookableOnline: true },
+        orderBy: [{ sortOrder: "asc" }, { firstName: "asc" }],
+        select: {
+          id: true,
+          firstName: true,
+          lastName: true,
+          position: true,
+          bio: true,
+          audience: true,
+          color: true,
+        },
+      },
     },
   });
   if (!salon) return null;
 
-  const { settings, workingHours, closures, ...rest } = salon;
+  const { settings, workingHours, closures, employees, ...rest } = salon;
   const byDay = new Map(workingHours.map((r) => [r.weekday, r]));
 
   return {
@@ -98,6 +122,7 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
       endsOn: utcToDateString(c.endsOn),
       reason: c.reason,
     })),
+    employees,
     booking: {
       allowGuestBooking: settings?.allowGuestBooking ?? true,
       cancellationCutoffHours: settings?.cancellationCutoffHours ?? 12,

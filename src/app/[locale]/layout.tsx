@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
+
+import { HydrationMarker } from "@/components/hydration-marker";
 import { getTranslations } from "next-intl/server";
 
 import { resolveLocaleParam } from "@/i18n/params";
@@ -33,7 +35,10 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col">
-        <NextIntlClientProvider>{children}</NextIntlClientProvider>
+        <NextIntlClientProvider>
+          <HydrationMarker />
+          {children}
+        </NextIntlClientProvider>
       </body>
     </html>
   );

@@ -1,4 +1,5 @@
-import { expect, test, type APIRequestContext } from "@playwright/test";
+import { expect, test } from "./fixtures";
+import { type APIRequestContext } from "@playwright/test";
 
 const MAILPIT_URL = process.env["MAILPIT_URL"] ?? "http://localhost:8025";
 const PASSWORD = "playwright-pass-1";

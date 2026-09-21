@@ -1,4 +1,5 @@
-import { expect, test, type APIRequestContext, type Page } from "@playwright/test";
+import { expect, test } from "./fixtures";
+import { type APIRequestContext, type Page } from "@playwright/test";
 
 const MAILPIT_URL = process.env["MAILPIT_URL"] ?? "http://localhost:8025";
 const PASSWORD = "playwright-pass-1";
@@ -108,16 +109,17 @@ test.describe("multi-tenant", () => {
     await otherContext.close();
   });
 
-  test("platform admin sees all salons and can suspend and reactivate one", async ({ page }) => {
+  test("platform admin sees all salons and can suspend and reactivate one", async ({
+    page,
+    isMobile,
+  }) => {
+    // Status changes are viewport-independent; running once avoids two projects toggling the same salon.
+    test.skip(Boolean(isMobile), "desktop only");
     await login(page, SUPER_ADMIN_EMAIL, SUPER_ADMIN_PASSWORD);
     await page.getByRole("link", { name: "Platform admin" }).click();
     await expect(page).toHaveURL(/\/en\/platform\/salons$/);
 
-    // Each Playwright project toggles its own seeded salon so parallel runs do not interfere.
-    const target =
-      test.info().project.name === "chromium-mobile"
-        ? { slug: "barber-bros", name: "Barber Bros", owner: "owner@barber-bros.local" }
-        : { slug: "studio-example", name: "Studio Example", owner: "owner@studio-example.local" };
+    const target = { slug: "status-demo", name: "Status Demo", owner: "owner@barber-bros.local" };
     const row = page.getByTestId(`salon-row-${target.slug}`);
     await expect(row).toContainText(target.name);
     await expect(row).toContainText(target.owner);

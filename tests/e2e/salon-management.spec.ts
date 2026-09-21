@@ -1,8 +1,19 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "./fixtures";
+import { type Page } from "@playwright/test";
 
-const OWNER_EMAIL = "owner@barber-bros.local";
 const OWNER_PASSWORD = process.env["SEED_OWNER_PASSWORD"] ?? "Owner12345!";
-const SLUG = "barber-bros";
+
+// Each Playwright project edits its own seeded salon so parallel runs never collide.
+let SLUG = "barber-bros";
+let OWNER_EMAIL = "owner@barber-bros.local";
+let SALON_NAME = "Barber Bros";
+
+test.beforeEach(({}, testInfo) => {
+  const mobile = testInfo.project.name === "chromium-mobile";
+  SLUG = mobile ? "studio-example" : "barber-bros";
+  OWNER_EMAIL = mobile ? "owner@studio-example.local" : "owner@barber-bros.local";
+  SALON_NAME = mobile ? "Studio Example" : "Barber Bros";
+});
 
 async function loginAsOwner(page: Page) {
   await page.goto("/en/login");
@@ -21,7 +32,7 @@ test.describe("salon management", () => {
     await expect(page.getByRole("heading", { level: 1, name: "Salon profile" })).toBeVisible();
 
     const marker = `E2E ${Date.now().toString(36)}`;
-    const description = `Classic barbershop. ${marker}`;
+    const description = `Salon description edited by E2E. ${marker}`;
     await page.getByLabel("Description").fill(description);
     await page.getByLabel("Phone").fill("+387 61 999 000");
     await page.getByRole("button", { name: "Save changes" }).click();
@@ -31,7 +42,7 @@ test.describe("salon management", () => {
     await publicPage.goto(`/en/salon/${SLUG}`);
     await expect(publicPage.getByTestId("salon-description")).toContainText(marker);
     await expect(publicPage.getByTestId("salon-phone")).toHaveText("+387 61 999 000");
-    await expect(publicPage.getByRole("heading", { level: 1 })).toHaveText("Barber Bros");
+    await expect(publicPage.getByRole("heading", { level: 1 })).toHaveText(SALON_NAME);
     await publicPage.close();
   });
 
