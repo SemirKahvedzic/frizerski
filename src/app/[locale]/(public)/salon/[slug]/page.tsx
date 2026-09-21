@@ -6,6 +6,7 @@ import { getFormatter, getTranslations } from "next-intl/server";
 
 import { LocaleSwitcher } from "@/components/locale-switcher";
 import { OpeningHours } from "@/components/public/opening-hours";
+import { PriceList } from "@/components/public/price-list";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -130,6 +131,16 @@ export default async function PublicSalonPage({ params }: PageProps<"/[locale]/s
             ) : null}
           </div>
         </div>
+
+        {salon.services.length > 0 ? (
+          <section className="mt-8" data-testid="public-services">
+            <h2 className="text-xl font-semibold tracking-tight">{t("services")}</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{t("servicesHint")}</p>
+            <div className="mt-4">
+              <PriceList services={salon.services} categories={salon.categories} />
+            </div>
+          </section>
+        ) : null}
 
         {salon.employees.length > 0 ? (
           <section className="mt-8" data-testid="public-team">

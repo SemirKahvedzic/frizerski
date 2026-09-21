@@ -42,7 +42,7 @@ export const ADMIN_NAV: NavItem[] = [
   { key: "calendar", segment: "calendar", icon: CalendarDays, enabled: false },
   { key: "appointments", segment: "appointments", icon: ListChecks, enabled: false },
   { key: "employees", segment: "employees", icon: Users, enabled: true },
-  { key: "services", segment: "services", icon: Scissors, enabled: false },
+  { key: "services", segment: "services", icon: Scissors, enabled: true },
   { key: "customers", segment: "customers", icon: UserRound, enabled: false },
   { key: "salon", segment: "salon", icon: Store, enabled: true },
   { key: "workingHours", segment: "working-hours", icon: Clock, enabled: true },

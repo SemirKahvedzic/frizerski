@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 5: employees and schedules"
+    "status": "Phase 6: services and pricing"
   },
   "auth": {
     "fields": {
@@ -463,7 +463,10 @@
       "other": "Salon"
     },
     "team": "Our team",
-    "teamHint": "Choose your stylist when booking."
+    "teamHint": "Choose your stylist when booking.",
+    "services": "Services and prices",
+    "servicesHint": "Prices include VAT. Duration is approximate.",
+    "otherServices": "Other services"
   },
   "employees": {
     "title": "Employees",
@@ -580,6 +583,65 @@
       "title": "Upcoming time off",
       "hint": "Managed on each employee's page.",
       "empty": "Nobody is away in the coming period."
+    }
+  },
+  "services": {
+    "title": "Services and prices",
+    "subtitle": "What you offer, how long it takes and who provides it.",
+    "new": "New service",
+    "newSubtitle": "Duration drives the slots offered to clients.",
+    "editSubtitle": "Changes are visible on your public price list immediately.",
+    "empty": "No services yet. Add your first service.",
+    "noProviders": "no employee assigned",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "edit": "Edit",
+    "delete": "Delete",
+    "units": {
+      "h": "h",
+      "min": "min"
+    },
+    "badges": {
+      "inactive": "Inactive"
+    },
+    "validation": {
+      "price": "Enter a valid price, e.g. 20 or 20.50.",
+      "duration": "Duration must be between 5 and 600 minutes."
+    },
+    "fields": {
+      "name": "Service name",
+      "category": "Category",
+      "noCategory": "Without category",
+      "description": "Description",
+      "price": "Price ({currency})",
+      "duration": "Duration",
+      "customDuration": "Custom…",
+      "buffer": "Buffer after (min)",
+      "bufferHint": "Cleanup time reserved after this service.",
+      "audience": "For",
+      "isActive": "Active",
+      "isActiveHint": "Inactive services are hidden from clients but kept for history."
+    },
+    "form": {
+      "details": "Details",
+      "employees": "Provided by",
+      "employeesHint": "Only selected employees can be booked for this service.",
+      "noEmployees": "Add employees first to assign them.",
+      "cancel": "Cancel",
+      "save": "Save changes",
+      "create": "Create service"
+    },
+    "categories": {
+      "title": "Categories",
+      "hint": "Group services on your price list. Deleting a category keeps its services.",
+      "empty": "No categories yet.",
+      "name": "Category name",
+      "placeholder": "e.g. Hair",
+      "add": "Add",
+      "rename": "Rename",
+      "delete": "Delete",
+      "save": "Save",
+      "cancel": "Cancel"
     }
   }
 }

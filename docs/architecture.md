@@ -259,6 +259,12 @@ Everything except: `User`, `Session`, `Account`, `Verification`, `NotificationPr
 - Admin pages: Employees (list, create, detail with profile / schedule editor / time off / access) and Availability (blocked times + team absences). REST routes for staff are scheduled for the API completeness pass (Phase 14); the web UI uses Server Actions.
 - E2E suites run desktop and mobile projects in parallel, so each project edits its own seeded salon and the platform status test uses the dedicated `status-demo` salon. `tests/e2e/fixtures.ts` waits for the `HydrationMarker` after every `page.goto` so clicks never race React hydration.
 
+### Implementation notes (Phase 6)
+
+- `modules/services` owns categories, services and the employee ↔ service mapping. Prices are integer cents with the salon currency copied onto the service at creation (`lib/money.ts` parses "20,50" style input and formats with `Intl`). Price changes are audited as `service.priceChanged` with before/after values.
+- Provider assignment is edited on the service (checkbox list); `listServicesForEmployee` is the read the booking engine uses. Category deletion keeps services (`ON DELETE SET NULL` through the composite FK).
+- Admin: Services page (grouped list with reorder, active toggle, delete) + categories panel; create/edit forms. Public page gains the grouped price list.
+
 - `lib/time` holds the pure wall-clock/time-zone helpers (`wallClockToUtc`, `weekdayInTimeZone`, `localDateString`, …) used by the public "open now" indicator and, later, the booking engine. ESLint forbids `Date.now()` inside it.
 
 ---

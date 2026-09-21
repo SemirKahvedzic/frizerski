@@ -18,6 +18,20 @@ export type PublicEmployee = {
   color: string | null;
 };
 
+export type PublicService = {
+  id: string;
+  categoryId: string | null;
+  name: string;
+  description: string | null;
+  priceCents: number;
+  currency: string;
+  durationMinutes: number;
+  audience: "MALE" | "FEMALE" | "UNISEX";
+  employeeIds: string[];
+};
+
+export type PublicCategory = { id: string; name: string; sortOrder: number };
+
 export type PublicSalon = {
   id: string;
   slug: string;
@@ -44,6 +58,8 @@ export type PublicSalon = {
   /** Closures ending on or after `fromDate`. */
   closures: Closure[];
   employees: PublicEmployee[];
+  categories: PublicCategory[];
+  services: PublicService[];
   booking: {
     allowGuestBooking: boolean;
     cancellationCutoffHours: number;
@@ -93,6 +109,25 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
         take: 20,
         select: { id: true, startsOn: true, endsOn: true, reason: true },
       },
+      categories: {
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        select: { id: true, name: true, sortOrder: true },
+      },
+      services: {
+        where: { isActive: true },
+        orderBy: [{ sortOrder: "asc" }, { name: "asc" }],
+        select: {
+          id: true,
+          categoryId: true,
+          name: true,
+          description: true,
+          priceCents: true,
+          currency: true,
+          durationMinutes: true,
+          audience: true,
+          employees: { select: { employeeId: true } },
+        },
+      },
       employees: {
         where: { isActive: true, isBookableOnline: true },
         orderBy: [{ sortOrder: "asc" }, { firstName: "asc" }],
@@ -110,7 +145,7 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
   });
   if (!salon) return null;
 
-  const { settings, workingHours, closures, employees, ...rest } = salon;
+  const { settings, workingHours, closures, employees, categories, services, ...rest } = salon;
   const byDay = new Map(workingHours.map((r) => [r.weekday, r]));
 
   return {
@@ -123,6 +158,11 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
       reason: c.reason,
     })),
     employees,
+    categories,
+    services: services.map(({ employees: providers, ...service }) => ({
+      ...service,
+      employeeIds: providers.map((p) => p.employeeId),
+    })),
     booking: {
       allowGuestBooking: settings?.allowGuestBooking ?? true,
       cancellationCutoffHours: settings?.cancellationCutoffHours ?? 12,

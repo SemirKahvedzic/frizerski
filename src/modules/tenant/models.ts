@@ -13,6 +13,9 @@ export const TENANT_MODELS = [
   "EmployeeBreak",
   "EmployeeTimeOff",
   "BlockedTime",
+  "ServiceCategory",
+  "Service",
+  "EmployeeService",
   "AuditLog",
 ] as const;
 

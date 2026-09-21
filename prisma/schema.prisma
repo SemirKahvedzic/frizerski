@@ -175,6 +175,9 @@ model Salon {
   breaks       EmployeeBreak[]
   timeOff      EmployeeTimeOff[]
   blockedTimes BlockedTime[]
+  categories   ServiceCategory[]
+  services     Service[]
+  employeeServices EmployeeService[]
 
   @@index([status])
   @@map("salons")
@@ -208,10 +211,78 @@ model Employee {
   user      User?              @relation(fields: [userId], references: [id], onDelete: SetNull)
   schedules EmployeeSchedule[]
   timeOff   EmployeeTimeOff[]
+  services  EmployeeService[]
 
   @@unique([salonId, id])
   @@index([salonId, isActive, sortOrder])
   @@map("employees")
+}
+
+// ---------------------------------------------------------------------------
+// Catalog (docs/database.md §4.4)
+// ---------------------------------------------------------------------------
+
+model ServiceCategory {
+  id        String   @id @default(uuid(7))
+  salonId   String   @map("salon_id")
+  name      String
+  sortOrder Int      @default(0) @map("sort_order")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon    Salon     @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  services Service[]
+
+  @@unique([salonId, id])
+  @@unique([salonId, name])
+  @@map("service_categories")
+}
+
+model Service {
+  id                 String   @id @default(uuid(7))
+  salonId            String   @map("salon_id")
+  categoryId         String?  @map("category_id")
+  name               String
+  description        String?
+  /// Minor units (e.g. cents / feninga)
+  priceCents         Int      @map("price_cents")
+  currency           String
+  durationMinutes    Int      @map("duration_minutes")
+  bufferAfterMinutes Int      @default(0) @map("buffer_after_minutes")
+  audience           Audience @default(UNISEX)
+  isActive           Boolean  @default(true) @map("is_active")
+  sortOrder          Int      @default(0) @map("sort_order")
+  createdAt          DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt          DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon     Salon             @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  category  ServiceCategory?  @relation(fields: [salonId, categoryId], references: [salonId, id], onDelete: SetNull)
+  employees EmployeeService[]
+
+  @@unique([salonId, id])
+  @@index([salonId, categoryId, sortOrder])
+  @@index([salonId, isActive])
+  @@map("services")
+}
+
+/// Which employees provide which services, with optional overrides.
+model EmployeeService {
+  id                      String   @id @default(uuid(7))
+  salonId                 String   @map("salon_id")
+  employeeId              String   @map("employee_id")
+  serviceId               String   @map("service_id")
+  priceOverrideCents      Int?     @map("price_override_cents")
+  durationOverrideMinutes Int?     @map("duration_override_minutes")
+  createdAt               DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon    Salon    @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  employee Employee @relation(fields: [salonId, employeeId], references: [salonId, id], onDelete: Cascade)
+  service  Service  @relation(fields: [salonId, serviceId], references: [salonId, id], onDelete: Cascade)
+
+  @@unique([employeeId, serviceId])
+  @@unique([salonId, id])
+  @@index([serviceId])
+  @@map("employee_services")
 }
 
 /// Recurring weekly working interval. Several rows per weekday = split shifts.

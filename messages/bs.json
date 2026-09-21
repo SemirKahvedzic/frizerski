@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 5: zaposleni i rasporedi"
+    "status": "Faza 6: usluge i cjenovnik"
   },
   "auth": {
     "fields": {
@@ -463,7 +463,10 @@
       "other": "Salon"
     },
     "team": "Naš tim",
-    "teamHint": "Odaberite svog frizera pri rezervaciji."
+    "teamHint": "Odaberite svog frizera pri rezervaciji.",
+    "services": "Usluge i cijene",
+    "servicesHint": "Cijene uključuju PDV. Trajanje je približno.",
+    "otherServices": "Ostale usluge"
   },
   "employees": {
     "title": "Zaposleni",
@@ -580,6 +583,65 @@
       "title": "Predstojeća odsustva",
       "hint": "Uređuje se na stranici svakog zaposlenog.",
       "empty": "Niko nije odsutan u narednom periodu."
+    }
+  },
+  "services": {
+    "title": "Usluge i cijene",
+    "subtitle": "Šta nudite, koliko traje i ko pruža uslugu.",
+    "new": "Nova usluga",
+    "newSubtitle": "Trajanje određuje termine koji se nude klijentima.",
+    "editSubtitle": "Promjene su odmah vidljive na javnom cjenovniku.",
+    "empty": "Još nema usluga. Dodajte prvu uslugu.",
+    "noProviders": "nema dodijeljenog zaposlenog",
+    "moveUp": "Pomjeri gore",
+    "moveDown": "Pomjeri dolje",
+    "edit": "Uredi",
+    "delete": "Obriši",
+    "units": {
+      "h": "h",
+      "min": "min"
+    },
+    "badges": {
+      "inactive": "Neaktivna"
+    },
+    "validation": {
+      "price": "Unesite ispravnu cijenu, npr. 20 ili 20,50.",
+      "duration": "Trajanje mora biti između 5 i 600 minuta."
+    },
+    "fields": {
+      "name": "Naziv usluge",
+      "category": "Kategorija",
+      "noCategory": "Bez kategorije",
+      "description": "Opis",
+      "price": "Cijena ({currency})",
+      "duration": "Trajanje",
+      "customDuration": "Prilagođeno…",
+      "buffer": "Pauza nakon (min)",
+      "bufferHint": "Vrijeme za pripremu rezervisano nakon ove usluge.",
+      "audience": "Za",
+      "isActive": "Aktivna",
+      "isActiveHint": "Neaktivne usluge su sakrivene od klijenata, ali ostaju u historiji."
+    },
+    "form": {
+      "details": "Detalji",
+      "employees": "Pružaju",
+      "employeesHint": "Samo odabrani zaposleni se mogu rezervisati za ovu uslugu.",
+      "noEmployees": "Prvo dodajte zaposlene da biste ih dodijelili.",
+      "cancel": "Odustani",
+      "save": "Sačuvaj promjene",
+      "create": "Kreiraj uslugu"
+    },
+    "categories": {
+      "title": "Kategorije",
+      "hint": "Grupišite usluge na cjenovniku. Brisanje kategorije zadržava usluge.",
+      "empty": "Još nema kategorija.",
+      "name": "Naziv kategorije",
+      "placeholder": "npr. Kosa",
+      "add": "Dodaj",
+      "rename": "Preimenuj",
+      "delete": "Obriši",
+      "save": "Sačuvaj",
+      "cancel": "Odustani"
     }
   }
 }

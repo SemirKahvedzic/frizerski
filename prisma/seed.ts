@@ -179,6 +179,77 @@ async function upsertEmployees(salonId: string, employees: SeedEmployee[]) {
   }
 }
 
+type SeedService = {
+  category: string;
+  name: string;
+  description: string | null;
+  priceCents: number;
+  durationMinutes: number;
+  audience: Audience;
+  /** Employee keys (seed email local part) or full emails. */
+  providers: string[];
+};
+
+async function upsertServices(salonId: string, currency: string, services: SeedService[]) {
+  const employees = await prisma.employee.findMany({
+    where: { salonId },
+    select: { id: true, email: true },
+  });
+  const employeeByKey = (key: string) =>
+    employees.find(
+      (e) =>
+        e.email === key ||
+        e.email === `${key}@seed.local` ||
+        e.email === `${key}@studio-example.local`,
+    );
+
+  let categoryOrder = 0;
+  const categoryIds = new Map<string, string>();
+  for (const name of [...new Set(services.map((s) => s.category))]) {
+    const category = await prisma.serviceCategory.upsert({
+      where: { salonId_name: { salonId, name } },
+      update: { sortOrder: categoryOrder },
+      create: { salonId, name, sortOrder: categoryOrder },
+    });
+    categoryIds.set(name, category.id);
+    categoryOrder += 1;
+  }
+
+  let order = 0;
+  for (const s of services) {
+    const existing = await prisma.service.findFirst({ where: { salonId, name: s.name } });
+    const data = {
+      categoryId: categoryIds.get(s.category) ?? null,
+      name: s.name,
+      description: s.description,
+      priceCents: s.priceCents,
+      currency,
+      durationMinutes: s.durationMinutes,
+      audience: s.audience,
+      isActive: true,
+      sortOrder: order,
+    };
+    const service = existing
+      ? await prisma.service.update({ where: { id: existing.id }, data })
+      : await prisma.service.create({ data: { salonId, ...data } });
+    order += 1;
+
+    const providerIds = s.providers
+      .map((p) => employeeByKey(p)?.id)
+      .filter((id): id is string => Boolean(id));
+    await prisma.employeeService.deleteMany({
+      where: { serviceId: service.id, employeeId: { notIn: providerIds } },
+    });
+    for (const employeeId of providerIds) {
+      await prisma.employeeService.upsert({
+        where: { employeeId_serviceId: { employeeId, serviceId: service.id } },
+        update: {},
+        create: { salonId, employeeId, serviceId: service.id },
+      });
+    }
+  }
+}
+
 async function main() {
   const superAdmin = await upsertUser({
     email: process.env["SEED_SUPER_ADMIN_EMAIL"] ?? "admin@platform.local",
@@ -365,10 +436,70 @@ async function main() {
   ]);
   console.log("Employees seeded.");
 
+  await upsertServices(studio.id, "BAM", [
+    {
+      category: "Kosa",
+      name: "Šišanje",
+      description: "Konsultacija, pranje, šišanje i styling.",
+      priceCents: 2000,
+      durationMinutes: 30,
+      audience: "UNISEX",
+      providers: ["marko", "ana", "sara"],
+    },
+    {
+      category: "Brada",
+      name: "Uređivanje brade",
+      description: null,
+      priceCents: 1000,
+      durationMinutes: 15,
+      audience: "MALE",
+      providers: ["marko"],
+    },
+    {
+      category: "Kosa",
+      name: "Styling",
+      description: "Feniranje i oblikovanje.",
+      priceCents: 2500,
+      durationMinutes: 45,
+      audience: "FEMALE",
+      providers: ["ana", "sara"],
+    },
+    {
+      category: "Kosa",
+      name: "Bojenje",
+      description: "Cijena za srednju dužinu kose.",
+      priceCents: 6000,
+      durationMinutes: 120,
+      audience: "FEMALE",
+      providers: ["ana"],
+    },
+  ]);
+  await upsertServices(barber.id, "BAM", [
+    {
+      category: "Barber",
+      name: "Šišanje",
+      description: null,
+      priceCents: 1500,
+      durationMinutes: 30,
+      audience: "MALE",
+      providers: ["owner@barber-bros.local"],
+    },
+    {
+      category: "Barber",
+      name: "Brada",
+      description: "Oblikovanje i brijanje toplim peškirom.",
+      priceCents: 1000,
+      durationMinutes: 15,
+      audience: "MALE",
+      providers: ["owner@barber-bros.local"],
+    },
+  ]);
+  console.log("Services seeded.");
+
   await prisma.platformSetting.upsert({
     where: { key: "seed.version" },
-    update: { value: { version: 5 } },
-    create: { key: "seed.version", value: { version: 5 } },
+    update: { value: { version: 6 } },
+    create: { key: "seed.version", value: { version: 6 } },
   });
 
   console.log("Seed complete.");
