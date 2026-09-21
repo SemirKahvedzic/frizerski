@@ -34,12 +34,10 @@ export function setPushProvider(provider: PushProvider | undefined): void {
 
 /** Whether browsers can subscribe: a real or fake provider with a public key to hand out. */
 export function pushPublicConfig(): { enabled: boolean; publicKey: string | null } {
-  if (env.PUSH_PROVIDER === "webpush" && env.VAPID_PUBLIC_KEY) {
-    return { enabled: true, publicKey: env.VAPID_PUBLIC_KEY };
-  }
-  if (env.PUSH_PROVIDER === "fake")
-    return { enabled: true, publicKey: env.VAPID_PUBLIC_KEY ?? null };
-  return { enabled: false, publicKey: null };
+  if (env.PUSH_PROVIDER === "off") return { enabled: false, publicKey: null };
+  // Browsers can only subscribe with a public key, whatever the provider.
+  const publicKey = env.VAPID_PUBLIC_KEY ?? null;
+  return { enabled: Boolean(publicKey), publicKey };
 }
 
 export { DisabledPushProvider, FakePushProvider, WebPushProvider };

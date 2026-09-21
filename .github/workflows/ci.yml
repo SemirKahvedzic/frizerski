@@ -22,6 +22,7 @@ env:
   MAILPIT_URL: http://localhost:8025
   AUTH_RATE_LIMIT: "off"
   PUSH_PROVIDER: fake
+  VAPID_PUBLIC_KEY: BCIFakePublicKeyOnlyUsedByTests
   STORAGE_PROVIDER: fake
 
 jobs:
