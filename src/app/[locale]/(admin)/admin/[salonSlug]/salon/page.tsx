@@ -4,6 +4,7 @@ import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/admin/page-header";
 import { SalonProfileForm } from "@/components/admin/salon-profile-form";
 import { resolveLocaleParam } from "@/i18n/params";
+import { imageViewsFor } from "@/modules/media";
 import { getSalonProfile } from "@/modules/salons";
 
 import { getAdminContext } from "../_context";
@@ -28,10 +29,21 @@ export default async function SalonProfilePage({
     getTranslations("salonAdmin.profile"),
   ]);
 
+  const images = await imageViewsFor(ctx, [salon.logoImageId, salon.coverImageId]);
+
   return (
     <>
       <PageHeader title={t("title")} description={t("subtitle")} />
-      <SalonProfileForm salonSlug={salon.slug} initial={salon} action={updateSalonProfileAction} />
+      <SalonProfileForm
+        salonSlug={salon.slug}
+        salonId={ctx.salonId}
+        images={{
+          logo: salon.logoImageId ? (images.get(salon.logoImageId) ?? null) : null,
+          cover: salon.coverImageId ? (images.get(salon.coverImageId) ?? null) : null,
+        }}
+        initial={salon}
+        action={updateSalonProfileAction}
+      />
     </>
   );
 }

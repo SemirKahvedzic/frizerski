@@ -37,6 +37,7 @@ export default async function NewServicePage({
       <PageHeader title={t("new")} description={t("newSubtitle")} />
       <ServiceForm
         salonSlug={salonSlug}
+        salonId={ctx.salonId}
         currency={salon.currency}
         categories={categories}
         employees={employees.map((e) => ({ id: e.id, name: `${e.firstName} ${e.lastName}` }))}

@@ -76,7 +76,9 @@ VAPID_SUBJECT=mailto:admin@localhost
 NEXT_PUBLIC_VAPID_PUBLIC_KEY=                 # same as VAPID_PUBLIC_KEY, exposed to the browser
 
 # --- Storage ---
-STORAGE_PROVIDER=s3                           # s3 | fake
+STORAGE_PROVIDER=local                        # local (default; files under STORAGE_LOCAL_DIR, served by /api/v1/media) | s3 | fake
+STORAGE_LOCAL_DIR=./storage
+MAX_UPLOAD_MB=10
 S3_ENDPOINT=http://localhost:9000             # R2: https://<account>.r2.cloudflarestorage.com
 S3_REGION=auto
 S3_BUCKET=salon-media

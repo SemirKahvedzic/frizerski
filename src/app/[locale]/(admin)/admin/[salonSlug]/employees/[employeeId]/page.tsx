@@ -11,6 +11,7 @@ import { TimeOffPanel } from "@/components/admin/time-off-panel";
 import { Button } from "@/components/ui/button";
 import { Link } from "@/i18n/navigation";
 import { resolveLocaleParam } from "@/i18n/params";
+import { imageViewsFor } from "@/modules/media";
 import { prisma } from "@/lib/db";
 import { isAppError } from "@/lib/errors";
 import { getEmployee, getSchedule, listTimeOff } from "@/modules/employees";
@@ -60,6 +61,10 @@ export default async function EmployeeDetailPage({
     getTranslations("employees"),
   ]);
 
+  const avatar = employee.avatarImageId
+    ? ((await imageViewsFor(ctx, [employee.avatarImageId])).get(employee.avatarImageId) ?? null)
+    : null;
+
   return (
     <>
       <PageHeader
@@ -81,6 +86,8 @@ export default async function EmployeeDetailPage({
       <div className="space-y-8">
         <EmployeeForm
           salonSlug={salonSlug}
+          salonId={ctx.salonId}
+          avatar={avatar}
           employeeId={employeeId}
           initial={employee}
           action={updateEmployeeAction}

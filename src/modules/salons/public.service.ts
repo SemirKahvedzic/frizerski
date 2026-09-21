@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/db";
 import { dateStringToUtc, utcToDateString } from "@/lib/time";
+import { getPublicGallery, type PublicGalleryItem } from "@/modules/media/gallery.service";
+import type { ImageView } from "@/modules/media/image-view";
+import { loadImageViews } from "@/modules/media/media.service";
 import { defaultWorkingHours } from "@/modules/salons/defaults";
 import type { Closure, WorkingDay } from "@/modules/salons/salon.service";
 
@@ -16,6 +19,7 @@ export type PublicEmployee = {
   bio: string | null;
   audience: "MALE" | "FEMALE" | "UNISEX";
   color: string | null;
+  avatar: ImageView | null;
 };
 
 export type PublicService = {
@@ -28,6 +32,7 @@ export type PublicService = {
   durationMinutes: number;
   audience: "MALE" | "FEMALE" | "UNISEX";
   employeeIds: string[];
+  image: ImageView | null;
 };
 
 export type PublicCategory = { id: string; name: string; sortOrder: number };
@@ -51,6 +56,9 @@ export type PublicSalon = {
   facebook: string | null;
   tiktok: string | null;
   brandColor: string | null;
+  logo: ImageView | null;
+  cover: ImageView | null;
+  gallery: PublicGalleryItem[];
   timezone: string;
   currency: string;
   defaultLocale: string;
@@ -89,6 +97,8 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
       facebook: true,
       tiktok: true,
       brandColor: true,
+      logoImageId: true,
+      coverImageId: true,
       timezone: true,
       currency: true,
       defaultLocale: true,
@@ -125,6 +135,7 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
           currency: true,
           durationMinutes: true,
           audience: true,
+          imageId: true,
           employees: { select: { employeeId: true } },
         },
       },
@@ -139,11 +150,23 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
           bio: true,
           audience: true,
           color: true,
+          avatarImageId: true,
         },
       },
     },
   });
   if (!salon) return null;
+
+  const [images, gallery] = await Promise.all([
+    loadImageViews(salon.id, [
+      salon.logoImageId,
+      salon.coverImageId,
+      ...salon.employees.map((e) => e.avatarImageId),
+      ...salon.services.map((s) => s.imageId),
+    ]),
+    getPublicGallery(slug),
+  ]);
+  const imageOrNull = (id: string | null) => (id ? (images.get(id) ?? null) : null);
 
   const { settings, workingHours, closures, employees, categories, services, ...rest } = salon;
   const byDay = new Map(workingHours.map((r) => [r.weekday, r]));
@@ -157,11 +180,18 @@ export async function getPublicSalon(slug: string, fromDate: string): Promise<Pu
       endsOn: utcToDateString(c.endsOn),
       reason: c.reason,
     })),
-    employees,
+    logo: imageOrNull(salon.logoImageId),
+    cover: imageOrNull(salon.coverImageId),
+    gallery,
+    employees: employees.map(({ avatarImageId, ...e }) => ({
+      ...e,
+      avatar: imageOrNull(avatarImageId),
+    })),
     categories,
     services: services.map(({ employees: providers, ...service }) => ({
       ...service,
       employeeIds: providers.map((p) => p.employeeId),
+      image: imageOrNull(service.imageId),
     })),
     booking: {
       allowGuestBooking: settings?.allowGuestBooking ?? true,

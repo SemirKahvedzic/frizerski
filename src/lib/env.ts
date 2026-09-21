@@ -34,6 +34,21 @@ const serverSchema = z.object({
   /** Better Auth's built-in limiter; `off` only for automated test runs. */
   AUTH_RATE_LIMIT: z.enum(["on", "off"]).default("on"),
 
+  // --- Object storage (images) ---
+  STORAGE_PROVIDER: z.enum(["s3", "local", "fake"]).default("local"),
+  STORAGE_LOCAL_DIR: z.string().min(1).default("./storage"),
+  S3_ENDPOINT: z.url().optional(),
+  S3_REGION: z.string().min(1).default("auto"),
+  S3_BUCKET: z.string().min(1).default("salon-media"),
+  S3_ACCESS_KEY_ID: z.string().optional(),
+  S3_SECRET_ACCESS_KEY: z.string().optional(),
+  S3_FORCE_PATH_STYLE: z
+    .enum(["true", "false"])
+    .default("true")
+    .transform((value) => value === "true"),
+  S3_PUBLIC_BASE_URL: z.url().optional(),
+  MAX_UPLOAD_MB: z.coerce.number().int().min(1).max(50).default(10),
+
   // --- Web push (VAPID) ---
   PUSH_PROVIDER: z.enum(["webpush", "fake", "off"]).default("off"),
   VAPID_PUBLIC_KEY: z.string().optional(),

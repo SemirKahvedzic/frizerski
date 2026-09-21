@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 11: web push and PWA"
+    "status": "Phase 12: images and gallery"
   },
   "auth": {
     "fields": {
@@ -574,6 +574,14 @@
         "reminder1hEnabled": "Send clients a reminder one hour before.",
         "timezone": "All opening hours and appointments are interpreted in this time zone."
       }
+    },
+    "images": {
+      "title": "Images",
+      "subtitle": "Logo and cover photo shown on your public page and in emails.",
+      "logo": "Logo",
+      "logoHint": "Square, at least 320×320 px.",
+      "cover": "Cover photo",
+      "coverHint": "Wide, at least 1600×540 px."
     }
   },
   "publicSalon": {
@@ -609,7 +617,8 @@
     "services": "Services and prices",
     "servicesHint": "Prices include VAT. Duration is approximate.",
     "otherServices": "Other services",
-    "bookNow": "Book an appointment"
+    "bookNow": "Book an appointment",
+    "gallery": "Gallery"
   },
   "employees": {
     "title": "Employees",
@@ -648,7 +657,9 @@
     "form": {
       "profile": "Profile",
       "save": "Save changes",
-      "create": "Create employee"
+      "create": "Create employee",
+      "avatar": "Photo",
+      "avatarHint": "Shown to clients when they pick who to book with."
     },
     "delete": {
       "button": "Delete",
@@ -772,7 +783,9 @@
       "noEmployees": "Add employees first to assign them.",
       "cancel": "Cancel",
       "save": "Save changes",
-      "create": "Create service"
+      "create": "Create service",
+      "image": "Image",
+      "imageHint": "Optional photo shown next to the service."
     },
     "categories": {
       "title": "Categories",
@@ -1000,5 +1013,33 @@
       "IN_APP": "In-app"
     },
     "pushHint": "Staff receive push notifications on devices where they enabled them in their account settings."
+  },
+  "media": {
+    "upload": "Upload image",
+    "replace": "Replace",
+    "remove": "Remove",
+    "validation": {
+      "unknownImage": "Unknown image."
+    },
+    "errors": {
+      "tooLarge": "The file is too large (max 10 MB).",
+      "unsupported": "Unsupported file type. Use JPEG, PNG, WebP, HEIC or AVIF.",
+      "generic": "Upload failed. Please try again."
+    }
+  },
+  "gallery": {
+    "title": "Gallery",
+    "subtitle": "Photos shown on your public page. Drag order with the arrows; captions are optional.",
+    "upload": "Add photos",
+    "uploadHint": "JPEG, PNG, WebP, HEIC or AVIF, up to 10 MB each, max 20 at a time.",
+    "uploading": "Uploading {done}/{total}…",
+    "empty": "No photos yet. Add a few to show off your work.",
+    "caption": "Caption",
+    "captionPlaceholder": "Caption (optional)",
+    "moveUp": "Move up",
+    "moveDown": "Move down",
+    "remove": "Remove",
+    "removeConfirm": "Remove this photo from the gallery and delete it?",
+    "error": "Something went wrong."
   }
 }

@@ -6,6 +6,7 @@ import { useCallback, useEffect, useMemo, useRef, useState, type FormEvent } fro
 
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
+import { SalonImage } from "@/components/media/salon-image";
 import { Button } from "@/components/ui/button";
 import { Field, FieldError, FieldGroup, FieldLabel } from "@/components/ui/field";
 import { Input } from "@/components/ui/input";
@@ -13,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Link } from "@/i18n/navigation";
 import { formatDuration, formatMoney } from "@/lib/money";
 import { cn } from "@/lib/utils";
+import type { ImageView } from "@/modules/media/image-view";
 
 export type WizardService = {
   id: string;
@@ -30,6 +32,7 @@ export type WizardEmployee = {
   lastName: string;
   position: string | null;
   color: string | null;
+  avatar?: ImageView | null;
 };
 export type WizardCategory = { id: string; name: string };
 
@@ -331,13 +334,21 @@ export function BookingWizard(props: Props) {
                   onClick={() => chooseEmployee(e.id)}
                   className="flex w-full items-center gap-3 rounded-xl border bg-card p-4 text-left transition-colors hover:border-primary"
                 >
-                  <span
-                    className="flex size-10 items-center justify-center rounded-full text-sm font-semibold text-white"
-                    style={{ backgroundColor: e.color ?? "#475569" }}
-                  >
-                    {e.firstName.charAt(0)}
-                    {e.lastName.charAt(0)}
-                  </span>
+                  {e.avatar ? (
+                    <SalonImage
+                      image={e.avatar}
+                      variant="thumb"
+                      className="size-10 shrink-0 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span
+                      className="flex size-10 items-center justify-center rounded-full text-sm font-semibold text-white"
+                      style={{ backgroundColor: e.color ?? "#475569" }}
+                    >
+                      {e.firstName.charAt(0)}
+                      {e.lastName.charAt(0)}
+                    </span>
+                  )}
                   <span>
                     <span className="block font-medium">
                       {e.firstName} {e.lastName}

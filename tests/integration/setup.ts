@@ -13,5 +13,6 @@ if (process.env["DATABASE_URL_TEST"]) {
 process.env["LOG_LEVEL"] = process.env["TEST_LOG_LEVEL"] ?? "silent";
 process.env["EMAIL_PROVIDER"] = "fake";
 process.env["PUSH_PROVIDER"] = "fake";
+process.env["STORAGE_PROVIDER"] = "fake";
 process.env["BETTER_AUTH_SECRET"] ??= "integration-test-secret-0123456789abcdef0123456789";
 process.env["APP_URL"] ??= "http://localhost:3000";

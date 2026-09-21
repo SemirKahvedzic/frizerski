@@ -21,13 +21,18 @@ export default async function NewEmployeePage({
 }: PageProps<"/[locale]/admin/[salonSlug]/employees/new">) {
   const locale = await resolveLocaleParam(params);
   const { salonSlug } = await params;
-  await getAdminContext(locale, salonSlug);
+  const ctx = await getAdminContext(locale, salonSlug);
   const t = await getTranslations("employees");
 
   return (
     <>
       <PageHeader title={t("new")} description={t("newSubtitle")} />
-      <EmployeeForm salonSlug={salonSlug} action={createEmployeeAction} onSaved="back" />
+      <EmployeeForm
+        salonSlug={salonSlug}
+        salonId={ctx.salonId}
+        action={createEmployeeAction}
+        onSaved="back"
+      />
     </>
   );
 }

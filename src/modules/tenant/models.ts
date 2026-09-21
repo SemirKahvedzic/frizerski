@@ -24,6 +24,8 @@ export const TENANT_MODELS = [
   "OutboxEvent",
   "AuditLog",
   "Notification",
+  "Image",
+  "GalleryImage",
 ] as const;
 
 export type TenantModel = (typeof TENANT_MODELS)[number];

@@ -603,6 +603,8 @@ Constraints: `@@unique([salonId, id])`, `@@index([salonId, purpose])`.
 
 Constraints: `@@unique([salonId, imageId])`, `@@index([salonId, sortOrder])`.
 
+**Implementation notes (Phase 12).** `Image.blurhash` became `Image.placeholder` (a tiny inline WebP data URL). The referencing columns `salons.logo_image_id`, `salons.cover_image_id`, `employees.avatar_image_id` and `services.image_id` are plain nullable columns in Prisma; the migration adds composite foreign keys `(salon_id, <col>) → images(salon_id, id) ON DELETE SET NULL (<col>)` in raw SQL, so cross-tenant references are impossible and deleting an image clears the slot without touching the tenant column.
+
 ### 4.8 Platform and operations
 
 #### AuditLog

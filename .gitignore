@@ -21,6 +21,9 @@
 # generated
 /src/generated/
 
+# uploaded images (STORAGE_PROVIDER=local)
+/storage
+
 # misc
 .DS_Store
 *.pem

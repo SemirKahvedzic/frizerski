@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { imageRefSchema } from "@/modules/media/schemas";
+
 import { routing } from "@/i18n/routing";
 import { SLUG_PATTERN } from "@/lib/slug";
 import {
@@ -75,6 +77,8 @@ export type CreateSalonInput = z.infer<typeof createSalonSchema>;
 export const salonStatusSchema = z.enum(SALON_STATUSES);
 
 export const updateSalonProfileSchema = z.object({
+  logoImageId: imageRefSchema,
+  coverImageId: imageRefSchema,
   name: z.string().trim().min(2, "salons.validation.nameMin").max(80, "salons.validation.nameMax"),
   description: optionalText(2000),
   category: z.enum(SALON_CATEGORIES).nullable().optional(),

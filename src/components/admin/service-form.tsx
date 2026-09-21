@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import { useState, type FormEvent } from "react";
 
 import { FormStatus } from "@/components/forms/form-status";
+import { ImageField } from "@/components/media/image-field";
 import { errorsFor, useServerAction } from "@/components/forms/use-server-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation";
 import type { ActionResult } from "@/lib/api/define-action";
+import type { ImageView } from "@/modules/media/image-view";
 import { centsToDecimalString } from "@/lib/money";
 import { DURATION_PRESETS } from "@/modules/services/schemas";
 
@@ -42,6 +44,8 @@ const EMPTY: ServiceFormValues = {
 
 type Props = {
   salonSlug: string;
+  salonId: string;
+  image?: ImageView | null;
   serviceId?: string;
   currency: string;
   initial?: ServiceFormValues;
@@ -54,6 +58,8 @@ const selectClass = "h-9 w-full rounded-lg border border-input bg-background px-
 
 export function ServiceForm({
   salonSlug,
+  salonId,
+  image = null,
   serviceId,
   currency,
   initial = EMPTY,
@@ -99,12 +105,26 @@ export function ServiceForm({
       audience: value("audience"),
       isActive,
       employeeIds,
+      imageId: value("imageId") || null,
     });
   }
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-6">
       <FormStatus error={formError} success={success} />
+      <Card>
+        <CardContent className="pt-6">
+          <ImageField
+            salonId={salonId}
+            purpose="SERVICE"
+            name="imageId"
+            label={t("form.image")}
+            hint={t("form.imageHint")}
+            initial={image}
+            shape="square"
+          />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>{t("form.details")}</CardTitle>

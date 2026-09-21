@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 11: web push i PWA"
+    "status": "Faza 12: slike i galerija"
   },
   "auth": {
     "fields": {
@@ -574,6 +574,14 @@
         "reminder1hEnabled": "Pošalji klijentima podsjetnik sat prije.",
         "timezone": "Radno vrijeme i termini se tumače u ovoj vremenskoj zoni."
       }
+    },
+    "images": {
+      "title": "Slike",
+      "subtitle": "Logo i naslovna fotografija na javnoj stranici i u emailovima.",
+      "logo": "Logo",
+      "logoHint": "Kvadratna, najmanje 320×320 px.",
+      "cover": "Naslovna fotografija",
+      "coverHint": "Široka, najmanje 1600×540 px."
     }
   },
   "publicSalon": {
@@ -609,7 +617,8 @@
     "services": "Usluge i cijene",
     "servicesHint": "Cijene uključuju PDV. Trajanje je približno.",
     "otherServices": "Ostale usluge",
-    "bookNow": "Rezerviši termin"
+    "bookNow": "Rezerviši termin",
+    "gallery": "Galerija"
   },
   "employees": {
     "title": "Zaposleni",
@@ -648,7 +657,9 @@
     "form": {
       "profile": "Profil",
       "save": "Sačuvaj promjene",
-      "create": "Kreiraj zaposlenog"
+      "create": "Kreiraj zaposlenog",
+      "avatar": "Fotografija",
+      "avatarHint": "Prikazuje se klijentima pri odabiru zaposlenog."
     },
     "delete": {
       "button": "Obriši",
@@ -772,7 +783,9 @@
       "noEmployees": "Prvo dodajte zaposlene da biste ih dodijelili.",
       "cancel": "Odustani",
       "save": "Sačuvaj promjene",
-      "create": "Kreiraj uslugu"
+      "create": "Kreiraj uslugu",
+      "image": "Slika",
+      "imageHint": "Opcionalna fotografija uz uslugu."
     },
     "categories": {
       "title": "Kategorije",
@@ -1000,5 +1013,33 @@
       "IN_APP": "U aplikaciji"
     },
     "pushHint": "Osoblje prima push obavijesti na uređajima na kojima ih je uključilo u postavkama svog naloga."
+  },
+  "media": {
+    "upload": "Dodaj sliku",
+    "replace": "Zamijeni",
+    "remove": "Ukloni",
+    "validation": {
+      "unknownImage": "Nepoznata slika."
+    },
+    "errors": {
+      "tooLarge": "Datoteka je prevelika (najviše 10 MB).",
+      "unsupported": "Nepodržan format. Koristite JPEG, PNG, WebP, HEIC ili AVIF.",
+      "generic": "Upload nije uspio. Pokušajte ponovo."
+    }
+  },
+  "gallery": {
+    "title": "Galerija",
+    "subtitle": "Fotografije na vašoj javnoj stranici. Redoslijed mijenjate strelicama; opisi su opcionalni.",
+    "upload": "Dodaj fotografije",
+    "uploadHint": "JPEG, PNG, WebP, HEIC ili AVIF, do 10 MB po slici, najviše 20 odjednom.",
+    "uploading": "Učitavanje {done}/{total}…",
+    "empty": "Još nema fotografija. Dodajte nekoliko i pokažite svoj rad.",
+    "caption": "Opis",
+    "captionPlaceholder": "Opis (opcionalno)",
+    "moveUp": "Pomjeri gore",
+    "moveDown": "Pomjeri dolje",
+    "remove": "Ukloni",
+    "removeConfirm": "Ukloniti ovu fotografiju iz galerije i obrisati je?",
+    "error": "Nešto je pošlo po zlu."
   }
 }

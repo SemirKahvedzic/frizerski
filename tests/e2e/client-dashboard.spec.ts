@@ -33,6 +33,7 @@ test.describe("client dashboard", () => {
   });
 
   test("client updates profile phone", async ({ page }, testInfo) => {
+    test.skip(testInfo.project.name === "chromium-mobile", "single writer for shared seed user");
     await loginAsAmina(page);
     await page.getByTestId("account-nav-profile").click();
     await expect(page).toHaveURL(/\/en\/account\/profile$/);

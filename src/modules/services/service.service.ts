@@ -3,6 +3,7 @@ import { ConflictError, NotFoundError, ValidationError } from "@/lib/errors";
 import { recordAudit } from "@/modules/audit";
 import { diffSnapshots } from "@/modules/audit/diff";
 import { authorize } from "@/modules/auth/authorize";
+import { assertSalonImage } from "@/modules/media/media.service";
 import type { CategoryInput, ServiceInput } from "@/modules/services/schemas";
 import type { TenantContext } from "@/modules/tenant/context";
 
@@ -24,6 +25,7 @@ export type ServiceSummary = {
   audience: "MALE" | "FEMALE" | "UNISEX";
   isActive: boolean;
   sortOrder: number;
+  imageId: string | null;
   employeeIds: string[];
 };
 
@@ -39,6 +41,7 @@ const serviceSelect = {
   audience: true,
   isActive: true,
   sortOrder: true,
+  imageId: true,
   employees: { select: { employeeId: true } },
 } as const;
 
@@ -54,6 +57,7 @@ type ServiceRow = {
   audience: "MALE" | "FEMALE" | "UNISEX";
   isActive: boolean;
   sortOrder: number;
+  imageId: string | null;
   employees: { employeeId: string }[];
 };
 
@@ -232,6 +236,9 @@ export async function createService(
   authorize(ctx.actor, "service.manage", { salonId: ctx.salonId });
   await Promise.all([
     assertEmployeesBelong(ctx, input.employeeIds),
+    input.imageId
+      ? assertSalonImage(ctx.salonId, input.imageId, ["SERVICE"], "imageId")
+      : Promise.resolve(),
     assertCategoryBelongs(ctx, input.categoryId),
   ]);
   const [salon, last] = await Promise.all([
@@ -252,6 +259,7 @@ export async function createService(
         bufferAfterMinutes: input.bufferAfterMinutes,
         audience: input.audience,
         isActive: input.isActive,
+        imageId: input.imageId ?? null,
         sortOrder: (last._max.sortOrder ?? -1) + 1,
       },
       select: { id: true },
@@ -296,6 +304,9 @@ export async function updateService(
   const before = await getService(ctx, serviceId);
   await Promise.all([
     assertEmployeesBelong(ctx, input.employeeIds),
+    input.imageId
+      ? assertSalonImage(ctx.salonId, input.imageId, ["SERVICE"], "imageId")
+      : Promise.resolve(),
     assertCategoryBelongs(ctx, input.categoryId),
   ]);
 
@@ -321,6 +332,7 @@ export async function updateService(
         bufferAfterMinutes: input.bufferAfterMinutes,
         audience: input.audience,
         isActive: input.isActive,
+        imageId: input.imageId ?? null,
       },
       select: serviceSelect,
     });

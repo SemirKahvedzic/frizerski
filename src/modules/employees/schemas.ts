@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { imageRefSchema } from "@/modules/media/schemas";
+
 import { compareTimes, isValidDateString, isValidTime, WEEKDAYS } from "@/lib/time";
 
 export const TIME_OFF_TYPES = ["VACATION", "SICK", "PERSONAL", "OTHER"] as const;
@@ -34,6 +36,7 @@ export const employeeInputSchema = z.object({
     .optional()
     .refine((v) => v == null || z.string().email().safeParse(v).success, "auth.validation.email"),
   phone: optionalText(30),
+  avatarImageId: imageRefSchema,
   audience: z.enum(["MALE", "FEMALE", "UNISEX"]).default("UNISEX"),
   color: z
     .string()

@@ -122,6 +122,21 @@ enum PushPlatform {
   ANDROID
 }
 
+enum ImagePurpose {
+  LOGO
+  COVER
+  GALLERY
+  SERVICE
+  EMPLOYEE
+  AVATAR
+}
+
+enum ImageStatus {
+  PROCESSING
+  READY
+  FAILED
+}
+
 // ---------------------------------------------------------------------------
 // Identity (Better Auth core tables + application fields)
 // ---------------------------------------------------------------------------
@@ -155,6 +170,7 @@ model User {
   notificationPreference NotificationPreference?
   notifications          Notification[]
   pushSubscriptions      PushSubscription[]
+  uploadedImages         Image[]
 
   @@map("users")
 }
@@ -235,6 +251,9 @@ model Salon {
   facebook      String?
   tiktok        String?
   brandColor    String?     @map("brand_color")
+  /// Composite FK (id, logo_image_id) → images(salon_id, id) added in raw SQL; ON DELETE SET NULL (logo_image_id).
+  logoImageId   String?     @map("logo_image_id")
+  coverImageId  String?     @map("cover_image_id")
   timezone      String      @default("Europe/Sarajevo")
   currency      String      @default("BAM")
   defaultLocale String      @default("bs") @map("default_locale")
@@ -262,6 +281,8 @@ model Salon {
   accessTokens   BookingAccessToken[]
   outboxEvents   OutboxEvent[]
   notifications  Notification[]
+  images         Image[]
+  galleryImages  GalleryImage[]
 
   @@index([status])
   @@map("salons")
@@ -285,6 +306,8 @@ model Employee {
   audience         Audience @default(UNISEX)
   /// Calendar color (hex)
   color            String?
+  /// Composite FK (salon_id, avatar_image_id) → images(salon_id, id) in raw SQL.
+  avatarImageId    String?  @map("avatar_image_id")
   isActive         Boolean  @default(true) @map("is_active")
   isBookableOnline Boolean  @default(true) @map("is_bookable_online")
   sortOrder        Int      @default(0) @map("sort_order")
@@ -327,6 +350,8 @@ model Service {
   id                 String   @id @default(uuid(7))
   salonId            String   @map("salon_id")
   categoryId         String?  @map("category_id")
+  /// Composite FK (salon_id, image_id) → images(salon_id, id) in raw SQL.
+  imageId            String?  @map("image_id")
   name               String
   description        String?
   /// Minor units (e.g. cents / feninga)
@@ -820,4 +845,50 @@ model PushSubscription {
 
   @@index([userId, failedAt])
   @@map("push_subscriptions")
+}
+
+/// Processed image with WebP variants in object storage (docs/architecture.md §9).
+/// `placeholder` is a tiny inline WebP data URL used for blur-up loading.
+model Image {
+  id               String       @id @default(uuid(7))
+  salonId          String       @map("salon_id")
+  purpose          ImagePurpose
+  storageKeyPrefix String       @map("storage_key_prefix")
+  originalName     String       @map("original_name")
+  mimeType         String       @map("mime_type")
+  sizeBytes        Int          @map("size_bytes")
+  width            Int
+  height           Int
+  /// { thumb|md|lg|orig: { key, width, height, bytes } }
+  variants         Json
+  placeholder      String?
+  altText          String?      @map("alt_text")
+  status           ImageStatus  @default(READY)
+  uploadedById     String?      @map("uploaded_by_id")
+  createdAt        DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon        Salon          @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  uploadedBy   User?          @relation(fields: [uploadedById], references: [id], onDelete: SetNull)
+  galleryItems GalleryImage[]
+
+  @@unique([salonId, id])
+  @@index([salonId, purpose])
+  @@map("images")
+}
+
+model GalleryImage {
+  id        String   @id @default(uuid(7))
+  salonId   String   @map("salon_id")
+  imageId   String   @map("image_id")
+  sortOrder Int      @default(0) @map("sort_order")
+  caption   String?
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon Salon @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  image Image @relation(fields: [salonId, imageId], references: [salonId, id], onDelete: Cascade)
+
+  @@unique([salonId, imageId])
+  @@unique([salonId, id])
+  @@index([salonId, sortOrder])
+  @@map("gallery_images")
 }

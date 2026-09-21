@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import type { FormEvent } from "react";
 
 import { FormStatus } from "@/components/forms/form-status";
+import { ImageField } from "@/components/media/image-field";
 import { errorsFor, useServerAction } from "@/components/forms/use-server-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { Switch } from "@/components/ui/switch";
 import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation";
 import type { ActionResult } from "@/lib/api/define-action";
+import type { ImageView } from "@/modules/media/image-view";
 import { useState } from "react";
 
 export type EmployeeFormValues = {
@@ -55,6 +57,8 @@ const selectClass = "h-9 w-full rounded-lg border border-input bg-background px-
 
 type Props = {
   salonSlug: string;
+  salonId: string;
+  avatar?: ImageView | null;
   employeeId?: string;
   initial?: EmployeeFormValues;
   action: (input: unknown) => Promise<ActionResult<{ id: string }>>;
@@ -63,6 +67,8 @@ type Props = {
 
 export function EmployeeForm({
   salonSlug,
+  salonId,
+  avatar = null,
   employeeId,
   initial = EMPTY,
   action,
@@ -99,12 +105,26 @@ export function EmployeeForm({
       color,
       isActive,
       isBookableOnline: bookable,
+      avatarImageId: value("avatarImageId") || null,
     });
   }
 
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-6">
       <FormStatus error={formError} success={success} />
+      <Card>
+        <CardContent className="pt-6">
+          <ImageField
+            salonId={salonId}
+            purpose="EMPLOYEE"
+            name="avatarImageId"
+            label={t("form.avatar")}
+            hint={t("form.avatarHint")}
+            initial={avatar}
+            shape="circle"
+          />
+        </CardContent>
+      </Card>
       <Card>
         <CardHeader>
           <CardTitle>{t("form.profile")}</CardTitle>

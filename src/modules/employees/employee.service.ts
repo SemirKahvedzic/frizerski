@@ -4,6 +4,7 @@ import { compareTimes, dateStringToUtc, utcToDateString, wallClockToUtc } from "
 import { recordAudit } from "@/modules/audit";
 import { diffSnapshots } from "@/modules/audit/diff";
 import { authorize } from "@/modules/auth/authorize";
+import { assertSalonImage } from "@/modules/media/media.service";
 import type {
   BlockedTimeInput,
   EmployeeInput,
@@ -27,6 +28,7 @@ export type EmployeeSummary = {
   phone: string | null;
   audience: "MALE" | "FEMALE" | "UNISEX";
   color: string | null;
+  avatarImageId: string | null;
   isActive: boolean;
   isBookableOnline: boolean;
   sortOrder: number;
@@ -43,6 +45,7 @@ const employeeSelect = {
   phone: true,
   audience: true,
   color: true,
+  avatarImageId: true,
   isActive: true,
   isBookableOnline: true,
   sortOrder: true,
@@ -50,6 +53,7 @@ const employeeSelect = {
 } as const;
 
 const EMPLOYEE_KEYS = [
+  "avatarImageId",
   "firstName",
   "lastName",
   "position",
@@ -128,6 +132,14 @@ export async function createEmployee(
   input: EmployeeInput,
 ): Promise<EmployeeSummary> {
   authorize(ctx.actor, "employee.manage", { salonId: ctx.salonId });
+  if (input.avatarImageId) {
+    await assertSalonImage(
+      ctx.salonId,
+      input.avatarImageId,
+      ["EMPLOYEE", "AVATAR"],
+      "avatarImageId",
+    );
+  }
   const last = await ctx.db.employee.aggregate({
     where: { salonId: ctx.salonId },
     _max: { sortOrder: true },
@@ -145,6 +157,7 @@ export async function createEmployee(
         phone: input.phone ?? null,
         audience: input.audience,
         color: input.color ?? null,
+        avatarImageId: input.avatarImageId ?? null,
         isActive: input.isActive,
         isBookableOnline: input.isBookableOnline,
         sortOrder: (last._max.sortOrder ?? -1) + 1,
@@ -174,6 +187,14 @@ export async function updateEmployee(
   input: EmployeeInput,
 ): Promise<EmployeeSummary> {
   authorize(ctx.actor, "employee.manage", { salonId: ctx.salonId });
+  if (input.avatarImageId) {
+    await assertSalonImage(
+      ctx.salonId,
+      input.avatarImageId,
+      ["EMPLOYEE", "AVATAR"],
+      "avatarImageId",
+    );
+  }
   const before = await getEmployee(ctx, employeeId);
 
   return prisma.$transaction(async (tx) => {
@@ -188,6 +209,7 @@ export async function updateEmployee(
         phone: input.phone ?? null,
         audience: input.audience,
         color: input.color ?? null,
+        avatarImageId: input.avatarImageId ?? null,
         isActive: input.isActive,
         isBookableOnline: input.isBookableOnline,
       },

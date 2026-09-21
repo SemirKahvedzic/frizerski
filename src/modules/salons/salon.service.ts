@@ -5,6 +5,7 @@ import { dateStringToUtc, utcToDateString } from "@/lib/time";
 import { recordAudit } from "@/modules/audit";
 import { diffSnapshots } from "@/modules/audit/diff";
 import { authorize, requireUser, requireVerifiedEmail } from "@/modules/auth/authorize";
+import { assertSalonImage } from "@/modules/media/media.service";
 import type { Principal } from "@/modules/auth/types";
 import { defaultWorkingHours } from "@/modules/salons/defaults";
 import type {
@@ -45,6 +46,8 @@ const summarySelect = {
 } as const;
 
 const PROFILE_KEYS = [
+  "logoImageId",
+  "coverImageId",
   "name",
   "description",
   "category",
@@ -82,6 +85,8 @@ const profileSelect = {
   facebook: true,
   tiktok: true,
   brandColor: true,
+  logoImageId: true,
+  coverImageId: true,
   updatedAt: true,
 } as const;
 
@@ -102,6 +107,8 @@ export type SalonProfile = SalonSummary & {
   facebook: string | null;
   tiktok: string | null;
   brandColor: string | null;
+  logoImageId: string | null;
+  coverImageId: string | null;
   updatedAt: Date;
 };
 
@@ -249,6 +256,12 @@ export async function updateSalonProfile(
 ): Promise<SalonProfile> {
   authorize(ctx.actor, "salon.update", { salonId: ctx.salonId });
   const before = await getSalonProfile(ctx);
+  if (input.logoImageId) {
+    await assertSalonImage(ctx.salonId, input.logoImageId, ["LOGO"], "logoImageId");
+  }
+  if (input.coverImageId) {
+    await assertSalonImage(ctx.salonId, input.coverImageId, ["COVER"], "coverImageId");
+  }
 
   return prisma.$transaction(async (tx) => {
     const after = await tx.salon.update({
@@ -270,6 +283,8 @@ export async function updateSalonProfile(
         tiktok: input.tiktok ?? null,
         googleMapsUrl: input.googleMapsUrl ?? null,
         brandColor: input.brandColor ?? null,
+        logoImageId: input.logoImageId ?? null,
+        coverImageId: input.coverImageId ?? null,
         defaultLocale: input.defaultLocale,
       },
       select: profileSelect,

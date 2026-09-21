@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { PageHeader } from "@/components/admin/page-header";
 import { ServiceForm } from "@/components/admin/service-form";
 import { resolveLocaleParam } from "@/i18n/params";
+import { imageViewsFor } from "@/modules/media";
 import { isAppError } from "@/lib/errors";
 import { listEmployees } from "@/modules/employees";
 import { getSalon } from "@/modules/salons";
@@ -42,11 +43,17 @@ export default async function EditServicePage({
     getTranslations("services"),
   ]);
 
+  const image = service.imageId
+    ? ((await imageViewsFor(ctx, [service.imageId])).get(service.imageId) ?? null)
+    : null;
+
   return (
     <>
       <PageHeader title={service.name} description={t("editSubtitle")} />
       <ServiceForm
         salonSlug={salonSlug}
+        salonId={ctx.salonId}
+        image={image}
         serviceId={serviceId}
         currency={salon.currency}
         initial={service}

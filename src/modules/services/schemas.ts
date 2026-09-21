@@ -1,5 +1,7 @@
 import { z } from "zod";
 
+import { imageRefSchema } from "@/modules/media/schemas";
+
 import { parseMoneyToCents } from "@/lib/money";
 
 export const DURATION_PRESETS = [15, 30, 45, 60, 90, 120] as const;
@@ -53,6 +55,7 @@ export const serviceInputSchema = z.object({
   audience: z.enum(["MALE", "FEMALE", "UNISEX"]).default("UNISEX"),
   isActive: bool.default(true),
   employeeIds: z.array(z.uuid()).default([]),
+  imageId: imageRefSchema,
 });
 
 export type ServiceInput = z.infer<typeof serviceInputSchema>;

@@ -4,6 +4,7 @@ import { useTranslations } from "next-intl";
 import type { FormEvent } from "react";
 
 import { FormStatus } from "@/components/forms/form-status";
+import { ImageField } from "@/components/media/image-field";
 import { errorsFor, useServerAction } from "@/components/forms/use-server-action";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,6 +14,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { useRouter } from "@/i18n/navigation";
 import { localeNames, routing } from "@/i18n/routing";
 import type { ActionResult } from "@/lib/api/define-action";
+import type { ImageView } from "@/modules/media/image-view";
 import { AUDIENCES, SALON_CATEGORIES } from "@/modules/salons/schemas";
 
 export type SalonProfileFormValues = {
@@ -37,13 +39,16 @@ export type SalonProfileFormValues = {
 
 type Props = {
   salonSlug: string;
+  salonId: string;
+  images: { logo: ImageView | null; cover: ImageView | null };
   initial: SalonProfileFormValues;
   action: (input: unknown) => Promise<ActionResult<{ name: string; updatedAt: string }>>;
 };
 
 const selectClass = "h-9 w-full rounded-lg border border-input bg-background px-3 text-sm";
 
-export function SalonProfileForm({ salonSlug, initial, action }: Props) {
+export function SalonProfileForm({ salonSlug, salonId, images, initial, action }: Props) {
+  const tImages = useTranslations("salonAdmin.images");
   const t = useTranslations("salonAdmin.profile");
   const tSalons = useTranslations("salons");
   const router = useRouter();
@@ -73,6 +78,8 @@ export function SalonProfileForm({ salonSlug, initial, action }: Props) {
       tiktok: value("tiktok"),
       googleMapsUrl: value("googleMapsUrl"),
       brandColor: value("brandColor"),
+      logoImageId: value("logoImageId") || null,
+      coverImageId: value("coverImageId") || null,
       defaultLocale: value("defaultLocale"),
     });
   }
@@ -98,6 +105,32 @@ export function SalonProfileForm({ salonSlug, initial, action }: Props) {
   return (
     <form onSubmit={onSubmit} noValidate className="space-y-6">
       <FormStatus error={formError} success={success} />
+      <Card>
+        <CardHeader>
+          <CardTitle>{tImages("title")}</CardTitle>
+          <CardDescription>{tImages("subtitle")}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-6">
+          <ImageField
+            salonId={salonId}
+            purpose="LOGO"
+            name="logoImageId"
+            label={tImages("logo")}
+            hint={tImages("logoHint")}
+            initial={images.logo}
+            shape="square"
+          />
+          <ImageField
+            salonId={salonId}
+            purpose="COVER"
+            name="coverImageId"
+            label={tImages("cover")}
+            hint={tImages("coverHint")}
+            initial={images.cover}
+            shape="wide"
+          />
+        </CardContent>
+      </Card>
 
       <Card>
         <CardHeader>

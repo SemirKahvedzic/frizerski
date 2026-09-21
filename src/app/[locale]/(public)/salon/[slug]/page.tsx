@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 
 import { LocaleSwitcher } from "@/components/locale-switcher";
+import { SalonImage } from "@/components/media/salon-image";
 import { OpeningHours } from "@/components/public/opening-hours";
 import { PriceList } from "@/components/public/price-list";
 import { Badge } from "@/components/ui/badge";
@@ -88,6 +89,17 @@ export default async function PublicSalonPage({ params }: PageProps<"/[locale]/s
       </header>
 
       <section className="mx-auto w-full max-w-5xl px-4 pb-16 sm:px-6">
+        {salon.cover ? (
+          <div className="mb-4 overflow-hidden rounded-2xl" data-testid="salon-cover">
+            <SalonImage
+              image={salon.cover}
+              variant="lg"
+              loading="eager"
+              sizes="(min-width: 1024px) 1024px, 100vw"
+              className="aspect-[3/1] w-full object-cover"
+            />
+          </div>
+        ) : null}
         <div className="rounded-2xl border bg-muted/40 p-6 sm:p-10">
           <div className="flex flex-wrap items-center gap-2">
             <Badge variant={openNow ? "default" : "secondary"} data-testid="open-now">
@@ -96,7 +108,17 @@ export default async function PublicSalonPage({ params }: PageProps<"/[locale]/s
             <Badge variant="outline">{t(`audience.${salon.audience}`)}</Badge>
             {categoryKey ? <Badge variant="outline">{t(`categories.${categoryKey}`)}</Badge> : null}
           </div>
-          <h1 className="mt-4 text-3xl font-semibold tracking-tight sm:text-5xl">{salon.name}</h1>
+          <div className="mt-4 flex items-center gap-4">
+            {salon.logo ? (
+              <SalonImage
+                image={salon.logo}
+                variant="thumb"
+                loading="eager"
+                className="size-16 shrink-0 rounded-2xl object-cover sm:size-20"
+              />
+            ) : null}
+            <h1 className="text-3xl font-semibold tracking-tight sm:text-5xl">{salon.name}</h1>
+          </div>
           {salon.description ? (
             <p
               className="mt-4 max-w-3xl text-base whitespace-pre-line text-muted-foreground sm:text-lg"
@@ -142,14 +164,22 @@ export default async function PublicSalonPage({ params }: PageProps<"/[locale]/s
             <ul className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
               {salon.employees.map((e) => (
                 <li key={e.id} className="flex items-start gap-3 rounded-xl border bg-card p-4">
-                  <span
-                    className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
-                    style={{ backgroundColor: e.color ?? "#475569" }}
-                    aria-hidden
-                  >
-                    {e.firstName.charAt(0)}
-                    {e.lastName.charAt(0)}
-                  </span>
+                  {e.avatar ? (
+                    <SalonImage
+                      image={e.avatar}
+                      variant="thumb"
+                      className="size-10 shrink-0 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span
+                      className="flex size-10 shrink-0 items-center justify-center rounded-full text-sm font-semibold text-white"
+                      style={{ backgroundColor: e.color ?? "#475569" }}
+                      aria-hidden
+                    >
+                      {e.firstName.charAt(0)}
+                      {e.lastName.charAt(0)}
+                    </span>
+                  )}
                   <div className="min-w-0">
                     <div className="font-medium">
                       {e.firstName} {e.lastName}
@@ -161,6 +191,28 @@ export default async function PublicSalonPage({ params }: PageProps<"/[locale]/s
                       <p className="mt-1 line-clamp-3 text-sm text-muted-foreground">{e.bio}</p>
                     ) : null}
                   </div>
+                </li>
+              ))}
+            </ul>
+          </section>
+        ) : null}
+
+        {salon.gallery.length > 0 ? (
+          <section className="mt-8" data-testid="public-gallery">
+            <h2 className="text-xl font-semibold tracking-tight">{t("gallery")}</h2>
+            <ul className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
+              {salon.gallery.map((item) => (
+                <li key={item.id} className="overflow-hidden rounded-xl border bg-card">
+                  <SalonImage
+                    image={item.image}
+                    variant="md"
+                    sizes="(min-width: 1024px) 25vw, (min-width: 640px) 33vw, 50vw"
+                    className="aspect-square w-full object-cover"
+                    alt={item.caption ?? item.image.altText ?? ""}
+                  />
+                  {item.caption ? (
+                    <div className="px-2 py-1.5 text-xs text-muted-foreground">{item.caption}</div>
+                  ) : null}
                 </li>
               ))}
             </ul>
