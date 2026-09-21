@@ -10,4 +10,4 @@
 | [setup.md](./setup.md)                   | Prerequisites, docker-compose, environment variables, scripts, Docker images, deployment (Railway reference), CI, seed data, troubleshooting                                                                                                              |
 | [testing.md](./testing.md)               | Unit / integration / E2E strategy, scenarios, fixtures, non-functional checks, definition of done                                                                                                                                                         |
 
-Status: Phases 1–6 complete (foundation; auth and roles; multi-tenant; salon management; employees and schedules; services and pricing). Next: Phase 7 (booking engine).
+Status: Phases 1–7 complete (foundation; auth and roles; multi-tenant; salon management; employees and schedules; services and pricing; booking engine). Next: Phase 8 (calendar).

@@ -250,6 +250,92 @@ async function upsertServices(salonId: string, currency: string, services: SeedS
   }
 }
 
+/** A few customers and confirmed bookings spread over the coming week (idempotent by customer email + start time). */
+async function seedBookings(salonId: string) {
+  const salon = await prisma.salon.findUniqueOrThrow({
+    where: { id: salonId },
+    select: { timezone: true, currency: true },
+  });
+  const employees = await prisma.employee.findMany({
+    where: { salonId },
+    select: { id: true, email: true },
+  });
+  const services = await prisma.service.findMany({
+    where: { salonId },
+    select: { id: true, name: true, priceCents: true, durationMinutes: true },
+  });
+  const marko = employees.find((e) => e.email === "marko@studio-example.local");
+  const ana = employees.find((e) => e.email === "ana@seed.local");
+  const haircut = services.find((s) => s.name === "Šišanje");
+  const styling = services.find((s) => s.name === "Styling");
+  if (!marko || !ana || !haircut || !styling) return;
+
+  const customers = [
+    {
+      firstName: "Amina",
+      lastName: "Hodžić",
+      email: "amina@example.com",
+      phone: "+387 61 111 222",
+    },
+    {
+      firstName: "Emir",
+      lastName: "Kovačević",
+      email: "emir@example.com",
+      phone: "+387 62 333 444",
+    },
+    { firstName: "Lejla", lastName: "Begić", email: "lejla@example.com", phone: null },
+  ];
+  const customerIds: string[] = [];
+  for (const c of customers) {
+    const row = await prisma.customer.upsert({
+      where: { salonId_email: { salonId, email: c.email } },
+      update: { firstName: c.firstName, lastName: c.lastName, phone: c.phone },
+      create: { salonId, ...c },
+    });
+    customerIds.push(row.id);
+  }
+
+  // Next Monday and Tuesday in the salon time zone.
+  const today = new Date();
+  const monday = new Date(
+    Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate() + 2),
+  );
+  while (monday.getUTCDay() !== 1) monday.setUTCDate(monday.getUTCDate() + 1);
+  const day = (offset: number) =>
+    new Date(monday.getTime() + offset * 86_400_000).toISOString().slice(0, 10);
+  const plan = [
+    { customer: 0, employee: marko.id, service: haircut, date: day(0), time: "10:00" },
+    { customer: 1, employee: marko.id, service: haircut, date: day(0), time: "11:00" },
+    { customer: 2, employee: ana.id, service: styling, date: day(1), time: "12:00" },
+  ];
+  const { wallClockToUtc } = await import("../src/lib/time");
+  for (const p of plan) {
+    const startsAt = wallClockToUtc(p.date, p.time, salon.timezone);
+    const endsAt = new Date(startsAt.getTime() + p.service.durationMinutes * 60_000);
+    const existing = await prisma.booking.findFirst({
+      where: { salonId, employeeId: p.employee, startsAt },
+    });
+    if (existing) continue;
+    await prisma.booking.create({
+      data: {
+        salonId,
+        customerId: customerIds[p.customer]!,
+        employeeId: p.employee,
+        serviceId: p.service.id,
+        status: "CONFIRMED",
+        startsAt,
+        endsAt,
+        durationMinutes: p.service.durationMinutes,
+        priceCents: p.service.priceCents,
+        currency: salon.currency,
+        serviceNameSnapshot: p.service.name,
+        source: "ADMIN",
+        history: { create: { toStatus: "CONFIRMED", action: "CREATED", changedBy: "SYSTEM" } },
+      },
+    });
+  }
+}
+
 async function main() {
   const superAdmin = await upsertUser({
     email: process.env["SEED_SUPER_ADMIN_EMAIL"] ?? "admin@platform.local",
@@ -496,10 +582,13 @@ async function main() {
   ]);
   console.log("Services seeded.");
 
+  await seedBookings(studio.id);
+  console.log("Customers and bookings seeded.");
+
   await prisma.platformSetting.upsert({
     where: { key: "seed.version" },
-    update: { value: { version: 6 } },
-    create: { key: "seed.version", value: { version: 6 } },
+    update: { value: { version: 7 } },
+    create: { key: "seed.version", value: { version: 7 } },
   });
 
   console.log("Seed complete.");

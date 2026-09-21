@@ -52,6 +52,45 @@ enum BlockedTimeSource {
   EXTERNAL
 }
 
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
+}
+
+enum BookingSource {
+  ONLINE
+  ADMIN
+  WALK_IN
+}
+
+enum PaymentStatus {
+  NONE
+  PENDING
+  PAID
+  REFUNDED
+}
+
+enum ReminderKind {
+  H24
+  H1
+}
+
+enum ReminderStatus {
+  SCHEDULED
+  SENT
+  CANCELLED
+  SKIPPED
+}
+
+enum OutboxStatus {
+  PENDING
+  PUBLISHED
+  FAILED
+}
+
 // ---------------------------------------------------------------------------
 // Identity (Better Auth core tables + application fields)
 // ---------------------------------------------------------------------------
@@ -78,6 +117,10 @@ model User {
   auditLogs   AuditLog[]
   closures    SalonClosure[]
   employees   Employee[]
+  customers   Customer[]
+  bookingsCreated   Booking[]              @relation("BookingCreatedBy")
+  bookingsCancelled Booking[]              @relation("BookingCancelledBy")
+  statusChanges     BookingStatusHistory[]
 
   @@map("users")
 }
@@ -178,6 +221,12 @@ model Salon {
   categories   ServiceCategory[]
   services     Service[]
   employeeServices EmployeeService[]
+  customers      Customer[]
+  bookings       Booking[]
+  bookingHistory BookingStatusHistory[]
+  reminders      BookingReminder[]
+  accessTokens   BookingAccessToken[]
+  outboxEvents   OutboxEvent[]
 
   @@index([status])
   @@map("salons")
@@ -212,6 +261,7 @@ model Employee {
   schedules EmployeeSchedule[]
   timeOff   EmployeeTimeOff[]
   services  EmployeeService[]
+  bookings  Booking[]
 
   @@unique([salonId, id])
   @@index([salonId, isActive, sortOrder])
@@ -258,6 +308,7 @@ model Service {
   salon     Salon             @relation(fields: [salonId], references: [id], onDelete: Cascade)
   category  ServiceCategory?  @relation(fields: [salonId, categoryId], references: [salonId, id], onDelete: SetNull)
   employees EmployeeService[]
+  bookings  Booking[]
 
   @@unique([salonId, id])
   @@index([salonId, categoryId, sortOrder])
@@ -449,6 +500,171 @@ model SalonMembership {
   @@unique([salonId, id])
   @@index([salonId, role])
   @@map("salon_memberships")
+}
+
+// ---------------------------------------------------------------------------
+// Customers and bookings (docs/database.md §4.5, docs/booking-system.md)
+// ---------------------------------------------------------------------------
+
+/// Per-salon customer record. Guests have userId = null.
+model Customer {
+  id             String    @id @default(uuid(7))
+  salonId        String    @map("salon_id")
+  userId         String?   @map("user_id")
+  firstName      String    @map("first_name")
+  lastName       String    @map("last_name")
+  email          String
+  phone          String?
+  notes          String?
+  marketingOptIn Boolean   @default(false) @map("marketing_opt_in")
+  firstBookingAt DateTime? @map("first_booking_at") @db.Timestamptz(3)
+  lastBookingAt  DateTime? @map("last_booking_at") @db.Timestamptz(3)
+  createdAt      DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt      DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon    Salon     @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  user     User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  bookings Booking[]
+
+  @@unique([salonId, id])
+  @@unique([salonId, email])
+  @@index([salonId, lastName, firstName])
+  @@index([salonId, phone])
+  @@index([userId])
+  @@map("customers")
+}
+
+model Booking {
+  id                  String        @id @default(uuid(7))
+  salonId             String        @map("salon_id")
+  customerId          String        @map("customer_id")
+  employeeId          String        @map("employee_id")
+  serviceId           String        @map("service_id")
+  status              BookingStatus
+  startsAt            DateTime      @map("starts_at") @db.Timestamptz(3)
+  /// Includes the buffer: startsAt + durationMinutes + bufferMinutes
+  endsAt              DateTime      @map("ends_at") @db.Timestamptz(3)
+  durationMinutes     Int           @map("duration_minutes")
+  bufferMinutes       Int           @default(0) @map("buffer_minutes")
+  priceCents          Int           @map("price_cents")
+  currency            String
+  serviceNameSnapshot String        @map("service_name_snapshot")
+  source              BookingSource @default(ONLINE)
+  paymentStatus       PaymentStatus @default(NONE) @map("payment_status")
+  clientNotes         String?       @map("client_notes")
+  internalNotes       String?       @map("internal_notes")
+  cancelledAt         DateTime?     @map("cancelled_at") @db.Timestamptz(3)
+  cancelledById       String?       @map("cancelled_by_id")
+  /// CLIENT | GUEST | SALON | SYSTEM
+  cancelledBy         String?       @map("cancelled_by")
+  cancellationReason  String?       @map("cancellation_reason")
+  /// Optimistic concurrency; bumped on every mutation.
+  version             Int           @default(1)
+  createdById         String?       @map("created_by_id")
+  createdAt           DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt           DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon           Salon                  @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  customer        Customer               @relation(fields: [salonId, customerId], references: [salonId, id], onDelete: Restrict)
+  employee        Employee               @relation(fields: [salonId, employeeId], references: [salonId, id], onDelete: Restrict)
+  service         Service                @relation(fields: [salonId, serviceId], references: [salonId, id], onDelete: Restrict)
+  createdBy       User?                  @relation("BookingCreatedBy", fields: [createdById], references: [id], onDelete: SetNull)
+  cancelledByUser User?                  @relation("BookingCancelledBy", fields: [cancelledById], references: [id], onDelete: SetNull)
+  history         BookingStatusHistory[]
+  reminders       BookingReminder[]
+  accessTokens    BookingAccessToken[]
+
+  @@unique([salonId, id])
+  @@index([salonId, startsAt])
+  @@index([employeeId, startsAt])
+  @@index([customerId, startsAt])
+  @@index([salonId, status, startsAt])
+  @@map("bookings")
+}
+
+model BookingStatusHistory {
+  id               String         @id @default(uuid(7))
+  salonId          String         @map("salon_id")
+  bookingId        String         @map("booking_id")
+  fromStatus       BookingStatus? @map("from_status")
+  toStatus         BookingStatus  @map("to_status")
+  /// CREATED | STATUS_CHANGED | RESCHEDULED | CANCELLED
+  action           String
+  previousStartsAt DateTime?      @map("previous_starts_at") @db.Timestamptz(3)
+  newStartsAt      DateTime?      @map("new_starts_at") @db.Timestamptz(3)
+  changedById      String?        @map("changed_by_id")
+  /// CLIENT | GUEST | SALON | SYSTEM
+  changedBy        String         @map("changed_by")
+  reason           String?
+  createdAt        DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon         Salon   @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  booking       Booking @relation(fields: [salonId, bookingId], references: [salonId, id], onDelete: Cascade)
+  changedByUser User?   @relation(fields: [changedById], references: [id], onDelete: SetNull)
+
+  @@unique([salonId, id])
+  @@index([bookingId, createdAt])
+  @@map("booking_status_history")
+}
+
+/// Source of truth for reminder scheduling and idempotency (docs/notifications.md §5).
+model BookingReminder {
+  id           String         @id @default(uuid(7))
+  salonId      String         @map("salon_id")
+  bookingId    String         @map("booking_id")
+  kind         ReminderKind
+  scheduledFor DateTime       @map("scheduled_for") @db.Timestamptz(3)
+  status       ReminderStatus @default(SCHEDULED)
+  jobId        String?        @map("job_id")
+  sentAt       DateTime?      @map("sent_at") @db.Timestamptz(3)
+  createdAt    DateTime       @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt    DateTime       @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon   Salon   @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  booking Booking @relation(fields: [salonId, bookingId], references: [salonId, id], onDelete: Cascade)
+
+  @@unique([bookingId, kind, scheduledFor])
+  @@unique([salonId, id])
+  @@index([status, scheduledFor])
+  @@map("booking_reminders")
+}
+
+/// Guest management links (hashed at rest).
+model BookingAccessToken {
+  id         String    @id @default(uuid(7))
+  salonId    String    @map("salon_id")
+  bookingId  String    @map("booking_id")
+  tokenHash  String    @unique @map("token_hash")
+  expiresAt  DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt  DateTime? @map("revoked_at") @db.Timestamptz(3)
+  lastUsedAt DateTime? @map("last_used_at") @db.Timestamptz(3)
+  createdAt  DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon   Salon   @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  booking Booking @relation(fields: [salonId, bookingId], references: [salonId, id], onDelete: Cascade)
+
+  @@unique([salonId, id])
+  @@map("booking_access_tokens")
+}
+
+/// Transactional outbox (docs/architecture.md §10).
+model OutboxEvent {
+  id            String       @id @default(uuid(7))
+  salonId       String?      @map("salon_id")
+  type          String
+  aggregateType String       @map("aggregate_type")
+  aggregateId   String       @map("aggregate_id")
+  payload       Json
+  status        OutboxStatus @default(PENDING)
+  attempts      Int          @default(0)
+  occurredAt    DateTime     @default(now()) @map("occurred_at") @db.Timestamptz(3)
+  publishedAt   DateTime?    @map("published_at") @db.Timestamptz(3)
+  lastError     String?      @map("last_error")
+
+  salon Salon? @relation(fields: [salonId], references: [id], onDelete: Cascade)
+
+  @@index([status, occurredAt])
+  @@map("outbox_events")
 }
 
 // ---------------------------------------------------------------------------

@@ -59,24 +59,25 @@ test.describe("salon management", () => {
     await expect(page.locator('[data-slot="alert"]').first()).toContainText("Saved.");
 
     // Add a closure far in the future so it never collides with "today".
+    const reason = `E2E holidays ${Date.now().toString(36)}`;
     const start = "2030-12-24";
     const end = "2030-12-26";
     await page.getByLabel("From").fill(start);
     await page.getByLabel("To").fill(end);
-    await page.getByLabel("Reason (optional)").fill("E2E holidays");
+    await page.getByLabel("Reason (optional)").fill(reason);
     await page.getByRole("button", { name: "Add closure" }).click();
-    await expect(page.getByTestId("closure-row").filter({ hasText: "E2E holidays" })).toBeVisible();
+    await expect(page.getByTestId("closure-row").filter({ hasText: reason })).toBeVisible();
 
     await page.goto(`/en/salon/${SLUG}`);
     await expect(page.getByTestId("public-hours-wed")).toContainText("Closed");
-    await expect(page.getByTestId("closures")).toContainText("E2E holidays");
+    await expect(page.getByTestId("closures")).toContainText(reason);
 
     // Restore: reopen Wednesday and remove the closure.
     await page.goto(`/en/admin/${SLUG}/working-hours`);
     await page.getByTestId("hours-wed").getByRole("checkbox").check();
     await page.getByRole("button", { name: "Save hours" }).click();
     await expect(page.locator('[data-slot="alert"]').first()).toContainText("Saved.");
-    const row = page.getByTestId("closure-row").filter({ hasText: "E2E holidays" });
+    const row = page.getByTestId("closure-row").filter({ hasText: reason });
     await row.getByRole("button", { name: "Remove closure" }).click();
     await expect(row).toHaveCount(0);
   });

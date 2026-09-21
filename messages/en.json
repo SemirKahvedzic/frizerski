@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 6: services and pricing"
+    "status": "Phase 7: booking engine"
   },
   "auth": {
     "fields": {
@@ -466,7 +466,8 @@
     "teamHint": "Choose your stylist when booking.",
     "services": "Services and prices",
     "servicesHint": "Prices include VAT. Duration is approximate.",
-    "otherServices": "Other services"
+    "otherServices": "Other services",
+    "bookNow": "Book an appointment"
   },
   "employees": {
     "title": "Employees",
@@ -642,6 +643,102 @@
       "delete": "Delete",
       "save": "Save",
       "cancel": "Cancel"
+    }
+  },
+  "bookingStatus": {
+    "PENDING": "Pending",
+    "CONFIRMED": "Confirmed",
+    "COMPLETED": "Completed",
+    "CANCELLED": "Cancelled",
+    "NO_SHOW": "No-show"
+  },
+  "booking": {
+    "title": "Book an appointment",
+    "pageTitle": "Book at {salon}",
+    "subtitle": "Times are shown in {timezone}.",
+    "progress": "Booking steps",
+    "steps": {
+      "service": "Service",
+      "employee": "Employee",
+      "time": "Time",
+      "details": "Details"
+    },
+    "chooseService": "What would you like?",
+    "otherServices": "Other services",
+    "noProvider": "not bookable online",
+    "chooseEmployee": "Who should take care of you?",
+    "anyEmployee": "Any available employee",
+    "anyEmployeeHint": "Shows the most free slots.",
+    "chooseTime": "Pick a date and time",
+    "chooseDay": "Day",
+    "otherDate": "Another date:",
+    "loadingSlots": "Loading free slots…",
+    "noSlots": "No free slots on this day. Try another date.",
+    "yourDetails": "Your details",
+    "with": "with {name}",
+    "withAny": "with any available employee",
+    "bookingAs": "Booking as {name} ({email}).",
+    "signInRequired": "This salon requires an account to book.",
+    "signIn": "Sign in",
+    "phone": "Phone",
+    "notes": "Note for the salon (optional)",
+    "notesPlaceholder": "e.g. I would like the same as last time",
+    "confirm": "Confirm booking",
+    "back": "Back",
+    "doneTitle": "You are booked!",
+    "doneSubtitle": "{salon} expects you on {when}. A confirmation email is on its way.",
+    "manageBooking": "Manage my booking",
+    "manageHint": "Keep this link: it lets you move or cancel the appointment without an account.",
+    "myAccount": "My appointments",
+    "backToSalon": "Back to the salon",
+    "salon": "Salon",
+    "employee": "Employee",
+    "errors": {
+      "loadSlots": "Could not load free slots. Please try again.",
+      "validation": "Please check your details.",
+      "slotTaken": "Sorry, that time was just taken. Please choose another one.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "manage": {
+    "title": "Your appointment",
+    "subtitle": "Move or cancel your appointment according to the salon's policy.",
+    "reschedule": "Move appointment",
+    "cancel": "Cancel appointment",
+    "cancelUntil": "Free cancellation until {when}.",
+    "cutoffPassed": "The cancellation window has passed. Please call the salon: {phone}",
+    "cancelConfirm": "Do you really want to cancel this appointment?",
+    "cancelYes": "Yes, cancel",
+    "cancelNo": "Keep it",
+    "cancelled": "Your appointment has been cancelled.",
+    "newDate": "New date:",
+    "noSlots": "No free slots on this day.",
+    "rescheduleConfirm": "Confirm new time",
+    "rescheduled": "Your appointment has been moved.",
+    "errors": {
+      "slotTaken": "That time is no longer available.",
+      "policy": "The salon's policy no longer allows this change. Please call the salon.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "appointments": {
+    "title": "Appointments",
+    "subtitleUpcoming": "Today and the next 14 days.",
+    "subtitlePast": "The last 30 days.",
+    "upcoming": "Upcoming",
+    "past": "Past",
+    "today": "today",
+    "empty": "No appointments in this period.",
+    "source": {
+      "ADMIN": "By salon",
+      "WALK_IN": "Walk-in",
+      "ONLINE": "Online"
+    },
+    "actions": {
+      "CONFIRMED": "Confirm",
+      "COMPLETED": "Completed",
+      "NO_SHOW": "No-show",
+      "CANCELLED": "Cancel"
     }
   }
 }

@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 6: usluge i cjenovnik"
+    "status": "Faza 7: booking engine"
   },
   "auth": {
     "fields": {
@@ -466,7 +466,8 @@
     "teamHint": "Odaberite svog frizera pri rezervaciji.",
     "services": "Usluge i cijene",
     "servicesHint": "Cijene uključuju PDV. Trajanje je približno.",
-    "otherServices": "Ostale usluge"
+    "otherServices": "Ostale usluge",
+    "bookNow": "Rezerviši termin"
   },
   "employees": {
     "title": "Zaposleni",
@@ -642,6 +643,102 @@
       "delete": "Obriši",
       "save": "Sačuvaj",
       "cancel": "Odustani"
+    }
+  },
+  "bookingStatus": {
+    "PENDING": "Na čekanju",
+    "CONFIRMED": "Potvrđen",
+    "COMPLETED": "Završen",
+    "CANCELLED": "Otkazan",
+    "NO_SHOW": "Nije došao"
+  },
+  "booking": {
+    "title": "Rezerviši termin",
+    "pageTitle": "Rezervacija u salonu {salon}",
+    "subtitle": "Vremena su prikazana u zoni {timezone}.",
+    "progress": "Koraci rezervacije",
+    "steps": {
+      "service": "Usluga",
+      "employee": "Frizer",
+      "time": "Termin",
+      "details": "Podaci"
+    },
+    "chooseService": "Šta želite?",
+    "otherServices": "Ostale usluge",
+    "noProvider": "nije dostupno online",
+    "chooseEmployee": "Ko će vas uslužiti?",
+    "anyEmployee": "Bilo koji slobodan zaposleni",
+    "anyEmployeeHint": "Prikazuje najviše slobodnih termina.",
+    "chooseTime": "Odaberite datum i vrijeme",
+    "chooseDay": "Dan",
+    "otherDate": "Drugi datum:",
+    "loadingSlots": "Učitavanje slobodnih termina…",
+    "noSlots": "Nema slobodnih termina ovog dana. Probajte drugi datum.",
+    "yourDetails": "Vaši podaci",
+    "with": "kod {name}",
+    "withAny": "kod bilo kojeg slobodnog zaposlenog",
+    "bookingAs": "Rezervišete kao {name} ({email}).",
+    "signInRequired": "Ovaj salon zahtijeva nalog za rezervaciju.",
+    "signIn": "Prijavite se",
+    "phone": "Telefon",
+    "notes": "Napomena za salon (opcionalno)",
+    "notesPlaceholder": "npr. Isto kao prošli put",
+    "confirm": "Potvrdi rezervaciju",
+    "back": "Nazad",
+    "doneTitle": "Termin je rezervisan!",
+    "doneSubtitle": "{salon} vas očekuje {when}. Potvrda stiže emailom.",
+    "manageBooking": "Upravljaj rezervacijom",
+    "manageHint": "Sačuvajte ovaj link: omogućava pomjeranje ili otkazivanje termina bez naloga.",
+    "myAccount": "Moji termini",
+    "backToSalon": "Nazad na salon",
+    "salon": "Salon",
+    "employee": "Zaposleni",
+    "errors": {
+      "loadSlots": "Nije moguće učitati termine. Pokušajte ponovo.",
+      "validation": "Provjerite unesene podatke.",
+      "slotTaken": "Nažalost, taj termin je upravo zauzet. Odaberite drugi.",
+      "generic": "Nešto je pošlo po zlu. Pokušajte ponovo."
+    }
+  },
+  "manage": {
+    "title": "Vaš termin",
+    "subtitle": "Pomjerite ili otkažite termin prema pravilima salona.",
+    "reschedule": "Pomjeri termin",
+    "cancel": "Otkaži termin",
+    "cancelUntil": "Besplatno otkazivanje do {when}.",
+    "cutoffPassed": "Rok za otkazivanje je prošao. Nazovite salon: {phone}",
+    "cancelConfirm": "Da li zaista želite otkazati ovaj termin?",
+    "cancelYes": "Da, otkaži",
+    "cancelNo": "Zadrži",
+    "cancelled": "Vaš termin je otkazan.",
+    "newDate": "Novi datum:",
+    "noSlots": "Nema slobodnih termina ovog dana.",
+    "rescheduleConfirm": "Potvrdi novo vrijeme",
+    "rescheduled": "Vaš termin je pomjeren.",
+    "errors": {
+      "slotTaken": "Taj termin više nije dostupan.",
+      "policy": "Pravila salona više ne dozvoljavaju ovu promjenu. Nazovite salon.",
+      "generic": "Nešto je pošlo po zlu. Pokušajte ponovo."
+    }
+  },
+  "appointments": {
+    "title": "Termini",
+    "subtitleUpcoming": "Danas i narednih 14 dana.",
+    "subtitlePast": "Zadnjih 30 dana.",
+    "upcoming": "Predstojeći",
+    "past": "Prošli",
+    "today": "danas",
+    "empty": "Nema termina u ovom periodu.",
+    "source": {
+      "ADMIN": "Salon",
+      "WALK_IN": "Bez najave",
+      "ONLINE": "Online"
+    },
+    "actions": {
+      "CONFIRMED": "Potvrdi",
+      "COMPLETED": "Završen",
+      "NO_SHOW": "Nije došao",
+      "CANCELLED": "Otkaži"
     }
   }
 }

@@ -265,6 +265,14 @@ Everything except: `User`, `Session`, `Account`, `Verification`, `NotificationPr
 - Provider assignment is edited on the service (checkbox list); `listServicesForEmployee` is the read the booking engine uses. Category deletion keeps services (`ON DELETE SET NULL` through the composite FK).
 - Admin: Services page (grouped list with reorder, active toggle, delete) + categories panel; create/edit forms. Public page gains the grouped price list.
 
+### Implementation notes (Phase 7)
+
+- `modules/booking/engine` is the pure core (`intervals.ts`, `availability.ts`, `any-employee.ts`, `policies.ts`, `state-machine.ts`); it imports only `lib/time` and is covered by table-driven and property-based unit tests (brief example, breaks, buffers, closures, notice/horizon, DST days, reschedule exclusion).
+- `availability.service.ts` loads one `AvailabilityContext` per (salon, service, employees, date range) with a handful of indexed queries and answers per-day questions in memory; the same context builder runs inside the booking transaction with the transaction client.
+- `booking.service.ts` implements create / reschedule / cancel / status change exactly as in docs/booking-system.md §6: per-employee `pg_advisory_xact_lock`, fresh re-validation, insert guarded by the `bookings_no_overlap` exclusion constraint (SQLSTATE 23P01 → `SlotUnavailableError`), history row, `BookingReminder` rows, guest `BookingAccessToken` (SHA-256 at rest), audit row for staff actions and an `OutboxEvent` in the same transaction. "Any employee" ranks candidates (fewest bookings that day, then sort order) and falls through when a candidate loses the race.
+- Public REST: availability, month summary, create booking, guest manage (view / reschedule / cancel by token). Client REST under `/me/bookings`; staff REST under `/salons/:salonId/bookings` (employees only see and complete their own). The booking wizard and manage page call these routes directly, so the canonical API is exercised by the web UI.
+- Admin "Appointments" page lists upcoming/past bookings with status actions; the full calendar arrives in Phase 8. Confirmation emails are emitted as outbox events and delivered once the worker lands in Phase 10.
+
 - `lib/time` holds the pure wall-clock/time-zone helpers (`wallClockToUtc`, `weekdayInTimeZone`, `localDateString`, …) used by the public "open now" indicator and, later, the booking engine. ESLint forbids `Date.now()` inside it.
 
 ---

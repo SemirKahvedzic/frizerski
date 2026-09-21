@@ -16,6 +16,12 @@ export const TENANT_MODELS = [
   "ServiceCategory",
   "Service",
   "EmployeeService",
+  "Customer",
+  "Booking",
+  "BookingStatusHistory",
+  "BookingReminder",
+  "BookingAccessToken",
+  "OutboxEvent",
   "AuditLog",
 ] as const;
 

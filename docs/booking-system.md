@@ -1,5 +1,7 @@
 # Booking System
 
+> Implemented in Phase 7: `src/modules/booking/engine` (pure), `availability.service.ts`, `booking.service.ts`, public/client/staff routes under `src/app/api/v1`, `BookingWizard` and the guest manage page. Deviations from this document are noted inline.
+
 The booking engine is the core of the product. It is not a CRUD layer: it understands salon hours, employee schedules, breaks, time off, closures, blocked times, existing bookings, service duration and buffers, booking interval, notice and horizon, timezones and DST, and the salon's cancellation policy.
 
 Related: [database.md](./database.md) (tables), [notifications.md](./notifications.md) (what happens after a booking), [testing.md](./testing.md) (test matrix).

@@ -1,6 +1,5 @@
 import { CalendarX, Globe, Mail, MapPin, Phone } from "lucide-react";
 import type { Metadata } from "next";
-import { unstable_cache } from "next/cache";
 import { notFound } from "next/navigation";
 import { getFormatter, getTranslations } from "next-intl/server";
 
@@ -12,26 +11,16 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "@/i18n/navigation";
 import { resolveLocaleParam } from "@/i18n/params";
-import { cacheTags } from "@/lib/cache/tags";
 import { localDateString, localTimeString, weekdayInTimeZone } from "@/lib/time";
 import { SALON_CATEGORIES, getPublicSalon } from "@/modules/salons";
 
 /**
- * Public salon page. The read is cached per slug and invalidated by every
- * admin mutation (`updateTag`), so edits are visible immediately while
- * anonymous traffic never waits on the database.
+ * Public salon page. Reads are a handful of indexed queries and run per
+ * request so admin edits are visible immediately; every mutation still
+ * invalidates the cache tag for when edge caching is introduced later.
  */
-function loadSalon(slug: string, fromDate: string) {
-  return unstable_cache(() => getPublicSalon(slug, fromDate), ["public-salon", slug, fromDate], {
-    tags: [cacheTags.publicSalon(slug)],
-    revalidate: 300,
-  })();
-}
-
 async function loadSalonForRequest(slug: string) {
-  // The "from" date only bounds the closure list; resolving it in UTC keeps the
-  // cache key stable per day while every salon time zone is at most one day off.
-  return loadSalon(slug, new Date().toISOString().slice(0, 10));
+  return getPublicSalon(slug, new Date().toISOString().slice(0, 10));
 }
 
 export async function generateMetadata({
@@ -117,8 +106,12 @@ export default async function PublicSalonPage({ params }: PageProps<"/[locale]/s
             </p>
           ) : null}
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-            <Button size="lg" disabled>
-              {t("bookSoon")}
+            <Button
+              size="lg"
+              render={<Link href={`/salon/${salon.slug}/book`} />}
+              data-testid="book-now"
+            >
+              {t("bookNow")}
             </Button>
             {salon.phone ? (
               <Button
