@@ -246,6 +246,13 @@ Everything except: `User`, `Session`, `Account`, `Verification`, `NotificationPr
 - `resolveTenantContext(principal, { id } | { slug })` returns `{ salonId, salonSlug, actor, role, db }`. Non-members get 404, anonymous 401, owners of a `SUSPENDED` salon 403; `SUPER_ADMIN`s resolve any salon with `role = "PLATFORM"`.
 - `SalonMembership` carries `UNIQUE (salon_id, id)`; the same pattern is applied to every tenant table added later so composite FKs can reference `(salonId, id)`.
 
+### Implementation notes (Phase 4)
+
+- Salon management lives in `modules/salons`: `salon.service.ts` (profile, settings, opening hours, closures; every mutation audited with a field-level diff from `modules/audit/diff.ts`) and `public.service.ts` (anonymous read of ACTIVE salons with only public fields).
+- Admin pages under `app/[locale]/(admin)/admin/[salonSlug]/` share one `AdminShell` (sidebar on desktop, sheet on mobile) and resolve the tenant once per request through `_context.ts` (`React.cache`). Unimplemented sidebar entries render disabled with a "soon" badge until their phase lands.
+- Server Actions use `defineAuthedAction` + `resolveTenantContext` and call `updateTag("salon:{slug}")`; REST routes call `revalidateTag(tag, "max")`. The public page reads through `unstable_cache` keyed by slug and day with a 5-minute fallback, so admin edits are visible immediately while anonymous traffic never waits on the database.
+- `lib/time` holds the pure wall-clock/time-zone helpers (`wallClockToUtc`, `weekdayInTimeZone`, `localDateString`, …) used by the public "open now" indicator and, later, the booking engine. ESLint forbids `Date.now()` inside it.
+
 ---
 
 ## 7. Authentication and RBAC

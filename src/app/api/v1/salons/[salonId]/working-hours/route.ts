@@ -5,17 +5,16 @@ import { defineRoute } from "@/lib/api/define-route";
 import { requestMeta } from "@/lib/api/request-meta";
 import { cacheTags } from "@/lib/cache/tags";
 import { sessionAuth, type Actor } from "@/modules/auth";
-import { getSalonProfile, updateSalonProfile, updateSalonProfileSchema } from "@/modules/salons";
+import { getWorkingHours, setWorkingHours, workingHoursSchema } from "@/modules/salons";
 import { resolveTenantContext } from "@/modules/tenant";
 
 export const dynamic = "force-dynamic";
 
 const params = z.object({ salonId: z.uuid() });
 
-/** GET /api/v1/salons/:salonId — full profile for a member (or platform admin). */
 export const GET = defineRoute({
   ...sessionAuth,
-  name: "salons.get",
+  name: "salons.workingHours.get",
   auth: "session",
   params,
   handler: async ({ actor, params, request, requestId }) => {
@@ -24,26 +23,25 @@ export const GET = defineRoute({
       { id: params.salonId },
       requestMeta(request, requestId),
     );
-    const salon = await getSalonProfile(ctx);
-    return { data: { ...salon, role: ctx.role } };
+    return { data: await getWorkingHours(ctx) };
   },
 });
 
-/** PATCH /api/v1/salons/:salonId — update profile (OWNER/ADMIN). */
-export const PATCH = defineRoute({
+/** PUT — replaces all seven days. */
+export const PUT = defineRoute({
   ...sessionAuth,
-  name: "salons.update",
+  name: "salons.workingHours.set",
   auth: "session",
   params,
-  body: updateSalonProfileSchema,
+  body: z.object({ days: workingHoursSchema }),
   handler: async ({ actor, params, body, request, requestId }) => {
     const ctx = await resolveTenantContext(
       actor as unknown as Actor,
       { id: params.salonId },
       requestMeta(request, requestId),
     );
-    const salon = await updateSalonProfile(ctx, body);
+    const days = await setWorkingHours(ctx, body.days);
     revalidateTag(cacheTags.publicSalon(ctx.salonSlug), "max");
-    return { data: salon };
+    return { data: days };
   },
 });

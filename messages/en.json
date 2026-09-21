@@ -6,7 +6,8 @@
     "loading": "Loading…",
     "retry": "Try again",
     "backHome": "Back to home",
-    "or": "or"
+    "or": "or",
+    "saved": "Saved."
   },
   "nav": {
     "login": "Sign in",
@@ -32,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 3: multi-tenant architecture"
+    "status": "Phase 4: salon management"
   },
   "auth": {
     "fields": {
@@ -190,7 +191,17 @@
       "nameMax": "Name is too long.",
       "slug": "Use only lowercase letters, numbers and dashes.",
       "timezone": "Unknown time zone.",
-      "currency": "Enter a 3-letter currency code."
+      "currency": "Enter a 3-letter currency code.",
+      "tooLong": "Too long.",
+      "url": "Enter a full address starting with https://",
+      "country": "Use a 2-letter country code, e.g. BA.",
+      "color": "Use a hex color like #0f766e.",
+      "range": "Value out of range.",
+      "time": "Enter a time like 09:00.",
+      "closesAfterOpens": "Closing time must be after opening time.",
+      "sevenDays": "All seven days are required.",
+      "date": "Enter a valid date.",
+      "endAfterStart": "End date must not be before the start date."
     },
     "errors": {
       "slugTaken": "This address is already taken. Choose another one.",
@@ -229,6 +240,23 @@
       "timezone": "Time zone",
       "currency": "Currency",
       "defaultLocale": "Default language"
+    },
+    "viewPublicPage": "View public page",
+    "dashboard": {
+      "title": "Welcome, {name}",
+      "subtitle": "Your salon at a glance.",
+      "profileCompleteness": "Profile completeness",
+      "editProfile": "Edit profile",
+      "openDays": "Open days per week",
+      "editHours": "Edit hours",
+      "status": "Status",
+      "editSettings": "Settings",
+      "nextSteps": "Next steps",
+      "nextStepsHint": "Get your salon ready for online booking.",
+      "step1": "Fill in the description, address and contact details.",
+      "step2": "Check the opening hours and add holidays.",
+      "step3": "Review booking rules and the cancellation policy.",
+      "step4": "Add employees and services (coming in the next phases)."
     }
   },
   "platform": {
@@ -257,6 +285,176 @@
         "INACTIVE": "Deactivate",
         "SUSPENDED": "Suspend"
       }
+    }
+  },
+  "weekdays": {
+    "mon": "Monday",
+    "tue": "Tuesday",
+    "wed": "Wednesday",
+    "thu": "Thursday",
+    "fri": "Friday",
+    "sat": "Saturday",
+    "sun": "Sunday"
+  },
+  "adminNav": {
+    "label": "Salon admin",
+    "open": "Open menu",
+    "soon": "soon",
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "appointments": "Appointments",
+    "employees": "Employees",
+    "services": "Services",
+    "customers": "Customers",
+    "salon": "Salon",
+    "workingHours": "Working hours",
+    "availability": "Availability",
+    "gallery": "Gallery",
+    "notifications": "Notifications",
+    "settings": "Settings"
+  },
+  "salonAdmin": {
+    "profile": {
+      "title": "Salon profile",
+      "subtitle": "Everything clients see on your public page.",
+      "save": "Save changes",
+      "sections": {
+        "general": "General",
+        "generalHint": "Name, description and who you serve.",
+        "location": "Location",
+        "contact": "Contact and social"
+      },
+      "fields": {
+        "description": "Description",
+        "descriptionHint": "Tell clients what makes your salon special. Line breaks are kept.",
+        "category": "Category",
+        "brandColor": "Brand color",
+        "brandColorHint": "Optional accent color for your public page (hex).",
+        "address": "Street and number",
+        "city": "City",
+        "postalCode": "Postal code",
+        "country": "Country",
+        "googleMapsUrl": "Google Maps link",
+        "phone": "Phone",
+        "email": "Email",
+        "website": "Website"
+      },
+      "categories": {
+        "hair-salon": "Hair salon",
+        "barbershop": "Barbershop",
+        "beauty-salon": "Beauty salon",
+        "nails": "Nail studio",
+        "spa": "Spa",
+        "other": "Other"
+      }
+    },
+    "hours": {
+      "pageTitle": "Working hours",
+      "pageSubtitle": "Opening hours are interpreted in {timezone}. Employees can only be booked within them.",
+      "title": "Weekly opening hours",
+      "hint": "Untick a day to close the salon that day.",
+      "copyMonday": "Copy Monday to Tue–Fri",
+      "open": "Open",
+      "closed": "Closed",
+      "opensAt": "opens at",
+      "closesAt": "closes at",
+      "save": "Save hours"
+    },
+    "closures": {
+      "title": "Holidays and closures",
+      "hint": "Whole-salon closures. No appointments can be booked on these days.",
+      "empty": "No upcoming closures.",
+      "startsOn": "From",
+      "endsOn": "To",
+      "reason": "Reason (optional)",
+      "reasonPlaceholder": "e.g. Annual leave",
+      "add": "Add closure",
+      "remove": "Remove closure"
+    },
+    "settings": {
+      "title": "Booking settings",
+      "subtitle": "Rules that shape how clients book with you.",
+      "save": "Save settings",
+      "units": {
+        "days": "days",
+        "hours": "hours"
+      },
+      "sections": {
+        "booking": "Booking rules",
+        "bookingHint": "How available slots are generated and confirmed.",
+        "policy": "Cancellation policy",
+        "policyHint": "After the cutoff, clients must call the salon to change an appointment.",
+        "notifications": "Notifications",
+        "notificationsHint": "Which messages this salon sends. Clients can still opt out individually.",
+        "localization": "Time zone and currency",
+        "localizationHint": "Changing the time zone re-interprets future opening hours; existing appointments keep their time."
+      },
+      "fields": {
+        "slotIntervalMinutes": "Time slot interval",
+        "minBookingNoticeMinutes": "Minimum notice",
+        "maxBookingAdvanceDays": "Booking horizon",
+        "bufferMinutes": "Buffer between appointments",
+        "cancellationCutoffHours": "Cancellation cutoff",
+        "rescheduleCutoffHours": "Reschedule cutoff",
+        "autoConfirmBookings": "Confirm bookings automatically",
+        "allowAnyEmployee": "Offer \"any available employee\"",
+        "allowGuestBooking": "Allow booking without an account",
+        "requirePhone": "Require a phone number",
+        "emailNotificationsEnabled": "Email notifications",
+        "pushNotificationsEnabled": "Push notifications",
+        "notifyAdminsOnNewBooking": "Notify admins about new bookings",
+        "notifyEmployeeOnNewBooking": "Notify the employee about new bookings",
+        "reminder24hEnabled": "Reminder 24 hours before",
+        "reminder1hEnabled": "Reminder 1 hour before"
+      },
+      "hints": {
+        "slotIntervalMinutes": "Step between the start times offered to clients.",
+        "minBookingNoticeMinutes": "Clients cannot book a slot starting sooner than this.",
+        "maxBookingAdvanceDays": "How far ahead clients can book.",
+        "bufferMinutes": "Cleanup time added after every appointment.",
+        "cancellationCutoffHours": "Clients can cancel on their own until this many hours before the appointment.",
+        "rescheduleCutoffHours": "Clients can move an appointment until this many hours before it.",
+        "autoConfirmBookings": "Off: new bookings wait for your confirmation.",
+        "allowAnyEmployee": "Clients may skip choosing a specific employee.",
+        "allowGuestBooking": "Guests confirm with email and phone only.",
+        "requirePhone": "A phone number is mandatory when booking.",
+        "emailNotificationsEnabled": "Master switch for emails sent on behalf of this salon.",
+        "pushNotificationsEnabled": "Master switch for push notifications.",
+        "notifyAdminsOnNewBooking": "Owners and admins get a message for every new booking.",
+        "notifyEmployeeOnNewBooking": "The assigned employee gets a message for every new booking.",
+        "reminder24hEnabled": "Send clients a reminder the day before.",
+        "reminder1hEnabled": "Send clients a reminder one hour before.",
+        "timezone": "All opening hours and appointments are interpreted in this time zone."
+      }
+    }
+  },
+  "publicSalon": {
+    "openNow": "Open now",
+    "closedNow": "Closed now",
+    "today": "today",
+    "closed": "Closed",
+    "openingHours": "Opening hours",
+    "closures": "Upcoming closures",
+    "contact": "Contact",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "website": "Website",
+    "bookSoon": "Online booking coming soon",
+    "metaFallback": "Book your appointment at {name} online.",
+    "cancellationPolicy": "Free cancellation up to {hours} hours before the appointment.",
+    "audience": {
+      "MALE": "Men",
+      "FEMALE": "Women",
+      "UNISEX": "Men and women"
+    },
+    "categories": {
+      "hair-salon": "Hair salon",
+      "barbershop": "Barbershop",
+      "beauty-salon": "Beauty salon",
+      "nails": "Nail studio",
+      "spa": "Spa",
+      "other": "Salon"
     }
   }
 }

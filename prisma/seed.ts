@@ -8,6 +8,7 @@ import { hashPassword } from "better-auth/crypto";
 
 import { PrismaClient } from "../src/generated/prisma/client";
 import type { Audience, SalonRole } from "../src/generated/prisma/enums";
+import { defaultWorkingHours } from "../src/modules/salons/defaults";
 
 const adapter = new PrismaPg({ connectionString: process.env["DATABASE_URL"] });
 const prisma = new PrismaClient({ adapter });
@@ -65,15 +66,42 @@ type SeedSalon = {
   slug: string;
   name: string;
   audience: Audience;
+  profile: {
+    description: string;
+    category: string;
+    address: string;
+    city: string;
+    postalCode: string;
+    country: string;
+    phone: string;
+    email: string;
+    website?: string;
+    instagram?: string;
+  };
+  hours?: { weekday: number; isClosed: boolean; opensAt: string; closesAt: string }[];
   members: { email: string; role: SalonRole }[];
 };
 
 async function upsertSalon(input: SeedSalon) {
   const salon = await prisma.salon.upsert({
     where: { slug: input.slug },
-    update: { name: input.name, audience: input.audience, status: "ACTIVE" },
-    create: { slug: input.slug, name: input.name, audience: input.audience },
+    update: { name: input.name, audience: input.audience, status: "ACTIVE", ...input.profile },
+    create: { slug: input.slug, name: input.name, audience: input.audience, ...input.profile },
   });
+
+  await prisma.salonSettings.upsert({
+    where: { salonId: salon.id },
+    update: {},
+    create: { salonId: salon.id },
+  });
+
+  for (const day of input.hours ?? defaultWorkingHours()) {
+    await prisma.salonWorkingHours.upsert({
+      where: { salonId_weekday: { salonId: salon.id, weekday: day.weekday } },
+      update: { isClosed: day.isClosed, opensAt: day.opensAt, closesAt: day.closesAt },
+      create: { salonId: salon.id, ...day },
+    });
+  }
 
   for (const member of input.members) {
     const user = await prisma.user.findUniqueOrThrow({ where: { email: member.email } });
@@ -119,6 +147,28 @@ async function main() {
     slug: "studio-example",
     name: "Studio Example",
     audience: "UNISEX",
+    profile: {
+      description:
+        "Moderan frizerski studio u centru Sarajeva. Šišanje, bojenje, styling i njega brade za muškarce i žene.\nRadimo isključivo po zakazanom terminu.",
+      category: "hair-salon",
+      address: "Ferhadija 12",
+      city: "Sarajevo",
+      postalCode: "71000",
+      country: "BA",
+      phone: "+387 33 123 456",
+      email: "info@studio-example.local",
+      website: "https://studio-example.local",
+      instagram: "https://instagram.com/studio.example",
+    },
+    hours: [
+      { weekday: 0, isClosed: false, opensAt: "09:00", closesAt: "19:00" },
+      { weekday: 1, isClosed: false, opensAt: "09:00", closesAt: "19:00" },
+      { weekday: 2, isClosed: false, opensAt: "09:00", closesAt: "19:00" },
+      { weekday: 3, isClosed: false, opensAt: "09:00", closesAt: "19:00" },
+      { weekday: 4, isClosed: false, opensAt: "09:00", closesAt: "19:00" },
+      { weekday: 5, isClosed: false, opensAt: "09:00", closesAt: "15:00" },
+      { weekday: 6, isClosed: true, opensAt: "09:00", closesAt: "15:00" },
+    ],
     members: [
       { email: "owner@studio-example.local", role: "OWNER" },
       { email: "admin@studio-example.local", role: "ADMIN" },
@@ -128,14 +178,25 @@ async function main() {
     slug: "barber-bros",
     name: "Barber Bros",
     audience: "MALE",
+    profile: {
+      description:
+        "Klasični barbershop: šišanje mašinicom i makazama, brijanje toplim peškirom, oblikovanje brade.",
+      category: "barbershop",
+      address: "Zmaja od Bosne 4",
+      city: "Sarajevo",
+      postalCode: "71000",
+      country: "BA",
+      phone: "+387 61 222 333",
+      email: "hello@barber-bros.local",
+    },
     members: [{ email: "owner@barber-bros.local", role: "OWNER" }],
   });
   console.log(`Salons: ${studio.slug}, ${barber.slug}`);
 
   await prisma.platformSetting.upsert({
     where: { key: "seed.version" },
-    update: { value: { version: 3 } },
-    create: { key: "seed.version", value: { version: 3 } },
+    update: { value: { version: 4 } },
+    create: { key: "seed.version", value: { version: 4 } },
   });
 
   console.log("Seed complete.");

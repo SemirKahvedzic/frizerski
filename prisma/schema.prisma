@@ -64,6 +64,7 @@ model User {
   memberships SalonMembership[]
   invitations SalonMembership[] @relation("MembershipInvitedBy")
   auditLogs   AuditLog[]
+  closures    SalonClosure[]
 
   @@map("users")
 }
@@ -118,14 +119,32 @@ model Verification {
 }
 
 // ---------------------------------------------------------------------------
-// Tenant root (core fields; extended in the salon management phase)
+// Tenant root
 // ---------------------------------------------------------------------------
 
 model Salon {
   id            String      @id @default(uuid(7))
   slug          String      @unique
   name          String
+  description   String?
+  /// Free-form category key, e.g. barbershop, hair-salon, beauty-salon.
+  category      String?
   audience      Audience    @default(UNISEX)
+  address       String?
+  city          String?
+  postalCode    String?     @map("postal_code")
+  /// ISO 3166-1 alpha-2
+  country       String?
+  latitude      Float?
+  longitude     Float?
+  googleMapsUrl String?     @map("google_maps_url")
+  phone         String?
+  email         String?
+  website       String?
+  instagram     String?
+  facebook      String?
+  tiktok        String?
+  brandColor    String?     @map("brand_color")
   timezone      String      @default("Europe/Sarajevo")
   currency      String      @default("BAM")
   defaultLocale String      @default("bs") @map("default_locale")
@@ -133,11 +152,77 @@ model Salon {
   createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
   updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
 
-  memberships SalonMembership[]
-  auditLogs   AuditLog[]
+  settings     SalonSettings?
+  workingHours SalonWorkingHours[]
+  closures     SalonClosure[]
+  memberships  SalonMembership[]
+  auditLogs    AuditLog[]
 
   @@index([status])
   @@map("salons")
+}
+
+/// Booking and notification policy; one row per salon (docs/database.md §4.2).
+model SalonSettings {
+  salonId                    String   @id @map("salon_id")
+  slotIntervalMinutes        Int      @default(30) @map("slot_interval_minutes")
+  minBookingNoticeMinutes    Int      @default(60) @map("min_booking_notice_minutes")
+  maxBookingAdvanceDays      Int      @default(60) @map("max_booking_advance_days")
+  cancellationCutoffHours    Int      @default(12) @map("cancellation_cutoff_hours")
+  rescheduleCutoffHours      Int      @default(12) @map("reschedule_cutoff_hours")
+  autoConfirmBookings        Boolean  @default(true) @map("auto_confirm_bookings")
+  bufferMinutes              Int      @default(0) @map("buffer_minutes")
+  allowAnyEmployee           Boolean  @default(true) @map("allow_any_employee")
+  allowGuestBooking          Boolean  @default(true) @map("allow_guest_booking")
+  requirePhone               Boolean  @default(true) @map("require_phone")
+  emailNotificationsEnabled  Boolean  @default(true) @map("email_notifications_enabled")
+  pushNotificationsEnabled   Boolean  @default(true) @map("push_notifications_enabled")
+  notifyAdminsOnNewBooking   Boolean  @default(true) @map("notify_admins_on_new_booking")
+  notifyEmployeeOnNewBooking Boolean  @default(true) @map("notify_employee_on_new_booking")
+  reminder24hEnabled         Boolean  @default(true) @map("reminder_24h_enabled")
+  reminder1hEnabled          Boolean  @default(true) @map("reminder_1h_enabled")
+  updatedAt                  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon Salon @relation(fields: [salonId], references: [id], onDelete: Cascade)
+
+  @@map("salon_settings")
+}
+
+/// Public opening hours; the outer bound for every employee schedule.
+model SalonWorkingHours {
+  id       String  @id @default(uuid(7))
+  salonId  String  @map("salon_id")
+  /// 0 = Monday … 6 = Sunday (ISO)
+  weekday  Int
+  /// "HH:mm"
+  opensAt  String  @map("opens_at")
+  /// "HH:mm", may be "24:00"
+  closesAt String  @map("closes_at")
+  isClosed Boolean @default(false) @map("is_closed")
+
+  salon Salon @relation(fields: [salonId], references: [id], onDelete: Cascade)
+
+  @@unique([salonId, weekday])
+  @@unique([salonId, id])
+  @@map("salon_working_hours")
+}
+
+/// Whole-salon holidays / closures (inclusive date range).
+model SalonClosure {
+  id          String   @id @default(uuid(7))
+  salonId     String   @map("salon_id")
+  startsOn    DateTime @map("starts_on") @db.Date
+  endsOn      DateTime @map("ends_on") @db.Date
+  reason      String?
+  createdById String?  @map("created_by_id")
+  createdAt   DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  salon     Salon @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  createdBy User? @relation(fields: [createdById], references: [id], onDelete: SetNull)
+
+  @@unique([salonId, id])
+  @@index([salonId, startsOn])
+  @@map("salon_closures")
 }
 
 /// Assigns a salon role to a user. A user may hold roles in several salons.

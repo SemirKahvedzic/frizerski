@@ -81,16 +81,21 @@ test.describe("multi-tenant", () => {
     await page.getByRole("button", { name: "Create salon" }).click();
 
     await expect(page).toHaveURL(new RegExp(`/en/admin/${slug}$`));
-    await expect(page.getByRole("heading", { level: 1 })).toHaveText(salonName);
-    await expect(page.getByText("Owner", { exact: true })).toBeVisible();
-    await expect(page.getByText("Women", { exact: true })).toBeVisible();
+    await expect(page.getByRole("heading", { level: 1 })).toContainText(salonName);
+    // The dashboard links to the profile page, which shows the chosen audience.
+    await page.goto(`/en/admin/${slug}/salon`);
+    await expect(page.getByLabel("Who do you serve?")).toHaveValue("FEMALE");
 
     await page.goto("/en/account");
     await expect(page.getByRole("link", { name: salonName })).toBeVisible();
 
     const me = await page.request.get("/api/v1/salons");
-    const body = (await me.json()) as { data: Array<{ slug: string; role: string }> };
-    expect(body.data.find((s) => s.slug === slug)?.role).toBe("OWNER");
+    const body = (await me.json()) as {
+      data: Array<{ slug: string; role: string; audience: string }>;
+    };
+    const mine = body.data.find((s) => s.slug === slug);
+    expect(mine?.role).toBe("OWNER");
+    expect(mine?.audience).toBe("FEMALE");
 
     // A different, unrelated user cannot see the salon's admin area (404, not 403).
     const otherContext = await browser.newContext();

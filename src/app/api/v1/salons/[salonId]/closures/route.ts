@@ -4,46 +4,45 @@ import { z } from "zod";
 import { defineRoute } from "@/lib/api/define-route";
 import { requestMeta } from "@/lib/api/request-meta";
 import { cacheTags } from "@/lib/cache/tags";
+import { isValidDateString } from "@/lib/time";
 import { sessionAuth, type Actor } from "@/modules/auth";
-import { getSalonProfile, updateSalonProfile, updateSalonProfileSchema } from "@/modules/salons";
+import { addClosure, createClosureSchema, listClosures } from "@/modules/salons";
 import { resolveTenantContext } from "@/modules/tenant";
 
 export const dynamic = "force-dynamic";
 
 const params = z.object({ salonId: z.uuid() });
 
-/** GET /api/v1/salons/:salonId — full profile for a member (or platform admin). */
 export const GET = defineRoute({
   ...sessionAuth,
-  name: "salons.get",
+  name: "salons.closures.list",
   auth: "session",
   params,
-  handler: async ({ actor, params, request, requestId }) => {
+  query: z.object({ from: z.string().refine(isValidDateString, "Invalid date").optional() }),
+  handler: async ({ actor, params, query, request, requestId }) => {
     const ctx = await resolveTenantContext(
       actor as unknown as Actor,
       { id: params.salonId },
       requestMeta(request, requestId),
     );
-    const salon = await getSalonProfile(ctx);
-    return { data: { ...salon, role: ctx.role } };
+    return { data: await listClosures(ctx, { from: query.from }) };
   },
 });
 
-/** PATCH /api/v1/salons/:salonId — update profile (OWNER/ADMIN). */
-export const PATCH = defineRoute({
+export const POST = defineRoute({
   ...sessionAuth,
-  name: "salons.update",
+  name: "salons.closures.add",
   auth: "session",
   params,
-  body: updateSalonProfileSchema,
+  body: createClosureSchema,
   handler: async ({ actor, params, body, request, requestId }) => {
     const ctx = await resolveTenantContext(
       actor as unknown as Actor,
       { id: params.salonId },
       requestMeta(request, requestId),
     );
-    const salon = await updateSalonProfile(ctx, body);
+    const closure = await addClosure(ctx, body);
     revalidateTag(cacheTags.publicSalon(ctx.salonSlug), "max");
-    return { data: salon };
+    return { data: closure, status: 201 };
   },
 });

@@ -6,7 +6,8 @@
     "loading": "Učitavanje…",
     "retry": "Pokušaj ponovo",
     "backHome": "Nazad na početnu",
-    "or": "ili"
+    "or": "ili",
+    "saved": "Sačuvano."
   },
   "nav": {
     "login": "Prijava",
@@ -32,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 3: multi-tenant arhitektura"
+    "status": "Faza 4: upravljanje salonom"
   },
   "auth": {
     "fields": {
@@ -190,7 +191,17 @@
       "nameMax": "Naziv je predugačak.",
       "slug": "Koristite samo mala slova, brojeve i crtice.",
       "timezone": "Nepoznata vremenska zona.",
-      "currency": "Unesite troslovni kod valute."
+      "currency": "Unesite troslovni kod valute.",
+      "tooLong": "Predugačko.",
+      "url": "Unesite punu adresu koja počinje sa https://",
+      "country": "Koristite dvoslovni kod države, npr. BA.",
+      "color": "Koristite hex boju, npr. #0f766e.",
+      "range": "Vrijednost je van dozvoljenog opsega.",
+      "time": "Unesite vrijeme u obliku 09:00.",
+      "closesAfterOpens": "Vrijeme zatvaranja mora biti nakon otvaranja.",
+      "sevenDays": "Potrebno je svih sedam dana.",
+      "date": "Unesite ispravan datum.",
+      "endAfterStart": "Datum završetka ne može biti prije početka."
     },
     "errors": {
       "slugTaken": "Ova adresa je već zauzeta. Odaberite drugu.",
@@ -229,6 +240,23 @@
       "timezone": "Vremenska zona",
       "currency": "Valuta",
       "defaultLocale": "Zadani jezik"
+    },
+    "viewPublicPage": "Pogledaj javnu stranicu",
+    "dashboard": {
+      "title": "Dobro došli, {name}",
+      "subtitle": "Vaš salon na jednom mjestu.",
+      "profileCompleteness": "Popunjenost profila",
+      "editProfile": "Uredi profil",
+      "openDays": "Radnih dana sedmično",
+      "editHours": "Uredi radno vrijeme",
+      "status": "Status",
+      "editSettings": "Postavke",
+      "nextSteps": "Sljedeći koraci",
+      "nextStepsHint": "Pripremite salon za online rezervacije.",
+      "step1": "Popunite opis, adresu i kontakt podatke.",
+      "step2": "Provjerite radno vrijeme i dodajte praznike.",
+      "step3": "Pregledajte pravila rezervacija i otkazivanja.",
+      "step4": "Dodajte zaposlene i usluge (dolazi u narednim fazama)."
     }
   },
   "platform": {
@@ -257,6 +285,176 @@
         "INACTIVE": "Deaktiviraj",
         "SUSPENDED": "Suspenduj"
       }
+    }
+  },
+  "weekdays": {
+    "mon": "Ponedjeljak",
+    "tue": "Utorak",
+    "wed": "Srijeda",
+    "thu": "Četvrtak",
+    "fri": "Petak",
+    "sat": "Subota",
+    "sun": "Nedjelja"
+  },
+  "adminNav": {
+    "label": "Administracija salona",
+    "open": "Otvori meni",
+    "soon": "uskoro",
+    "dashboard": "Pregled",
+    "calendar": "Kalendar",
+    "appointments": "Termini",
+    "employees": "Zaposleni",
+    "services": "Usluge",
+    "customers": "Klijenti",
+    "salon": "Salon",
+    "workingHours": "Radno vrijeme",
+    "availability": "Dostupnost",
+    "gallery": "Galerija",
+    "notifications": "Notifikacije",
+    "settings": "Postavke"
+  },
+  "salonAdmin": {
+    "profile": {
+      "title": "Profil salona",
+      "subtitle": "Sve što klijenti vide na vašoj javnoj stranici.",
+      "save": "Sačuvaj promjene",
+      "sections": {
+        "general": "Opšte",
+        "generalHint": "Naziv, opis i koga uslužujete.",
+        "location": "Lokacija",
+        "contact": "Kontakt i društvene mreže"
+      },
+      "fields": {
+        "description": "Opis",
+        "descriptionHint": "Recite klijentima po čemu je vaš salon poseban. Novi redovi se čuvaju.",
+        "category": "Kategorija",
+        "brandColor": "Boja brenda",
+        "brandColorHint": "Opcionalna akcentna boja javne stranice (hex).",
+        "address": "Ulica i broj",
+        "city": "Grad",
+        "postalCode": "Poštanski broj",
+        "country": "Država",
+        "googleMapsUrl": "Google Maps link",
+        "phone": "Telefon",
+        "email": "Email",
+        "website": "Web stranica"
+      },
+      "categories": {
+        "hair-salon": "Frizerski salon",
+        "barbershop": "Barbershop",
+        "beauty-salon": "Salon ljepote",
+        "nails": "Studio za nokte",
+        "spa": "Spa",
+        "other": "Ostalo"
+      }
+    },
+    "hours": {
+      "pageTitle": "Radno vrijeme",
+      "pageSubtitle": "Radno vrijeme se tumači u zoni {timezone}. Zaposleni se mogu rezervisati samo unutar njega.",
+      "title": "Sedmično radno vrijeme",
+      "hint": "Odznačite dan da salon tog dana ne radi.",
+      "copyMonday": "Kopiraj ponedjeljak na uto–pet",
+      "open": "Radi",
+      "closed": "Ne radi",
+      "opensAt": "otvara u",
+      "closesAt": "zatvara u",
+      "save": "Sačuvaj radno vrijeme"
+    },
+    "closures": {
+      "title": "Praznici i neradni dani",
+      "hint": "Neradni dani cijelog salona. Tih dana nije moguće rezervisati termin.",
+      "empty": "Nema predstojećih neradnih dana.",
+      "startsOn": "Od",
+      "endsOn": "Do",
+      "reason": "Razlog (opcionalno)",
+      "reasonPlaceholder": "npr. Godišnji odmor",
+      "add": "Dodaj neradne dane",
+      "remove": "Ukloni"
+    },
+    "settings": {
+      "title": "Postavke rezervacija",
+      "subtitle": "Pravila koja određuju kako klijenti rezervišu kod vas.",
+      "save": "Sačuvaj postavke",
+      "units": {
+        "days": "dana",
+        "hours": "sati"
+      },
+      "sections": {
+        "booking": "Pravila rezervacija",
+        "bookingHint": "Kako se generišu i potvrđuju slobodni termini.",
+        "policy": "Pravila otkazivanja",
+        "policyHint": "Nakon isteka roka klijenti moraju nazvati salon da promijene termin.",
+        "notifications": "Notifikacije",
+        "notificationsHint": "Koje poruke ovaj salon šalje. Klijenti se i dalje mogu pojedinačno odjaviti.",
+        "localization": "Vremenska zona i valuta",
+        "localizationHint": "Promjena zone mijenja tumačenje budućeg radnog vremena; postojeći termini zadržavaju svoje vrijeme."
+      },
+      "fields": {
+        "slotIntervalMinutes": "Interval termina",
+        "minBookingNoticeMinutes": "Minimalna najava",
+        "maxBookingAdvanceDays": "Horizont rezervacija",
+        "bufferMinutes": "Pauza između termina",
+        "cancellationCutoffHours": "Rok za otkazivanje",
+        "rescheduleCutoffHours": "Rok za pomjeranje",
+        "autoConfirmBookings": "Automatski potvrdi rezervacije",
+        "allowAnyEmployee": "Ponudi \"bilo koji slobodan zaposleni\"",
+        "allowGuestBooking": "Dozvoli rezervaciju bez naloga",
+        "requirePhone": "Obavezan broj telefona",
+        "emailNotificationsEnabled": "Email notifikacije",
+        "pushNotificationsEnabled": "Push notifikacije",
+        "notifyAdminsOnNewBooking": "Obavijesti admine o novim rezervacijama",
+        "notifyEmployeeOnNewBooking": "Obavijesti zaposlenog o novim rezervacijama",
+        "reminder24hEnabled": "Podsjetnik 24 sata prije",
+        "reminder1hEnabled": "Podsjetnik 1 sat prije"
+      },
+      "hints": {
+        "slotIntervalMinutes": "Razmak između ponuđenih početnih vremena.",
+        "minBookingNoticeMinutes": "Klijenti ne mogu rezervisati termin koji počinje prije ovog roka.",
+        "maxBookingAdvanceDays": "Koliko unaprijed klijenti mogu rezervisati.",
+        "bufferMinutes": "Vrijeme za pripremu dodano nakon svakog termina.",
+        "cancellationCutoffHours": "Klijenti mogu sami otkazati do ovoliko sati prije termina.",
+        "rescheduleCutoffHours": "Klijenti mogu pomjeriti termin do ovoliko sati prije.",
+        "autoConfirmBookings": "Isključeno: nove rezervacije čekaju vašu potvrdu.",
+        "allowAnyEmployee": "Klijent ne mora birati konkretnog zaposlenog.",
+        "allowGuestBooking": "Gosti potvrđuju samo emailom i telefonom.",
+        "requirePhone": "Broj telefona je obavezan pri rezervaciji.",
+        "emailNotificationsEnabled": "Glavni prekidač za emailove u ime ovog salona.",
+        "pushNotificationsEnabled": "Glavni prekidač za push notifikacije.",
+        "notifyAdminsOnNewBooking": "Vlasnici i admini dobijaju poruku za svaku novu rezervaciju.",
+        "notifyEmployeeOnNewBooking": "Dodijeljeni zaposleni dobija poruku za svaku novu rezervaciju.",
+        "reminder24hEnabled": "Pošalji klijentima podsjetnik dan prije.",
+        "reminder1hEnabled": "Pošalji klijentima podsjetnik sat prije.",
+        "timezone": "Radno vrijeme i termini se tumače u ovoj vremenskoj zoni."
+      }
+    }
+  },
+  "publicSalon": {
+    "openNow": "Otvoreno",
+    "closedNow": "Zatvoreno",
+    "today": "danas",
+    "closed": "Ne radi",
+    "openingHours": "Radno vrijeme",
+    "closures": "Predstojeći neradni dani",
+    "contact": "Kontakt",
+    "address": "Adresa",
+    "phone": "Telefon",
+    "email": "Email",
+    "website": "Web stranica",
+    "bookSoon": "Online rezervacije uskoro",
+    "metaFallback": "Rezervišite svoj termin u salonu {name} online.",
+    "cancellationPolicy": "Besplatno otkazivanje do {hours} sati prije termina.",
+    "audience": {
+      "MALE": "Muškarci",
+      "FEMALE": "Žene",
+      "UNISEX": "Muškarci i žene"
+    },
+    "categories": {
+      "hair-salon": "Frizerski salon",
+      "barbershop": "Barbershop",
+      "beauty-salon": "Salon ljepote",
+      "nails": "Studio za nokte",
+      "spa": "Spa",
+      "other": "Salon"
     }
   }
 }

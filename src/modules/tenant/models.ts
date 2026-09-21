@@ -3,7 +3,13 @@
  * tenant-scoped client. `tests/unit/tenant-models.test.ts` parses
  * `prisma/schema.prisma` and fails when a model with `salonId` is missing here.
  */
-export const TENANT_MODELS = ["SalonMembership", "AuditLog"] as const;
+export const TENANT_MODELS = [
+  "SalonMembership",
+  "SalonSettings",
+  "SalonWorkingHours",
+  "SalonClosure",
+  "AuditLog",
+] as const;
 
 export type TenantModel = (typeof TENANT_MODELS)[number];
 
