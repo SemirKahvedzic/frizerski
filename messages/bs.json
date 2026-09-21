@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 7: booking engine"
+    "status": "Faza 8: kalendar"
   },
   "auth": {
     "fields": {
@@ -739,6 +739,78 @@
       "COMPLETED": "Završen",
       "NO_SHOW": "Nije došao",
       "CANCELLED": "Otkaži"
+    }
+  },
+  "calendar": {
+    "title": "Kalendar",
+    "subtitle": "Termini, blokade i odsustva. Vremena u zoni {timezone}. Dvoklik na prazno mjesto dodaje rezervaciju.",
+    "previous": "Prethodno",
+    "next": "Sljedeće",
+    "today": "Danas",
+    "view": "Prikaz",
+    "views": {
+      "day": "Dan",
+      "week": "Sedmica",
+      "month": "Mjesec"
+    },
+    "employeeFilter": "Zaposleni",
+    "allEmployees": "Svi zaposleni",
+    "newBooking": "Nova rezervacija",
+    "doubleClickHint": "Dvoklik za dodavanje rezervacije ovdje",
+    "blocked": "Blokirano",
+    "timeOff": "Odsustvo",
+    "more": "+{count} još",
+    "status": {
+      "PENDING": "Na čekanju",
+      "CONFIRMED": "Potvrđen",
+      "COMPLETED": "Završen",
+      "CANCELLED": "Otkazan",
+      "NO_SHOW": "Nije došao"
+    },
+    "drawer": {
+      "service": "Usluga",
+      "employee": "Zaposleni",
+      "contact": "Kontakt",
+      "clientNotes": "Napomena klijenta",
+      "internalNotes": "Interna napomena",
+      "source": {
+        "ONLINE": "Online",
+        "ADMIN": "Salon",
+        "WALK_IN": "Bez najave"
+      },
+      "statusChanged": "Status je ažuriran.",
+      "move": "Pomjeri termin",
+      "moveOpen": "Odaberi novo vrijeme",
+      "moveClose": "Zatvori",
+      "moveDate": "Novi datum",
+      "noSlots": "Nema slobodnih termina za ovaj dan i zaposlenog.",
+      "moveConfirm": "Pomjeri",
+      "moved": "Termin je pomjeren.",
+      "error": "Nešto je pošlo po zlu."
+    },
+    "create": {
+      "title": "Nova rezervacija",
+      "subtitle": "Rezervacija u ime klijenta (telefon ili bez najave). Salonske rezervacije ne poštuju online rok najave, ali poštuju radno vrijeme.",
+      "service": "Usluga",
+      "employee": "Zaposleni",
+      "anyEmployee": "Bilo koji slobodan",
+      "date": "Datum",
+      "time": "Vrijeme",
+      "noSlots": "Nema slobodnih termina. Probajte drugi dan ili zaposlenog.",
+      "phone": "Telefon",
+      "source": "Izvor",
+      "sources": {
+        "ADMIN": "Telefon / lično",
+        "WALK_IN": "Bez najave"
+      },
+      "status": "Status",
+      "statuses": {
+        "CONFIRMED": "Potvrđen",
+        "PENDING": "Na čekanju"
+      },
+      "internalNotes": "Interna napomena",
+      "submit": "Kreiraj rezervaciju",
+      "error": "Rezervacija nije kreirana."
     }
   }
 }

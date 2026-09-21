@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 7: booking engine"
+    "status": "Phase 8: calendar"
   },
   "auth": {
     "fields": {
@@ -739,6 +739,78 @@
       "COMPLETED": "Completed",
       "NO_SHOW": "No-show",
       "CANCELLED": "Cancel"
+    }
+  },
+  "calendar": {
+    "title": "Calendar",
+    "subtitle": "Appointments, blocked times and absences. Times in {timezone}. Double-click a free spot to add a booking.",
+    "previous": "Previous",
+    "next": "Next",
+    "today": "Today",
+    "view": "View",
+    "views": {
+      "day": "Day",
+      "week": "Week",
+      "month": "Month"
+    },
+    "employeeFilter": "Employee",
+    "allEmployees": "All employees",
+    "newBooking": "New booking",
+    "doubleClickHint": "Double-click to add a booking here",
+    "blocked": "Blocked",
+    "timeOff": "Time off",
+    "more": "+{count} more",
+    "status": {
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "COMPLETED": "Completed",
+      "CANCELLED": "Cancelled",
+      "NO_SHOW": "No-show"
+    },
+    "drawer": {
+      "service": "Service",
+      "employee": "Employee",
+      "contact": "Contact",
+      "clientNotes": "Client note",
+      "internalNotes": "Internal note",
+      "source": {
+        "ONLINE": "Online",
+        "ADMIN": "By salon",
+        "WALK_IN": "Walk-in"
+      },
+      "statusChanged": "Status updated.",
+      "move": "Move appointment",
+      "moveOpen": "Pick a new time",
+      "moveClose": "Close",
+      "moveDate": "New date",
+      "noSlots": "No free slots for this day and employee.",
+      "moveConfirm": "Move",
+      "moved": "Appointment moved.",
+      "error": "Something went wrong."
+    },
+    "create": {
+      "title": "New booking",
+      "subtitle": "Book on behalf of a client (phone or walk-in). Salon bookings ignore the online notice period but still respect working hours.",
+      "service": "Service",
+      "employee": "Employee",
+      "anyEmployee": "Any available",
+      "date": "Date",
+      "time": "Time",
+      "noSlots": "No free slots. Try another day or employee.",
+      "phone": "Phone",
+      "source": "Source",
+      "sources": {
+        "ADMIN": "Phone / in person",
+        "WALK_IN": "Walk-in"
+      },
+      "status": "Status",
+      "statuses": {
+        "CONFIRMED": "Confirmed",
+        "PENDING": "Pending"
+      },
+      "internalNotes": "Internal note",
+      "submit": "Create booking",
+      "error": "Could not create the booking."
     }
   }
 }

@@ -39,7 +39,7 @@ type NavItem = { key: NavKey; segment: string; icon: LucideIcon; enabled: boolea
 
 export const ADMIN_NAV: NavItem[] = [
   { key: "dashboard", segment: "", icon: LayoutDashboard, enabled: true },
-  { key: "calendar", segment: "calendar", icon: CalendarDays, enabled: false },
+  { key: "calendar", segment: "calendar", icon: CalendarDays, enabled: true },
   { key: "appointments", segment: "appointments", icon: ListChecks, enabled: true },
   { key: "employees", segment: "employees", icon: Users, enabled: true },
   { key: "services", segment: "services", icon: Scissors, enabled: true },
