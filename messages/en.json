@@ -1,0 +1,170 @@
+{
+  "common": {
+    "appName": "Bookly",
+    "tagline": "Online booking for hair salons",
+    "language": "Language",
+    "loading": "Loading…",
+    "retry": "Try again",
+    "backHome": "Back to home",
+    "or": "or"
+  },
+  "nav": {
+    "login": "Sign in",
+    "register": "Create account",
+    "account": "My account"
+  },
+  "landing": {
+    "title": "Your salon, booked in seconds",
+    "subtitle": "Profiles, staff, price lists and a booking calendar your clients will love. Built for salons of every size.",
+    "ctaPrimary": "Get started",
+    "ctaSecondary": "See how it works",
+    "features": {
+      "booking": {
+        "title": "Online booking",
+        "description": "Clients pick a service, a stylist and a free slot. No double bookings, ever."
+      },
+      "team": {
+        "title": "Team schedules",
+        "description": "Working hours, breaks, time off and blocked slots per employee."
+      },
+      "reminders": {
+        "title": "Automatic reminders",
+        "description": "Email and push notifications 24 hours and 1 hour before every appointment."
+      }
+    },
+    "status": "Phase 2: authentication and roles"
+  },
+  "auth": {
+    "fields": {
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone (optional)",
+      "password": "Password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password"
+    },
+    "validation": {
+      "required": "This field is required.",
+      "email": "Enter a valid email address.",
+      "phone": "Enter a valid phone number.",
+      "passwordMin": "Password must be at least 8 characters.",
+      "passwordMax": "Password is too long.",
+      "passwordMatch": "Passwords do not match."
+    },
+    "errors": {
+      "INVALID_EMAIL_OR_PASSWORD": "Incorrect email or password.",
+      "USER_ALREADY_EXISTS": "An account with this email already exists.",
+      "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "An account with this email already exists.",
+      "EMAIL_NOT_VERIFIED": "Please verify your email address first.",
+      "INVALID_TOKEN": "This link is invalid or has expired.",
+      "TOKEN_EXPIRED": "This link has expired. Please request a new one.",
+      "PASSWORD_TOO_SHORT": "Password must be at least 8 characters.",
+      "USER_NOT_FOUND": "We could not find an account with this email.",
+      "generic": "Something went wrong. Please try again."
+    },
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to manage your appointments.",
+      "submit": "Sign in",
+      "forgot": "Forgot your password?",
+      "noAccount": "Don't have an account?",
+      "register": "Create one"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Book faster and keep track of your appointments.",
+      "submit": "Create account",
+      "haveAccount": "Already have an account?",
+      "login": "Sign in",
+      "terms": "By creating an account you agree to receive booking confirmations and reminders by email."
+    },
+    "forgot": {
+      "title": "Reset your password",
+      "subtitle": "Enter your email and we will send you a reset link.",
+      "submit": "Send reset link",
+      "sent": "If an account exists for {email}, a reset link is on its way. Check your inbox.",
+      "back": "Back to sign in"
+    },
+    "reset": {
+      "title": "Choose a new password",
+      "subtitle": "Your new password must be at least 8 characters.",
+      "submit": "Set new password",
+      "success": "Your password has been updated. You can now sign in.",
+      "missingToken": "This reset link is incomplete. Please request a new one.",
+      "toLogin": "Go to sign in"
+    },
+    "verify": {
+      "title": "Check your inbox",
+      "subtitle": "We sent a verification link to {email}. Open it to confirm your address.",
+      "subtitleNoEmail": "We sent you a verification link. Open it to confirm your address.",
+      "resend": "Resend email",
+      "resent": "Verification email sent again.",
+      "continue": "Continue to my account"
+    },
+    "signOut": "Sign out"
+  },
+  "account": {
+    "title": "My account",
+    "welcome": "Hi, {name}",
+    "email": "Email",
+    "verified": "Verified",
+    "notVerified": "Not verified",
+    "verifyBanner": "Your email address is not verified yet. Verify it to secure your account and receive appointment emails.",
+    "resendVerification": "Resend verification email",
+    "memberships": "Salon roles",
+    "noMemberships": "You are not a member of any salon yet.",
+    "platformAdmin": "Platform administrator",
+    "roles": {
+      "OWNER": "Owner",
+      "ADMIN": "Administrator",
+      "EMPLOYEE": "Employee"
+    },
+    "bookingsSoon": "Your appointments will appear here once online booking opens."
+  },
+  "emails": {
+    "common": {
+      "greeting": "Hi {name},",
+      "ignore": "If you did not request this, you can safely ignore this email.",
+      "signature": "— The {appName} team"
+    },
+    "verify": {
+      "subject": "Confirm your email for {appName}",
+      "title": "Confirm your email address",
+      "intro": "Thanks for creating an account at {appName}. Please confirm your email address so we can send you booking confirmations and reminders.",
+      "button": "Confirm email",
+      "expires": "This link is valid for 24 hours."
+    },
+    "reset": {
+      "subject": "Reset your {appName} password",
+      "title": "Reset your password",
+      "intro": "We received a request to reset the password for your {appName} account. Click the button below to choose a new one.",
+      "button": "Choose a new password",
+      "expires": "This link is valid for 1 hour."
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Page not found",
+      "description": "The page you are looking for does not exist or has been moved."
+    },
+    "generic": {
+      "title": "Something went wrong",
+      "description": "An unexpected error occurred. Please try again."
+    },
+    "codes": {
+      "VALIDATION_ERROR": "Please check the entered data.",
+      "UNAUTHENTICATED": "Please sign in to continue.",
+      "FORBIDDEN": "You do not have permission to do this.",
+      "NOT_FOUND": "We could not find what you were looking for.",
+      "CONFLICT": "This was changed by someone else. Please refresh and try again.",
+      "SLOT_UNAVAILABLE": "This time is no longer available. Please choose another one.",
+      "POLICY_VIOLATION": "This action is not allowed by the salon policy.",
+      "INVALID_TRANSITION": "This status change is not allowed.",
+      "PAYLOAD_TOO_LARGE": "The file is too large.",
+      "UNSUPPORTED_MEDIA_TYPE": "This file type is not supported.",
+      "RATE_LIMITED": "Too many requests. Please wait a moment.",
+      "INTERNAL_ERROR": "Something went wrong on our side. Please try again."
+    }
+  }
+}

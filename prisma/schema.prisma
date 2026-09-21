@@ -1,0 +1,172 @@
+// Prisma schema. Full design: docs/database.md
+// Models are added phase by phase. Raw SQL that Prisma cannot express
+// (extensions, exclusion constraint, composite FKs) lives in prisma/migrations.
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// Convention: every DateTime is `@db.Timestamptz(3)` (UTC instant), never a
+// naive timestamp. Wall-clock schedule times are `String` "HH:mm".
+
+// ---------------------------------------------------------------------------
+// Enums
+// ---------------------------------------------------------------------------
+
+enum PlatformRole {
+  SUPER_ADMIN
+}
+
+enum SalonRole {
+  OWNER
+  ADMIN
+  EMPLOYEE
+}
+
+enum Audience {
+  MALE
+  FEMALE
+  UNISEX
+}
+
+enum SalonStatus {
+  ACTIVE
+  INACTIVE
+  SUSPENDED
+}
+
+// ---------------------------------------------------------------------------
+// Identity (Better Auth core tables + application fields)
+// ---------------------------------------------------------------------------
+
+model User {
+  id            String        @id @default(uuid(7))
+  name          String
+  email         String        @unique
+  emailVerified Boolean       @default(false) @map("email_verified")
+  image         String?
+  firstName     String?       @map("first_name")
+  lastName      String?       @map("last_name")
+  phone         String?
+  locale        String?
+  platformRole  PlatformRole? @map("platform_role")
+  isActive      Boolean       @default(true) @map("is_active")
+  createdAt     DateTime      @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime      @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  sessions    Session[]
+  accounts    Account[]
+  memberships SalonMembership[]
+  invitations SalonMembership[] @relation("MembershipInvitedBy")
+
+  @@map("users")
+}
+
+model Session {
+  id        String   @id @default(uuid(7))
+  token     String   @unique
+  expiresAt DateTime @map("expires_at") @db.Timestamptz(3)
+  ipAddress String?  @map("ip_address")
+  userAgent String?  @map("user_agent")
+  userId    String   @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+model Account {
+  id                    String    @id @default(uuid(7))
+  accountId             String    @map("account_id")
+  providerId            String    @map("provider_id")
+  userId                String    @map("user_id")
+  accessToken           String?   @map("access_token")
+  refreshToken          String?   @map("refresh_token")
+  idToken               String?   @map("id_token")
+  accessTokenExpiresAt  DateTime? @map("access_token_expires_at") @db.Timestamptz(3)
+  refreshTokenExpiresAt DateTime? @map("refresh_token_expires_at") @db.Timestamptz(3)
+  scope                 String?
+  password              String?
+  createdAt             DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt             DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("accounts")
+}
+
+model Verification {
+  id         String   @id @default(uuid(7))
+  identifier String
+  value      String
+  expiresAt  DateTime @map("expires_at") @db.Timestamptz(3)
+  createdAt  DateTime @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt  DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@index([identifier])
+  @@map("verifications")
+}
+
+// ---------------------------------------------------------------------------
+// Tenant root (core fields; extended in the salon management phase)
+// ---------------------------------------------------------------------------
+
+model Salon {
+  id            String      @id @default(uuid(7))
+  slug          String      @unique
+  name          String
+  audience      Audience    @default(UNISEX)
+  timezone      String      @default("Europe/Sarajevo")
+  currency      String      @default("BAM")
+  defaultLocale String      @default("bs") @map("default_locale")
+  status        SalonStatus @default(ACTIVE)
+  createdAt     DateTime    @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt     DateTime    @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  memberships SalonMembership[]
+
+  @@index([status])
+  @@map("salons")
+}
+
+/// Assigns a salon role to a user. A user may hold roles in several salons.
+model SalonMembership {
+  id          String    @id @default(uuid(7))
+  userId      String    @map("user_id")
+  salonId     String    @map("salon_id")
+  role        SalonRole
+  /// Set when role = EMPLOYEE (composite FK to Employee added in the staff phase).
+  employeeId  String?   @map("employee_id")
+  invitedById String?   @map("invited_by_id")
+  createdAt   DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt   DateTime  @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user      User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  salon     Salon @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  invitedBy User? @relation("MembershipInvitedBy", fields: [invitedById], references: [id], onDelete: SetNull)
+
+  @@unique([userId, salonId])
+  @@index([salonId, role])
+  @@map("salon_memberships")
+}
+
+// ---------------------------------------------------------------------------
+// Platform
+// ---------------------------------------------------------------------------
+
+model PlatformSetting {
+  key       String   @id
+  value     Json
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  @@map("platform_settings")
+}

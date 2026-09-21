@@ -1,0 +1,170 @@
+{
+  "common": {
+    "appName": "Bookly",
+    "tagline": "Online rezervacije za frizerske salone",
+    "language": "Jezik",
+    "loading": "Učitavanje…",
+    "retry": "Pokušaj ponovo",
+    "backHome": "Nazad na početnu",
+    "or": "ili"
+  },
+  "nav": {
+    "login": "Prijava",
+    "register": "Napravi nalog",
+    "account": "Moj nalog"
+  },
+  "landing": {
+    "title": "Vaš salon, rezervisan za nekoliko sekundi",
+    "subtitle": "Profil salona, zaposleni, cjenovnik i kalendar rezervacija koji će vaši klijenti obožavati. Za salone svih veličina.",
+    "ctaPrimary": "Započni",
+    "ctaSecondary": "Kako funkcioniše",
+    "features": {
+      "booking": {
+        "title": "Online rezervacija",
+        "description": "Klijent bira uslugu, frizera i slobodan termin. Bez duplih rezervacija, nikad."
+      },
+      "team": {
+        "title": "Rasporedi tima",
+        "description": "Radno vrijeme, pauze, slobodni dani i blokirani termini po zaposlenom."
+      },
+      "reminders": {
+        "title": "Automatski podsjetnici",
+        "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
+      }
+    },
+    "status": "Faza 2: autentikacija i role"
+  },
+  "auth": {
+    "fields": {
+      "firstName": "Ime",
+      "lastName": "Prezime",
+      "email": "Email",
+      "phone": "Telefon (opcionalno)",
+      "password": "Lozinka",
+      "newPassword": "Nova lozinka",
+      "confirmPassword": "Potvrdi lozinku"
+    },
+    "validation": {
+      "required": "Ovo polje je obavezno.",
+      "email": "Unesite ispravnu email adresu.",
+      "phone": "Unesite ispravan broj telefona.",
+      "passwordMin": "Lozinka mora imati najmanje 8 znakova.",
+      "passwordMax": "Lozinka je predugačka.",
+      "passwordMatch": "Lozinke se ne podudaraju."
+    },
+    "errors": {
+      "INVALID_EMAIL_OR_PASSWORD": "Neispravan email ili lozinka.",
+      "USER_ALREADY_EXISTS": "Nalog sa ovim emailom već postoji.",
+      "USER_ALREADY_EXISTS_USE_ANOTHER_EMAIL": "Nalog sa ovim emailom već postoji.",
+      "EMAIL_NOT_VERIFIED": "Prvo potvrdite svoju email adresu.",
+      "INVALID_TOKEN": "Ovaj link je nevažeći ili je istekao.",
+      "TOKEN_EXPIRED": "Ovaj link je istekao. Zatražite novi.",
+      "PASSWORD_TOO_SHORT": "Lozinka mora imati najmanje 8 znakova.",
+      "USER_NOT_FOUND": "Nismo pronašli nalog sa ovim emailom.",
+      "generic": "Nešto je pošlo po zlu. Pokušajte ponovo."
+    },
+    "login": {
+      "title": "Dobro došli nazad",
+      "subtitle": "Prijavite se da upravljate svojim terminima.",
+      "submit": "Prijavi se",
+      "forgot": "Zaboravili ste lozinku?",
+      "noAccount": "Nemate nalog?",
+      "register": "Napravite ga"
+    },
+    "register": {
+      "title": "Napravite nalog",
+      "subtitle": "Rezervišite brže i pratite svoje termine.",
+      "submit": "Napravi nalog",
+      "haveAccount": "Već imate nalog?",
+      "login": "Prijavite se",
+      "terms": "Kreiranjem naloga pristajete da emailom primate potvrde i podsjetnike za termine."
+    },
+    "forgot": {
+      "title": "Resetujte lozinku",
+      "subtitle": "Unesite email i poslat ćemo vam link za reset.",
+      "submit": "Pošalji link",
+      "sent": "Ako nalog za {email} postoji, link za reset je na putu. Provjerite inbox.",
+      "back": "Nazad na prijavu"
+    },
+    "reset": {
+      "title": "Odaberite novu lozinku",
+      "subtitle": "Nova lozinka mora imati najmanje 8 znakova.",
+      "submit": "Postavi novu lozinku",
+      "success": "Lozinka je promijenjena. Sada se možete prijaviti.",
+      "missingToken": "Ovaj link za reset je nepotpun. Zatražite novi.",
+      "toLogin": "Idi na prijavu"
+    },
+    "verify": {
+      "title": "Provjerite inbox",
+      "subtitle": "Poslali smo link za potvrdu na {email}. Otvorite ga da potvrdite adresu.",
+      "subtitleNoEmail": "Poslali smo vam link za potvrdu. Otvorite ga da potvrdite adresu.",
+      "resend": "Pošalji ponovo",
+      "resent": "Email za potvrdu je ponovo poslan.",
+      "continue": "Nastavi na moj nalog"
+    },
+    "signOut": "Odjava"
+  },
+  "account": {
+    "title": "Moj nalog",
+    "welcome": "Zdravo, {name}",
+    "email": "Email",
+    "verified": "Potvrđen",
+    "notVerified": "Nije potvrđen",
+    "verifyBanner": "Vaša email adresa još nije potvrđena. Potvrdite je da osigurate nalog i primate emailove o terminima.",
+    "resendVerification": "Ponovo pošalji email za potvrdu",
+    "memberships": "Uloge u salonima",
+    "noMemberships": "Još niste član nijednog salona.",
+    "platformAdmin": "Administrator platforme",
+    "roles": {
+      "OWNER": "Vlasnik",
+      "ADMIN": "Administrator",
+      "EMPLOYEE": "Zaposleni"
+    },
+    "bookingsSoon": "Vaši termini će se pojaviti ovdje kada online rezervacije budu dostupne."
+  },
+  "emails": {
+    "common": {
+      "greeting": "Zdravo {name},",
+      "ignore": "Ako ovo niste zatražili, slobodno ignorišite ovaj email.",
+      "signature": "— {appName} tim"
+    },
+    "verify": {
+      "subject": "Potvrdite email za {appName}",
+      "title": "Potvrdite svoju email adresu",
+      "intro": "Hvala što ste napravili nalog na {appName}. Potvrdite svoju email adresu kako bismo vam mogli slati potvrde i podsjetnike za termine.",
+      "button": "Potvrdi email",
+      "expires": "Ovaj link vrijedi 24 sata."
+    },
+    "reset": {
+      "subject": "Reset lozinke za {appName}",
+      "title": "Resetujte lozinku",
+      "intro": "Primili smo zahtjev za reset lozinke vašeg {appName} naloga. Kliknite na dugme ispod da odaberete novu.",
+      "button": "Odaberi novu lozinku",
+      "expires": "Ovaj link vrijedi 1 sat."
+    }
+  },
+  "errors": {
+    "notFound": {
+      "title": "Stranica nije pronađena",
+      "description": "Stranica koju tražite ne postoji ili je premještena."
+    },
+    "generic": {
+      "title": "Nešto je pošlo po zlu",
+      "description": "Došlo je do neočekivane greške. Pokušajte ponovo."
+    },
+    "codes": {
+      "VALIDATION_ERROR": "Provjerite unesene podatke.",
+      "UNAUTHENTICATED": "Prijavite se da biste nastavili.",
+      "FORBIDDEN": "Nemate dozvolu za ovu radnju.",
+      "NOT_FOUND": "Nismo pronašli ono što tražite.",
+      "CONFLICT": "Neko drugi je u međuvremenu promijenio ove podatke. Osvježite stranicu i pokušajte ponovo.",
+      "SLOT_UNAVAILABLE": "Ovaj termin više nije dostupan. Odaberite drugi.",
+      "POLICY_VIOLATION": "Pravila salona ne dozvoljavaju ovu radnju.",
+      "INVALID_TRANSITION": "Ova promjena statusa nije dozvoljena.",
+      "PAYLOAD_TOO_LARGE": "Datoteka je prevelika.",
+      "UNSUPPORTED_MEDIA_TYPE": "Ovaj tip datoteke nije podržan.",
+      "RATE_LIMITED": "Previše zahtjeva. Sačekajte trenutak.",
+      "INTERNAL_ERROR": "Greška na našoj strani. Pokušajte ponovo."
+    }
+  }
+}

@@ -1,0 +1,17 @@
+node_modules
+.next
+out
+build
+dist
+coverage
+playwright-report
+test-results
+src/generated
+.git
+.env
+.env.*
+!.env.example
+docs
+tests
+.claude
+*.md
