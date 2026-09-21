@@ -2,7 +2,13 @@ import type { MetadataRoute } from "next";
 
 import { env } from "@/lib/env";
 
-/** Web app manifest: makes the site installable (PWA) on Android, iOS and desktop. */
+/**
+ * Web app manifest: makes the site installable (PWA) on Android, iOS and
+ * desktop. Rendered per request (not at build time) because it reads the
+ * runtime environment, which the Docker image build does not have.
+ */
+export const dynamic = "force-dynamic";
+
 export default function manifest(): MetadataRoute.Manifest {
   return {
     name: env.APP_NAME,
