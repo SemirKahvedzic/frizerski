@@ -128,6 +128,7 @@ Open:
 
 - Public salon: <http://localhost:3000/bs/salon/studio-example>
 - Admin: <http://localhost:3000/bs/admin/studio-example> (owner: `owner@studio-example.local` / `SEED_OWNER_PASSWORD`)
+- Client dashboard: <http://localhost:3000/bs/account> (client: `amina@example.com` / `SEED_OWNER_PASSWORD`)
 - Platform: <http://localhost:3000/bs/platform> (`SEED_SUPER_ADMIN_EMAIL` / `SEED_SUPER_ADMIN_PASSWORD`)
 - Mailpit: <http://localhost:8025>
 - MinIO console: <http://localhost:9001>
@@ -278,8 +279,8 @@ steps:
 - Owner `owner@studio-example.local`, admin `admin@studio-example.local`, employee login `marko@studio-example.local`
 - Employees **Marko** (Mon, Tue, Fri 09:00–17:00; Thu 12:00–20:00; Sat 09:00–14:00; Wed off; lunch 13:00–13:30), **Ana** (Tue–Sat 10:00–18:00), **Sara** (Mon–Fri 09:00–15:00; vacation next Mon–Sun)
 - Categories Hair, Beard; services Haircut 20 BAM/30 min, Beard Trim 10 BAM/15 min, Hair Styling 25 BAM/45 min, Hair Coloring 60 BAM/120 min; Marko provides all four, Ana all but Beard Trim, Sara Haircut + Styling
-- 5 customers (`amina@example.com`, `emir@example.com` with accounts; 3 guests)
-- ~30 bookings: past two weeks (COMPLETED, some NO_SHOW/CANCELLED) and next two weeks (CONFIRMED, a few PENDING), one blocked time for Marko, one salon closure
+- Customers **Amina Hodžić** (`amina@example.com`, has a client account with password `SEED_OWNER_PASSWORD`, linked to her customer record), **Emir Kovačević** and **Lejla Begić** (guests)
+- 3 CONFIRMED bookings next Monday/Tuesday (Amina and Emir with Marko, Lejla with Ana); E2E runs add more
 - A second salon **Barber Bros** (`barber-bros`, MALE) with one employee, to exercise tenant isolation in tests and demos
 
 ---

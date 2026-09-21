@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 8: kalendar"
+    "status": "Faza 9: klijentski dashboard"
   },
   "auth": {
     "fields": {
@@ -121,10 +121,72 @@
       "ADMIN": "Administrator",
       "EMPLOYEE": "Zaposleni"
     },
-    "bookingsSoon": "Vaši termini će se pojaviti ovdje kada online rezervacije budu dostupne.",
     "membershipsHint": "Saloni koje vodite ili u kojima radite.",
     "createSalon": "Kreiraj salon",
-    "openPlatform": "Administracija platforme"
+    "openPlatform": "Administracija platforme",
+    "nav": {
+      "label": "Nalog",
+      "overview": "Pregled",
+      "bookings": "Termini",
+      "profile": "Profil",
+      "notifications": "Notifikacije"
+    },
+    "overview": {
+      "nextBooking": "Vaš sljedeći termin",
+      "upcomingCount": "{count, plural, one {# predstojeći termin} few {# predstojeća termina} other {# predstojećih termina}}",
+      "noUpcoming": "Nemate predstojećih termina.",
+      "viewAll": "Svi termini",
+      "findSalon": "Pronađi salon"
+    },
+    "bookings": {
+      "title": "Moji termini",
+      "subtitle": "Pomjerite ili otkažite predstojeće termine u skladu s pravilima salona.",
+      "scopes": {
+        "upcoming": "Predstojeći",
+        "past": "Prošli",
+        "cancelled": "Otkazani"
+      },
+      "empty": {
+        "upcoming": "Nema predstojećih termina. Rezervišite u omiljenom salonu.",
+        "past": "Još nema prošlih termina.",
+        "cancelled": "Nema otkazanih termina."
+      },
+      "findSalon": "Pronađi salon"
+    },
+    "profile": {
+      "title": "Profil",
+      "subtitle": "Ime i telefon se dijele sa salonom pri rezervaciji.",
+      "emailHint": "Email je vaš način prijave i ovdje se ne može mijenjati.",
+      "phoneHint": "Salon vas može pozvati u vezi termina.",
+      "locale": "Jezik",
+      "localeHint": "Koristi se za emailove i interfejs.",
+      "save": "Sačuvaj izmjene"
+    },
+    "notifications": {
+      "title": "Notifikacije",
+      "subtitle": "Odaberite kako vas podsjećamo na termine.",
+      "sections": {
+        "channels": "Kanali",
+        "channelsHint": "Gdje stižu obavijesti o terminima.",
+        "reminders": "Podsjetnici i novosti",
+        "remindersHint": "Podsjetnici se šalju samo ako ih je i salon uključio."
+      },
+      "fields": {
+        "emailEnabled": "Email obavijesti",
+        "pushEnabled": "Push obavijesti",
+        "reminder24h": "Podsjetnik 24 sata prije",
+        "reminder1h": "Podsjetnik 1 sat prije",
+        "marketingEmails": "Novosti i ponude"
+      },
+      "hints": {
+        "emailEnabled": "Potvrde, izmjene i otkazivanja emailom.",
+        "pushEnabled": "Obavijesti u pregledniku. Dostupno uskoro.",
+        "reminder24h": "Najava dan prije termina.",
+        "reminder1h": "Podsjetnik neposredno prije termina.",
+        "marketingEmails": "Povremene novosti iz salona koje posjećujete."
+      },
+      "save": "Sačuvaj postavke"
+    }
   },
   "emails": {
     "common": {

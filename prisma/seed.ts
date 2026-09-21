@@ -287,10 +287,17 @@ async function seedBookings(salonId: string) {
   ];
   const customerIds: string[] = [];
   for (const c of customers) {
+    // Customers whose email matches a seeded user are linked to that account.
+    const user = await prisma.user.findUnique({ where: { email: c.email }, select: { id: true } });
     const row = await prisma.customer.upsert({
       where: { salonId_email: { salonId, email: c.email } },
-      update: { firstName: c.firstName, lastName: c.lastName, phone: c.phone },
-      create: { salonId, ...c },
+      update: {
+        firstName: c.firstName,
+        lastName: c.lastName,
+        phone: c.phone,
+        userId: user?.id ?? null,
+      },
+      create: { salonId, ...c, userId: user?.id ?? null },
     });
     customerIds.push(row.id);
   }
@@ -363,6 +370,12 @@ async function main() {
     password: DEFAULT_PASSWORD,
     firstName: "Marko",
     lastName: "Marić",
+  });
+  await upsertUser({
+    email: "amina@example.com",
+    password: DEFAULT_PASSWORD,
+    firstName: "Amina",
+    lastName: "Hodžić",
   });
   await upsertUser({
     email: "owner@barber-bros.local",

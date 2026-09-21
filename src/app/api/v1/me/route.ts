@@ -1,4 +1,5 @@
 import { defineRoute } from "@/lib/api/define-route";
+import { getProfile, updateProfile, updateProfileSchema } from "@/modules/account";
 import { sessionAuth, type Actor } from "@/modules/auth";
 
 export const dynamic = "force-dynamic";
@@ -10,16 +11,24 @@ export const GET = defineRoute({
   auth: "session",
   handler: async ({ actor }) => {
     const user = actor as unknown as Actor;
+    const profile = await getProfile(user.userId);
     return {
       data: {
-        id: user.userId,
-        email: user.email,
-        name: user.name,
-        emailVerified: user.emailVerified,
-        locale: user.locale,
+        ...profile,
         platformRole: user.platformRole,
         memberships: user.memberships,
       },
     };
   },
+});
+
+/** PATCH /api/v1/me — update the signed-in user's own profile. */
+export const PATCH = defineRoute({
+  ...sessionAuth,
+  name: "me.update",
+  auth: "session",
+  body: updateProfileSchema,
+  handler: async ({ actor, body }) => ({
+    data: await updateProfile((actor as unknown as Actor).userId, body),
+  }),
 });

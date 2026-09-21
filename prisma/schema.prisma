@@ -121,6 +121,7 @@ model User {
   bookingsCreated   Booking[]              @relation("BookingCreatedBy")
   bookingsCancelled Booking[]              @relation("BookingCancelledBy")
   statusChanges     BookingStatusHistory[]
+  notificationPreference NotificationPreference?
 
   @@map("users")
 }
@@ -710,4 +711,20 @@ model PlatformSetting {
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
 
   @@map("platform_settings")
+}
+
+/// Per-user notification preferences (docs/database.md). Created lazily; users
+/// without a row get the defaults in code.
+model NotificationPreference {
+  userId          String   @id @map("user_id")
+  emailEnabled    Boolean  @default(true) @map("email_enabled")
+  pushEnabled     Boolean  @default(false) @map("push_enabled")
+  reminder24h     Boolean  @default(true) @map("reminder_24h")
+  reminder1h      Boolean  @default(true) @map("reminder_1h")
+  marketingEmails Boolean  @default(false) @map("marketing_emails")
+  updatedAt       DateTime @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notification_preferences")
 }

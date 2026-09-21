@@ -126,13 +126,13 @@ Handled by Better Auth: `POST sign-up/email`, `POST sign-in/email`, `POST sign-o
 
 | Method    | Path                                       | Description                                                                                                                                        |
 | --------- | ------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------- |
-| GET       | `/me`                                      | Profile, locale, linked customers count.                                                                                                           |
+| GET       | `/me`                                      | Profile (first/last name, phone, locale, `emailVerified`), `platformRole`, `memberships[]`.                                                        |
 | PATCH     | `/me`                                      | `{ firstName, lastName, phone, locale }`.                                                                                                          |
 | GET       | `/me/bookings`                             | `?scope=upcoming\|past\|cancelled&cursor` across all salons; each item has salon, employee, service, times, duration, price, status, policy flags. |
 | GET       | `/me/bookings/:id`                         | Details + status history.                                                                                                                          |
 | POST      | `/me/bookings/:id/reschedule`              | `{ startsAt, employeeId?, version }`.                                                                                                              |
 | POST      | `/me/bookings/:id/cancel`                  | `{ reason?, version }`.                                                                                                                            |
-| GET / PUT | `/me/notification-preferences`             | `{ emailEnabled, pushEnabled, reminder24h, reminder1h }`.                                                                                          |
+| GET / PUT | `/me/notification-preferences`             | `{ emailEnabled, pushEnabled, reminder24h, reminder1h, marketingEmails }`. Defaults are returned when the user has not saved yet.                  |
 | GET       | `/me/notifications`                        | In-app notification feed (`IN_APP` channel rows).                                                                                                  |
 | POST      | `/me/push-subscriptions`                   | `{ platform: "WEB", endpoint, keys: { p256dh, auth }, userAgent }`. Idempotent on endpoint.                                                        |
 | DELETE    | `/me/push-subscriptions`                   | `{ endpoint }`.                                                                                                                                    |

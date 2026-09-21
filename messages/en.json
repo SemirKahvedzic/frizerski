@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 8: calendar"
+    "status": "Phase 9: client dashboard"
   },
   "auth": {
     "fields": {
@@ -121,10 +121,72 @@
       "ADMIN": "Administrator",
       "EMPLOYEE": "Employee"
     },
-    "bookingsSoon": "Your appointments will appear here once online booking opens.",
     "membershipsHint": "Salons you own or work at.",
     "createSalon": "Create a salon",
-    "openPlatform": "Platform admin"
+    "openPlatform": "Platform admin",
+    "nav": {
+      "label": "Account",
+      "overview": "Overview",
+      "bookings": "Appointments",
+      "profile": "Profile",
+      "notifications": "Notifications"
+    },
+    "overview": {
+      "nextBooking": "Your next appointment",
+      "upcomingCount": "{count, plural, one {# upcoming appointment} other {# upcoming appointments}}",
+      "noUpcoming": "You have no upcoming appointments.",
+      "viewAll": "All appointments",
+      "findSalon": "Find a salon"
+    },
+    "bookings": {
+      "title": "My appointments",
+      "subtitle": "Move or cancel upcoming appointments according to each salon's policy.",
+      "scopes": {
+        "upcoming": "Upcoming",
+        "past": "Past",
+        "cancelled": "Cancelled"
+      },
+      "empty": {
+        "upcoming": "No upcoming appointments. Book one at your favourite salon.",
+        "past": "No past appointments yet.",
+        "cancelled": "No cancelled appointments."
+      },
+      "findSalon": "Find a salon"
+    },
+    "profile": {
+      "title": "Profile",
+      "subtitle": "Your name and phone are shared with salons when you book.",
+      "emailHint": "Your email is your sign-in and cannot be changed here.",
+      "phoneHint": "Salons may call you about your appointment.",
+      "locale": "Language",
+      "localeHint": "Used for emails and the interface.",
+      "save": "Save changes"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "subtitle": "Choose how we remind you about appointments.",
+      "sections": {
+        "channels": "Channels",
+        "channelsHint": "Where appointment updates are delivered.",
+        "reminders": "Reminders and marketing",
+        "remindersHint": "Reminders are sent only if the salon has them enabled too."
+      },
+      "fields": {
+        "emailEnabled": "Email notifications",
+        "pushEnabled": "Push notifications",
+        "reminder24h": "Reminder 24 hours before",
+        "reminder1h": "Reminder 1 hour before",
+        "marketingEmails": "News and offers"
+      },
+      "hints": {
+        "emailEnabled": "Confirmations, changes and cancellations by email.",
+        "pushEnabled": "Browser notifications. Available soon.",
+        "reminder24h": "A heads-up the day before your appointment.",
+        "reminder1h": "A last-minute reminder shortly before.",
+        "marketingEmails": "Occasional news from salons you visit."
+      },
+      "save": "Save preferences"
+    }
   },
   "emails": {
     "common": {
