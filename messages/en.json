@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 9: client dashboard"
+    "status": "Phase 10: email notifications"
   },
   "auth": {
     "fields": {
@@ -213,6 +213,74 @@
       "title": "Join {salon}",
       "intro": "{salon} added you as an employee on {appName}. Create your account with this email address to see your schedule and appointments.",
       "button": "Create account"
+    },
+    "booking": {
+      "minutes": "{count} min",
+      "manage": "View or manage the appointment",
+      "openAdmin": "Open in the calendar",
+      "previous": "Previously scheduled for: {when}.",
+      "reason": "Reason: {reason}",
+      "policy": "Free cancellation or rescheduling until {when}.",
+      "footer": "You receive this email because of an appointment at {salon}, booked through {appName}.",
+      "icsDescription": "{service} with {employee} at {salon}.",
+      "labels": {
+        "salon": "Salon",
+        "service": "Service",
+        "employee": "Employee",
+        "when": "When",
+        "duration": "Duration",
+        "price": "Price",
+        "code": "Booking code",
+        "customer": "Client",
+        "address": "Address",
+        "phone": "Phone",
+        "notes": "Client note"
+      },
+      "confirmed": {
+        "subject": "Your appointment at {salon} is confirmed – {when}",
+        "title": "Your appointment is confirmed",
+        "intro": "{salon} expects you for {service} with {employee}. Here are the details:"
+      },
+      "pending": {
+        "subject": "We received your booking request – {salon}",
+        "title": "Booking request received",
+        "intro": "{salon} will confirm your appointment for {service} shortly. You will get another email once it is confirmed."
+      },
+      "rescheduled": {
+        "subject": "Your appointment was moved to {when}",
+        "title": "Your appointment was moved",
+        "intro": "Your appointment for {service} at {salon} now takes place at the time below."
+      },
+      "cancelled": {
+        "subject": "Your appointment at {salon} was cancelled",
+        "title": "Appointment cancelled",
+        "intro": "The appointment for {service} at {salon} on {when} has been cancelled. You can book a new one at any time."
+      },
+      "reminder24h": {
+        "subject": "Reminder: tomorrow at {time} – {salon}",
+        "title": "See you tomorrow",
+        "intro": "A quick reminder about your appointment for {service} with {employee} at {salon}."
+      },
+      "reminder1h": {
+        "subject": "See you in an hour – {salon}",
+        "title": "See you in an hour",
+        "intro": "Your appointment for {service} with {employee} at {salon} starts at {time}."
+      },
+      "staffNew": {
+        "subject": "New booking: {service} with {employee}, {when}",
+        "title": "New booking",
+        "intro": "{customer} booked {service} with {employee}."
+      },
+      "staffRescheduled": {
+        "subject": "Moved: {customer} → {when}",
+        "title": "Booking moved",
+        "intro": "The appointment of {customer} for {service} was moved."
+      },
+      "staffCancelled": {
+        "subject": "Cancelled: {customer}, {when}",
+        "title": "Booking cancelled",
+        "intro": "The appointment of {customer} for {service} with {employee} was cancelled."
+      }
     }
   },
   "errors": {
@@ -873,6 +941,43 @@
       "internalNotes": "Internal note",
       "submit": "Create booking",
       "error": "Could not create the booking."
+    }
+  },
+  "notificationType": {
+    "BOOKING_PENDING": "Booking request received",
+    "BOOKING_CONFIRMED": "Booking confirmed",
+    "BOOKING_RESCHEDULED": "Booking moved",
+    "BOOKING_CANCELLED": "Booking cancelled",
+    "REMINDER_24H": "Reminder (24 h)",
+    "REMINDER_1H": "Reminder (1 h)",
+    "STAFF_NEW_BOOKING": "New booking (staff)",
+    "STAFF_BOOKING_RESCHEDULED": "Booking moved (staff)",
+    "STAFF_BOOKING_CANCELLED": "Booking cancelled (staff)"
+  },
+  "notificationsAdmin": {
+    "title": "Notifications",
+    "subtitle": "Every email the system sent (or decided not to send) for this salon's bookings.",
+    "all": "All",
+    "empty": "No notifications yet.",
+    "resend": "Resend",
+    "resent": "Email sent again.",
+    "resendFailed": "Sending failed again; see the error on the row.",
+    "attempts": "{count, plural, one {# attempt} other {# attempts}}",
+    "status": {
+      "QUEUED": "Queued",
+      "SENT": "Sent",
+      "FAILED": "Failed",
+      "SKIPPED": "Skipped"
+    },
+    "skip": {
+      "salon.emailDisabled": "Email notifications are disabled in salon settings.",
+      "recipient.noEmail": "The recipient has no email address.",
+      "recipient.emailDisabled": "The recipient turned off email notifications.",
+      "salon.reminder24hDisabled": "24-hour reminders are disabled in salon settings.",
+      "salon.reminder1hDisabled": "1-hour reminders are disabled in salon settings.",
+      "recipient.reminder24hDisabled": "The recipient turned off 24-hour reminders.",
+      "recipient.reminder1hDisabled": "The recipient turned off 1-hour reminders.",
+      "superseded": "A newer change to the booking replaced this notification."
     }
   }
 }

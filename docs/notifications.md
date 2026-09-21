@@ -270,3 +270,13 @@ Concurrency defaults: `notification.*` 10, `reminder.send` 10, `image.*` 2. Mult
 - Salon admin → Notifications page: log of `Notification` rows with status, recipient, type, time, error, **Resend**.
 - Platform → Jobs page: pg-boss queue sizes, failed jobs with retry, outbox lag, reminder rows due in the past still `SCHEDULED` (should be zero).
 - Metrics logged as structured events (`notification.sent`, `notification.failed`, `reminder.skipped`) for the log platform.
+
+---
+
+## 11. Implementation notes (Phase 10)
+
+- **Shipped:** outbox relay, pg-boss queues (`notification.dispatch`, `notification.sendEmail`, `reminder.send`, `reminder.sweep`), dispatcher with the §3 matrix and §3 preference resolution, reminders per §5 (claim → validate → dispatch, sweep every minute), SMTP/Resend/console/fake email providers, localized booking templates (bs/en) with details table and `.ics` attachment, salon Notifications page with filters and **Resend**, `GET/POST /me/notifications`.
+- **Templates** are rendered with the shared inline-styled layout (`email/templates/layout.ts`) rather than react-email: it keeps the worker free of React rendering and the output identical between web and worker. Message keys live under `emails.booking.*`.
+- **Manage links**: the plaintext guest token is never stored, so each guest email mints its own `BookingAccessToken` (7 days after the appointment ends) inside the notification transaction. Account holders are linked to `/account/bookings`; staff to the calendar day view.
+- **Deviation from §4:** `superseded` events (payload version ≠ current booking version) still notify staff; only the customer-facing items are recorded as `SKIPPED / superseded`, because the newer event notifies the customer again.
+- **Not yet:** push channel (Phase 11), platform Jobs page (§10), in-app bell UI, per-tenant email providers.

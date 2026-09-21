@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 9: klijentski dashboard"
+    "status": "Faza 10: email notifikacije"
   },
   "auth": {
     "fields": {
@@ -213,6 +213,74 @@
       "title": "Pridružite se salonu {salon}",
       "intro": "{salon} vas je dodao kao zaposlenog na {appName}. Napravite nalog sa ovom email adresom da vidite svoj raspored i termine.",
       "button": "Napravi nalog"
+    },
+    "booking": {
+      "minutes": "{count} min",
+      "manage": "Pogledaj ili upravljaj terminom",
+      "openAdmin": "Otvori u kalendaru",
+      "previous": "Prethodno zakazano za: {when}.",
+      "reason": "Razlog: {reason}",
+      "policy": "Besplatno otkazivanje ili pomjeranje do {when}.",
+      "footer": "Ovaj email primate zbog termina u salonu {salon}, rezervisanog putem {appName}.",
+      "icsDescription": "{service} kod {employee} u salonu {salon}.",
+      "labels": {
+        "salon": "Salon",
+        "service": "Usluga",
+        "employee": "Zaposleni",
+        "when": "Kada",
+        "duration": "Trajanje",
+        "price": "Cijena",
+        "code": "Šifra rezervacije",
+        "customer": "Klijent",
+        "address": "Adresa",
+        "phone": "Telefon",
+        "notes": "Napomena klijenta"
+      },
+      "confirmed": {
+        "subject": "Vaš termin u salonu {salon} je potvrđen – {when}",
+        "title": "Vaš termin je potvrđen",
+        "intro": "{salon} vas očekuje za uslugu {service} kod {employee}. Detalji:"
+      },
+      "pending": {
+        "subject": "Primili smo vaš zahtjev za termin – {salon}",
+        "title": "Zahtjev za termin primljen",
+        "intro": "{salon} će uskoro potvrditi vaš termin za uslugu {service}. Dobit ćete novi email kad bude potvrđen."
+      },
+      "rescheduled": {
+        "subject": "Vaš termin je pomjeren na {when}",
+        "title": "Vaš termin je pomjeren",
+        "intro": "Vaš termin za uslugu {service} u salonu {salon} sada je u vrijeme navedeno ispod."
+      },
+      "cancelled": {
+        "subject": "Vaš termin u salonu {salon} je otkazan",
+        "title": "Termin otkazan",
+        "intro": "Termin za uslugu {service} u salonu {salon} ({when}) je otkazan. Novi termin možete rezervisati u bilo kojem trenutku."
+      },
+      "reminder24h": {
+        "subject": "Podsjetnik: sutra u {time} – {salon}",
+        "title": "Vidimo se sutra",
+        "intro": "Kratki podsjetnik na vaš termin za uslugu {service} kod {employee} u salonu {salon}."
+      },
+      "reminder1h": {
+        "subject": "Vidimo se za sat – {salon}",
+        "title": "Vidimo se za sat",
+        "intro": "Vaš termin za uslugu {service} kod {employee} u salonu {salon} počinje u {time}."
+      },
+      "staffNew": {
+        "subject": "Nova rezervacija: {service} kod {employee}, {when}",
+        "title": "Nova rezervacija",
+        "intro": "{customer} je rezervisao/la uslugu {service} kod {employee}."
+      },
+      "staffRescheduled": {
+        "subject": "Pomjereno: {customer} → {when}",
+        "title": "Termin pomjeren",
+        "intro": "Termin klijenta {customer} za uslugu {service} je pomjeren."
+      },
+      "staffCancelled": {
+        "subject": "Otkazano: {customer}, {when}",
+        "title": "Termin otkazan",
+        "intro": "Termin klijenta {customer} za uslugu {service} kod {employee} je otkazan."
+      }
     }
   },
   "errors": {
@@ -873,6 +941,43 @@
       "internalNotes": "Interna napomena",
       "submit": "Kreiraj rezervaciju",
       "error": "Rezervacija nije kreirana."
+    }
+  },
+  "notificationType": {
+    "BOOKING_PENDING": "Zahtjev za termin primljen",
+    "BOOKING_CONFIRMED": "Termin potvrđen",
+    "BOOKING_RESCHEDULED": "Termin pomjeren",
+    "BOOKING_CANCELLED": "Termin otkazan",
+    "REMINDER_24H": "Podsjetnik (24 h)",
+    "REMINDER_1H": "Podsjetnik (1 h)",
+    "STAFF_NEW_BOOKING": "Nova rezervacija (osoblje)",
+    "STAFF_BOOKING_RESCHEDULED": "Termin pomjeren (osoblje)",
+    "STAFF_BOOKING_CANCELLED": "Termin otkazan (osoblje)"
+  },
+  "notificationsAdmin": {
+    "title": "Notifikacije",
+    "subtitle": "Svi emailovi koje je sistem poslao (ili odlučio ne poslati) za termine ovog salona.",
+    "all": "Sve",
+    "empty": "Još nema notifikacija.",
+    "resend": "Pošalji ponovo",
+    "resent": "Email je ponovo poslan.",
+    "resendFailed": "Slanje ponovo nije uspjelo; pogledajte grešku u redu.",
+    "attempts": "{count, plural, one {# pokušaj} few {# pokušaja} other {# pokušaja}}",
+    "status": {
+      "QUEUED": "U redu čekanja",
+      "SENT": "Poslano",
+      "FAILED": "Neuspjelo",
+      "SKIPPED": "Preskočeno"
+    },
+    "skip": {
+      "salon.emailDisabled": "Email notifikacije su isključene u postavkama salona.",
+      "recipient.noEmail": "Primalac nema email adresu.",
+      "recipient.emailDisabled": "Primalac je isključio email notifikacije.",
+      "salon.reminder24hDisabled": "Podsjetnici 24 h prije su isključeni u postavkama salona.",
+      "salon.reminder1hDisabled": "Podsjetnici 1 h prije su isključeni u postavkama salona.",
+      "recipient.reminder24hDisabled": "Primalac je isključio podsjetnike 24 h prije.",
+      "recipient.reminder1hDisabled": "Primalac je isključio podsjetnike 1 h prije.",
+      "superseded": "Novija izmjena termina zamijenila je ovu notifikaciju."
     }
   }
 }

@@ -23,6 +23,7 @@ export const TENANT_MODELS = [
   "BookingAccessToken",
   "OutboxEvent",
   "AuditLog",
+  "Notification",
 ] as const;
 
 export type TenantModel = (typeof TENANT_MODELS)[number];

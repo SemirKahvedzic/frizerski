@@ -9,9 +9,12 @@ export type EmailMessage = {
   html: string;
   text: string;
   replyTo?: string;
+  attachments?: EmailAttachment[];
   /** Free-form metadata for logs/provider tags (never rendered). */
   tags?: Record<string, string>;
 };
+
+export type EmailAttachment = { filename: string; content: string; contentType: string };
 
 export type EmailSendResult = {
   providerMessageId: string;

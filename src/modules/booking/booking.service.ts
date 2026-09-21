@@ -515,6 +515,7 @@ export async function createBooking(params: CreateBookingParams): Promise<Create
           status,
           employeeId,
           customerId: customer.id,
+          actorUserId,
         });
 
         const row = await loadBookingRow(tx, { id: created.id });
@@ -916,6 +917,7 @@ export async function rescheduleBooking(
         previousEmployeeId: row.employee.id,
         newEmployeeId: employeeId,
         actor: target.label,
+        actorUserId: target.userId,
       });
 
       return toView(await loadBookingRow(tx, { id: row.id }), now);
@@ -995,6 +997,7 @@ export async function cancelBooking(
       version: row.version + 1,
       cancelledBy: target.label,
       reason: input.reason,
+      actorUserId: target.userId,
     });
     return toView(await loadBookingRow(tx, { id: row.id }), now);
   });
@@ -1069,6 +1072,7 @@ export async function changeBookingStatus(
       version: row.version + 1,
       from: row.status,
       to: input.status,
+      actorUserId: ctx.actor.kind === "user" ? ctx.actor.userId : null,
     });
     return toView(await loadBookingRow(tx, { id: row.id }), now);
   });

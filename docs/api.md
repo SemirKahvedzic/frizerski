@@ -133,7 +133,7 @@ Handled by Better Auth: `POST sign-up/email`, `POST sign-in/email`, `POST sign-o
 | POST      | `/me/bookings/:id/reschedule`              | `{ startsAt, employeeId?, version }`.                                                                                                              |
 | POST      | `/me/bookings/:id/cancel`                  | `{ reason?, version }`.                                                                                                                            |
 | GET / PUT | `/me/notification-preferences`             | `{ emailEnabled, pushEnabled, reminder24h, reminder1h, marketingEmails }`. Defaults are returned when the user has not saved yet.                  |
-| GET       | `/me/notifications`                        | In-app notification feed (`IN_APP` channel rows).                                                                                                  |
+| GET       | `/me/notifications`                        | In-app notification feed (`IN_APP` channel rows); `?limit&unread=true`; `meta.unread`. `POST /me/notifications/:id/read` marks one read.           |
 | POST      | `/me/push-subscriptions`                   | `{ platform: "WEB", endpoint, keys: { p256dh, auth }, userAgent }`. Idempotent on endpoint.                                                        |
 | DELETE    | `/me/push-subscriptions`                   | `{ endpoint }`.                                                                                                                                    |
 | GET       | `/me/sessions` / DELETE `/me/sessions/:id` | Session management (via Better Auth).                                                                                                              |

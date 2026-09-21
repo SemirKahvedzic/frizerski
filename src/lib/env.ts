@@ -20,6 +20,9 @@ const serverSchema = z.object({
   DATABASE_POOL_MAX: z.coerce.number().int().positive().default(10),
 
   WORKER_HEALTH_PORT: z.coerce.number().int().min(1).max(65535).default(3001),
+  /** pg-boss schema name; the worker creates it on first start. */
+  PGBOSS_SCHEMA: z.string().min(1).default("pgboss"),
+  OUTBOX_POLL_MS: z.coerce.number().int().min(250).max(60_000).default(2000),
 
   RATE_LIMIT_PROVIDER: z.enum(["memory", "postgres"]).default("memory"),
 
@@ -32,7 +35,8 @@ const serverSchema = z.object({
   AUTH_RATE_LIMIT: z.enum(["on", "off"]).default("on"),
 
   // --- Email ---
-  EMAIL_PROVIDER: z.enum(["smtp", "console", "fake"]).default("smtp"),
+  EMAIL_PROVIDER: z.enum(["smtp", "resend", "console", "fake"]).default("smtp"),
+  RESEND_API_KEY: z.string().optional(),
   EMAIL_FROM: z.string().min(3).default("Bookly <no-reply@localhost>"),
   SMTP_HOST: z.string().default("localhost"),
   SMTP_PORT: z.coerce.number().int().default(1025),

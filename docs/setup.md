@@ -54,7 +54,8 @@ GOOGLE_CLIENT_ID=                             # optional; OAuth enabled when bot
 GOOGLE_CLIENT_SECRET=
 
 # --- Email ---
-EMAIL_PROVIDER=smtp                           # smtp | console | fake  (resend added in the notifications phase)
+EMAIL_PROVIDER=smtp                           # smtp | resend | console | fake
+RESEND_API_KEY=                               # required when EMAIL_PROVIDER=resend
 EMAIL_FROM="Bookly <no-reply@localhost>"
 RESEND_API_KEY=
 SMTP_HOST=localhost
@@ -86,6 +87,8 @@ JOB_QUEUE=pgboss                              # pgboss | fake
 PGBOSS_SCHEMA=pgboss
 OUTBOX_POLL_MS=2000
 WORKER_HEALTH_PORT=3001
+PGBOSS_SCHEMA=pgboss                          # pg-boss tables live in this schema of DATABASE_URL
+OUTBOX_POLL_MS=2000                           # outbox relay interval
 
 # --- Observability ---
 ERROR_TRACKER=none                            # none | sentry

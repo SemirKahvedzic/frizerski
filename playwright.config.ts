@@ -19,10 +19,18 @@ export default defineConfig({
     { name: "chromium-desktop", use: { ...devices["Desktop Chrome"] } },
     { name: "chromium-mobile", use: { ...devices["Pixel 7"] } },
   ],
-  webServer: {
-    command: isCI ? "pnpm start" : "pnpm dev:web",
-    url: `${baseURL}/api/health`,
-    reuseExistingServer: !isCI,
-    timeout: 120_000,
-  },
+  webServer: [
+    {
+      command: isCI ? "pnpm start" : "pnpm dev:web",
+      url: `${baseURL}/api/health`,
+      reuseExistingServer: !isCI,
+      timeout: 120_000,
+    },
+    {
+      command: "pnpm start:worker",
+      url: `http://localhost:${process.env["WORKER_HEALTH_PORT"] ?? "3001"}/health`,
+      reuseExistingServer: !isCI,
+      timeout: 120_000,
+    },
+  ],
 });

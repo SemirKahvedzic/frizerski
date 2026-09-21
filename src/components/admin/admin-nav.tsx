@@ -48,7 +48,7 @@ export const ADMIN_NAV: NavItem[] = [
   { key: "workingHours", segment: "working-hours", icon: Clock, enabled: true },
   { key: "availability", segment: "availability", icon: BarChart3, enabled: true },
   { key: "gallery", segment: "gallery", icon: Images, enabled: false },
-  { key: "notifications", segment: "notifications", icon: Bell, enabled: false },
+  { key: "notifications", segment: "notifications", icon: Bell, enabled: true },
   { key: "settings", segment: "settings", icon: Settings, enabled: true },
 ];
 

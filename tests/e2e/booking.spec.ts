@@ -1,5 +1,22 @@
 import { expect, test } from "./fixtures";
-import { type Page } from "@playwright/test";
+import { type APIRequestContext, type Page } from "@playwright/test";
+
+const MAILPIT_URL = process.env["MAILPIT_URL"] ?? "http://localhost:8025";
+
+async function findMailpitMessage(request: APIRequestContext, to: string, subjectPart: string) {
+  for (let attempt = 0; attempt < 40; attempt += 1) {
+    const response = await request.get(`${MAILPIT_URL}/api/v1/search`, {
+      params: { query: `to:${to}` },
+    });
+    if (response.ok()) {
+      const body = (await response.json()) as { messages: Array<{ Subject: string; ID: string }> };
+      const hit = body.messages.find((m) => m.Subject.includes(subjectPart));
+      if (hit) return hit;
+    }
+    await new Promise((r) => setTimeout(r, 500));
+  }
+  return null;
+}
 
 const OWNER_PASSWORD = process.env["SEED_OWNER_PASSWORD"] ?? "Owner12345!";
 
@@ -15,6 +32,7 @@ test.describe("booking flow", () => {
   test("guest books online, admin sees it, guest reschedules and cancels via the manage link", async ({
     page,
     browser,
+    request,
   }, testInfo) => {
     const email = `guest-${testInfo.project.name}-${Date.now()}@e2e.local`;
 
@@ -61,6 +79,10 @@ test.describe("booking flow", () => {
     await expect(page.getByTestId("step-done")).toBeVisible({ timeout: 15_000 });
     const manageHref = await page.getByTestId("manage-link").getAttribute("href");
     expect(manageHref).toContain("/en/b/");
+
+    // The worker relays the outbox and delivers the confirmation email (Mailpit).
+    const confirmation = await findMailpitMessage(request, email, "Studio Example");
+    expect(confirmation, "confirmation email should reach Mailpit").not.toBeNull();
 
     // Admin sees the booking in Appointments.
     const admin = await browser.newContext();

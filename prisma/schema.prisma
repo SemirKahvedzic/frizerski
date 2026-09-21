@@ -91,6 +91,31 @@ enum OutboxStatus {
   FAILED
 }
 
+enum NotificationChannel {
+  EMAIL
+  PUSH
+  IN_APP
+}
+
+enum NotificationType {
+  BOOKING_PENDING
+  BOOKING_CONFIRMED
+  BOOKING_RESCHEDULED
+  BOOKING_CANCELLED
+  REMINDER_24H
+  REMINDER_1H
+  STAFF_NEW_BOOKING
+  STAFF_BOOKING_RESCHEDULED
+  STAFF_BOOKING_CANCELLED
+}
+
+enum NotificationStatus {
+  QUEUED
+  SENT
+  FAILED
+  SKIPPED
+}
+
 // ---------------------------------------------------------------------------
 // Identity (Better Auth core tables + application fields)
 // ---------------------------------------------------------------------------
@@ -122,6 +147,7 @@ model User {
   bookingsCancelled Booking[]              @relation("BookingCancelledBy")
   statusChanges     BookingStatusHistory[]
   notificationPreference NotificationPreference?
+  notifications          Notification[]
 
   @@map("users")
 }
@@ -228,6 +254,7 @@ model Salon {
   reminders      BookingReminder[]
   accessTokens   BookingAccessToken[]
   outboxEvents   OutboxEvent[]
+  notifications  Notification[]
 
   @@index([status])
   @@map("salons")
@@ -727,4 +754,41 @@ model NotificationPreference {
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("notification_preferences")
+}
+
+/// One delivery attempt per (booking, type, channel, recipient, version):
+/// `dedupeKey` makes the dispatcher idempotent (docs/notifications.md §4).
+/// `bookingId` is a plain reference (no FK) so the log survives a
+/// booking's lifecycle independently; rows are removed with the salon.
+model Notification {
+  id                String              @id @default(uuid(7))
+  salonId           String?             @map("salon_id")
+  bookingId         String?             @map("booking_id")
+  userId            String?             @map("user_id")
+  customerId        String?             @map("customer_id")
+  channel           NotificationChannel
+  type              NotificationType
+  status            NotificationStatus  @default(QUEUED)
+  /// Email address, push subscription id or user id, depending on channel.
+  recipient         String
+  locale            String
+  subject           String?
+  payload           Json
+  dedupeKey         String              @unique @map("dedupe_key")
+  attempts          Int                 @default(0)
+  error             String?
+  providerMessageId String?             @map("provider_message_id")
+  sentAt            DateTime?           @map("sent_at") @db.Timestamptz(3)
+  readAt            DateTime?           @map("read_at") @db.Timestamptz(3)
+  createdAt         DateTime            @default(now()) @map("created_at") @db.Timestamptz(3)
+  updatedAt         DateTime            @updatedAt @map("updated_at") @db.Timestamptz(3)
+
+  salon Salon? @relation(fields: [salonId], references: [id], onDelete: Cascade)
+  user  User?  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([salonId, createdAt])
+  @@index([bookingId])
+  @@index([userId, channel, readAt])
+  @@index([status, channel])
+  @@map("notifications")
 }

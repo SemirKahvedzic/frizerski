@@ -4,6 +4,7 @@ import {
   ConsoleEmailProvider,
   FakeEmailProvider,
 } from "@/modules/notifications/email/providers/memory";
+import { ResendEmailProvider } from "@/modules/notifications/email/providers/resend";
 import { SmtpEmailProvider } from "@/modules/notifications/email/providers/smtp";
 import type { EmailMessage, EmailProvider } from "@/modules/notifications/email/types";
 
@@ -20,6 +21,8 @@ function createFromEnv(): EmailProvider {
         pass: env.SMTP_PASS,
         from: env.EMAIL_FROM,
       });
+    case "resend":
+      return new ResendEmailProvider({ apiKey: env.RESEND_API_KEY ?? "", from: env.EMAIL_FROM });
     case "console":
       return new ConsoleEmailProvider();
     case "fake":
