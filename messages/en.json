@@ -33,7 +33,7 @@
         "description": "Email and push notifications 24 hours and 1 hour before every appointment."
       }
     },
-    "status": "Phase 10: email notifications"
+    "status": "Phase 11: web push and PWA"
   },
   "auth": {
     "fields": {
@@ -180,12 +180,24 @@
       },
       "hints": {
         "emailEnabled": "Confirmations, changes and cancellations by email.",
-        "pushEnabled": "Browser notifications. Available soon.",
+        "pushEnabled": "Browser notifications on devices where you enabled them below.",
         "reminder24h": "A heads-up the day before your appointment.",
         "reminder1h": "A last-minute reminder shortly before.",
         "marketingEmails": "Occasional news from salons you visit."
       },
-      "save": "Save preferences"
+      "save": "Save preferences",
+      "push": {
+        "title": "Push on this device",
+        "subtitle": "Get appointment updates as system notifications, even when the site is closed.",
+        "checking": "Checking this browser…",
+        "unsupported": "This browser does not support push notifications. On iPhone, add the site to your Home Screen first.",
+        "serverDisabled": "Push notifications are not configured on this server yet.",
+        "denied": "Notifications are blocked for this site. Allow them in your browser settings to enable push.",
+        "enable": "Enable on this device",
+        "disable": "Turn off here",
+        "enabledHere": "Enabled on this device",
+        "error": "Could not enable push notifications."
+      }
     }
   },
   "emails": {
@@ -977,7 +989,16 @@
       "salon_reminder1hDisabled": "1-hour reminders are disabled in salon settings.",
       "recipient_reminder24hDisabled": "The recipient turned off 24-hour reminders.",
       "recipient_reminder1hDisabled": "The recipient turned off 1-hour reminders.",
-      "superseded": "A newer change to the booking replaced this notification."
-    }
+      "superseded": "A newer change to the booking replaced this notification.",
+      "salon_pushDisabled": "Push notifications are disabled in salon settings.",
+      "recipient_pushDisabled": "The recipient has not enabled push notifications.",
+      "recipient_noSubscription": "The recipient has no device subscribed to push."
+    },
+    "channel": {
+      "EMAIL": "Email",
+      "PUSH": "Push",
+      "IN_APP": "In-app"
+    },
+    "pushHint": "Staff receive push notifications on devices where they enabled them in their account settings."
   }
 }

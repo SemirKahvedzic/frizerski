@@ -68,7 +68,7 @@ export function NotificationPreferencesForm({ initial, action }: Props) {
         </CardHeader>
         <CardContent className="divide-y">
           {toggle("emailEnabled")}
-          {toggle("pushEnabled", true)}
+          {toggle("pushEnabled")}
         </CardContent>
       </Card>
       <Card>

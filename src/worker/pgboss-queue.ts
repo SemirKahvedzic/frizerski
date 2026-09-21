@@ -6,6 +6,7 @@ import { JOBS, type JobName, type JobQueue, type SendJobOptions } from "@/module
 export const QUEUE_DEFINITIONS: { name: JobName; retryLimit: number; retryDelay: number }[] = [
   { name: JOBS.dispatch, retryLimit: 5, retryDelay: 5 },
   { name: JOBS.sendEmail, retryLimit: 5, retryDelay: 30 },
+  { name: JOBS.sendPush, retryLimit: 3, retryDelay: 30 },
   { name: JOBS.reminderSend, retryLimit: 3, retryDelay: 60 },
   { name: JOBS.reminderSweep, retryLimit: 0, retryDelay: 0 },
 ];

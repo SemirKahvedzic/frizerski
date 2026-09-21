@@ -33,7 +33,7 @@
         "description": "Email i push notifikacije 24 sata i 1 sat prije svakog termina."
       }
     },
-    "status": "Faza 10: email notifikacije"
+    "status": "Faza 11: web push i PWA"
   },
   "auth": {
     "fields": {
@@ -180,12 +180,24 @@
       },
       "hints": {
         "emailEnabled": "Potvrde, izmjene i otkazivanja emailom.",
-        "pushEnabled": "Obavijesti u pregledniku. Dostupno uskoro.",
+        "pushEnabled": "Obavijesti u pregledniku na uređajima na kojima ih uključite ispod.",
         "reminder24h": "Najava dan prije termina.",
         "reminder1h": "Podsjetnik neposredno prije termina.",
         "marketingEmails": "Povremene novosti iz salona koje posjećujete."
       },
-      "save": "Sačuvaj postavke"
+      "save": "Sačuvaj postavke",
+      "push": {
+        "title": "Push na ovom uređaju",
+        "subtitle": "Primajte obavijesti o terminima kao sistemske notifikacije, i kad je stranica zatvorena.",
+        "checking": "Provjeravam preglednik…",
+        "unsupported": "Ovaj preglednik ne podržava push obavijesti. Na iPhoneu prvo dodajte stranicu na početni ekran.",
+        "serverDisabled": "Push obavijesti još nisu konfigurisane na ovom serveru.",
+        "denied": "Obavijesti su blokirane za ovu stranicu. Dozvolite ih u postavkama preglednika.",
+        "enable": "Uključi na ovom uređaju",
+        "disable": "Isključi ovdje",
+        "enabledHere": "Uključeno na ovom uređaju",
+        "error": "Push obavijesti nije moguće uključiti."
+      }
     }
   },
   "emails": {
@@ -977,7 +989,16 @@
       "salon_reminder1hDisabled": "Podsjetnici 1 h prije su isključeni u postavkama salona.",
       "recipient_reminder24hDisabled": "Primalac je isključio podsjetnike 24 h prije.",
       "recipient_reminder1hDisabled": "Primalac je isključio podsjetnike 1 h prije.",
-      "superseded": "Novija izmjena termina zamijenila je ovu notifikaciju."
-    }
+      "superseded": "Novija izmjena termina zamijenila je ovu notifikaciju.",
+      "salon_pushDisabled": "Push obavijesti su isključene u postavkama salona.",
+      "recipient_pushDisabled": "Primalac nije uključio push obavijesti.",
+      "recipient_noSubscription": "Primalac nema uređaj prijavljen za push."
+    },
+    "channel": {
+      "EMAIL": "Email",
+      "PUSH": "Push",
+      "IN_APP": "U aplikaciji"
+    },
+    "pushHint": "Osoblje prima push obavijesti na uređajima na kojima ih je uključilo u postavkama svog naloga."
   }
 }

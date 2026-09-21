@@ -13,6 +13,7 @@ import {
   relayOutbox,
   sendDueReminder,
   sendEmailNotification,
+  sendPushNotification,
   sweepReminders,
   type DomainEvent,
 } from "@/modules/notifications";
@@ -89,6 +90,13 @@ async function startQueue(): Promise<PgBossQueue> {
     { localConcurrency: 10 },
     async (jobs: Job<{ notificationId: string }>[]) => {
       for (const job of jobs) await sendEmailNotification(job.data.notificationId);
+    },
+  );
+  await boss.work<{ notificationId: string }>(
+    JOBS.sendPush,
+    { localConcurrency: 10 },
+    async (jobs: Job<{ notificationId: string }>[]) => {
+      for (const job of jobs) await sendPushNotification(job.data.notificationId);
     },
   );
   await boss.work<{ reminderId: string }>(

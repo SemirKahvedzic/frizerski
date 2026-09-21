@@ -34,6 +34,13 @@ const serverSchema = z.object({
   /** Better Auth's built-in limiter; `off` only for automated test runs. */
   AUTH_RATE_LIMIT: z.enum(["on", "off"]).default("on"),
 
+  // --- Web push (VAPID) ---
+  PUSH_PROVIDER: z.enum(["webpush", "fake", "off"]).default("off"),
+  VAPID_PUBLIC_KEY: z.string().optional(),
+  VAPID_PRIVATE_KEY: z.string().optional(),
+  /** mailto: or https: URL identifying the sender to push services. */
+  VAPID_SUBJECT: z.string().optional(),
+
   // --- Email ---
   EMAIL_PROVIDER: z.enum(["smtp", "resend", "console", "fake"]).default("smtp"),
   RESEND_API_KEY: z.string().optional(),

@@ -36,12 +36,12 @@ export default async function NotificationsPage({
   const [t, salon, page] = await Promise.all([
     getTranslations("notificationsAdmin"),
     getSalon(ctx),
-    listNotificationsForSalon(ctx, { limit: 100, status, channel: "EMAIL" }),
+    listNotificationsForSalon(ctx, { limit: 100, status }),
   ]);
 
   return (
     <>
-      <PageHeader title={t("title")} description={t("subtitle")} />
+      <PageHeader title={t("title")} description={`${t("subtitle")} ${t("pushHint")}`} />
       <NotificationLog
         salonSlug={ctx.salonSlug}
         timezone={salon.timezone}

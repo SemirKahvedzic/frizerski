@@ -61,6 +61,7 @@ const userSelect = {
   locale: true,
   isActive: true,
   notificationPreference: true,
+  pushSubscriptions: { where: { failedAt: null }, select: { id: true } },
 } as const;
 
 type UserRow = {
@@ -70,6 +71,7 @@ type UserRow = {
   locale: string | null;
   isActive: boolean;
   notificationPreference: RecipientPrefs | null;
+  pushSubscriptions: { id: string }[];
 };
 
 function staffRecipient(user: UserRow, fallbackLocale: AppLocale): Recipient {
@@ -81,6 +83,7 @@ function staffRecipient(user: UserRow, fallbackLocale: AppLocale): Recipient {
     locale: normalizeLocale(user.locale ?? fallbackLocale),
     userId: user.id,
     prefs: prefs(user.notificationPreference),
+    pushSubscriptions: user.pushSubscriptions.length,
   };
 }
 
@@ -162,6 +165,7 @@ export async function loadBookingNotificationModel(
       locale: salonLocale,
       userId: null,
       prefs: null,
+      pushSubscriptions: 0,
     };
   };
 
@@ -189,11 +193,13 @@ export async function loadBookingNotificationModel(
     locale: normalizeLocale(row.customer.user?.locale ?? salonLocale),
     userId: row.customer.userId,
     prefs: prefs(row.customer.user?.notificationPreference),
+    pushSubscriptions: row.customer.user?.pushSubscriptions.length ?? 0,
   };
 
   return {
     settings: {
       emailNotificationsEnabled: settings?.emailNotificationsEnabled ?? true,
+      pushNotificationsEnabled: settings?.pushNotificationsEnabled ?? true,
       notifyAdminsOnNewBooking: settings?.notifyAdminsOnNewBooking ?? true,
       notifyEmployeeOnNewBooking: settings?.notifyEmployeeOnNewBooking ?? true,
       reminder24hEnabled: settings?.reminder24hEnabled ?? true,

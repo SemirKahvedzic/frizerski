@@ -2,6 +2,7 @@ import { expect, test } from "./fixtures";
 import { type APIRequestContext } from "@playwright/test";
 
 const MAILPIT_URL = process.env["MAILPIT_URL"] ?? "http://localhost:8025";
+const ORIGIN = process.env["E2E_BASE_URL"] ?? "http://localhost:3000";
 const PASSWORD = "playwright-pass-1";
 
 function uniqueEmail() {
@@ -76,7 +77,7 @@ test.describe("authentication", () => {
     const email = uniqueEmail();
     const signUp = await request.post("/api/auth/sign-up/email", {
       data: { email, password: PASSWORD, name: "Reset Person", locale: "en" },
-      headers: { origin: "http://localhost:3000" },
+      headers: { origin: ORIGIN },
     });
     expect(signUp.ok()).toBeTruthy();
 

@@ -64,4 +64,31 @@ test.describe("client dashboard", () => {
     await page.getByTestId("preferences-save").click();
     await expect(page.locator('[data-slot="alert"]')).toContainText("Saved.");
   });
+  test("push section is offered on the notifications page and the VAPID endpoint responds", async ({
+    page,
+    request,
+  }, testInfo) => {
+    test.skip(testInfo.project.name === "chromium-mobile", "desktop only");
+    const config = await request.get("/api/v1/push/vapid-public-key");
+    expect(config.ok()).toBeTruthy();
+    const body = (await config.json()) as { data: { enabled: boolean } };
+
+    await loginAsAmina(page);
+    await page.goto("/en/account/notifications");
+    const card = page.getByTestId("push-toggle");
+    await expect(card).toBeVisible();
+    if (body.data.enabled) {
+      await expect(
+        page
+          .getByTestId("push-enable")
+          .or(page.getByTestId("push-disable"))
+          .or(page.getByTestId("push-denied")),
+      ).toBeVisible();
+    } else {
+      await expect(page.getByTestId("push-disabled")).toBeVisible();
+    }
+    // Installable: manifest and service worker are served.
+    expect((await request.get("/manifest.webmanifest")).ok()).toBeTruthy();
+    expect((await request.get("/sw.js")).ok()).toBeTruthy();
+  });
 });

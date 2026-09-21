@@ -16,7 +16,7 @@ export type NotificationType =
   | "STAFF_BOOKING_RESCHEDULED"
   | "STAFF_BOOKING_CANCELLED";
 
-export type Channel = "EMAIL" | "IN_APP";
+export type Channel = "EMAIL" | "PUSH" | "IN_APP";
 
 export type RecipientPrefs = {
   emailEnabled: boolean;
@@ -36,10 +36,13 @@ export type Recipient = {
   userId: string | null;
   /** `null` for guests (no account) → email on, reminders on. */
   prefs: RecipientPrefs | null;
+  /** Active (non-failed) push subscriptions; 0 for guests. */
+  pushSubscriptions: number;
 };
 
 export type PlanSettings = {
   emailNotificationsEnabled: boolean;
+  pushNotificationsEnabled: boolean;
   notifyAdminsOnNewBooking: boolean;
   notifyEmployeeOnNewBooking: boolean;
   reminder24hEnabled: boolean;
@@ -135,6 +138,27 @@ function emailSkipReason(
   return null;
 }
 
+function pushSkipReason(
+  recipient: Recipient,
+  settings: PlanSettings,
+  trigger: Trigger,
+): string | null {
+  if (!settings.pushNotificationsEnabled) return "salon.pushDisabled";
+  if (!recipient.prefs?.pushEnabled) return "recipient.pushDisabled";
+  if (recipient.pushSubscriptions === 0) return "recipient.noSubscription";
+  if (trigger.kind === "reminder") {
+    if (trigger.reminderKind === "H24" && !settings.reminder24hEnabled)
+      return "salon.reminder24hDisabled";
+    if (trigger.reminderKind === "H1" && !settings.reminder1hEnabled)
+      return "salon.reminder1hDisabled";
+    if (trigger.reminderKind === "H24" && !recipient.prefs.reminder24h)
+      return "recipient.reminder24hDisabled";
+    if (trigger.reminderKind === "H1" && !recipient.prefs.reminder1h)
+      return "recipient.reminder1hDisabled";
+  }
+  return null;
+}
+
 export function buildPlan(
   trigger: Trigger,
   model: PlanModel,
@@ -151,8 +175,16 @@ export function buildPlan(
       recipient: model.customer,
       skipReason: emailSkipReason(model.customer, settings, trigger, true),
     });
-    if (model.customer.userId && trigger.kind !== "reminder") {
-      items.push({ type: cType, channel: "IN_APP", recipient: model.customer, skipReason: null });
+    if (model.customer.userId) {
+      items.push({
+        type: cType,
+        channel: "PUSH",
+        recipient: model.customer,
+        skipReason: pushSkipReason(model.customer, settings, trigger),
+      });
+      if (trigger.kind !== "reminder") {
+        items.push({ type: cType, channel: "IN_APP", recipient: model.customer, skipReason: null });
+      }
     }
   }
 
@@ -180,6 +212,12 @@ export function buildPlan(
         skipReason: emailSkipReason(recipient, settings, trigger, false),
       });
       if (recipient.userId) {
+        items.push({
+          type: sType,
+          channel: "PUSH",
+          recipient,
+          skipReason: pushSkipReason(recipient, settings, trigger),
+        });
         items.push({ type: sType, channel: "IN_APP", recipient, skipReason: null });
       }
     }

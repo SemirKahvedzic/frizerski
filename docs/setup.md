@@ -54,6 +54,10 @@ GOOGLE_CLIENT_ID=                             # optional; OAuth enabled when bot
 GOOGLE_CLIENT_SECRET=
 
 # --- Email ---
+PUSH_PROVIDER=off                             # webpush | fake | off; generate VAPID keys with `pnpm push:vapid`
+VAPID_PUBLIC_KEY=
+VAPID_PRIVATE_KEY=
+VAPID_SUBJECT=mailto:admin@example.com
 EMAIL_PROVIDER=smtp                           # smtp | resend | console | fake
 RESEND_API_KEY=                               # required when EMAIL_PROVIDER=resend
 EMAIL_FROM="Bookly <no-reply@localhost>"

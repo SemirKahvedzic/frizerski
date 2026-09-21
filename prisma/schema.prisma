@@ -116,6 +116,12 @@ enum NotificationStatus {
   SKIPPED
 }
 
+enum PushPlatform {
+  WEB
+  IOS
+  ANDROID
+}
+
 // ---------------------------------------------------------------------------
 // Identity (Better Auth core tables + application fields)
 // ---------------------------------------------------------------------------
@@ -148,6 +154,7 @@ model User {
   statusChanges     BookingStatusHistory[]
   notificationPreference NotificationPreference?
   notifications          Notification[]
+  pushSubscriptions      PushSubscription[]
 
   @@map("users")
 }
@@ -791,4 +798,26 @@ model Notification {
   @@index([userId, channel, readAt])
   @@index([status, channel])
   @@map("notifications")
+}
+
+/// One row per device/browser subscription (docs/notifications.md §7).
+/// `failedAt` is set when the push service reports 404/410; such rows are
+/// ignored by the dispatcher and purged by maintenance.
+model PushSubscription {
+  id         String       @id @default(uuid(7))
+  userId     String       @map("user_id")
+  platform   PushPlatform @default(WEB)
+  endpoint   String       @unique
+  p256dh     String?
+  auth       String?
+  userAgent  String?      @map("user_agent")
+  locale     String?
+  lastSeenAt DateTime     @default(now()) @map("last_seen_at") @db.Timestamptz(3)
+  failedAt   DateTime?    @map("failed_at") @db.Timestamptz(3)
+  createdAt  DateTime     @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, failedAt])
+  @@map("push_subscriptions")
 }

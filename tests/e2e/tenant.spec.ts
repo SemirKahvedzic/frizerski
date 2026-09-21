@@ -2,6 +2,7 @@ import { expect, test } from "./fixtures";
 import { type APIRequestContext, type Page } from "@playwright/test";
 
 const MAILPIT_URL = process.env["MAILPIT_URL"] ?? "http://localhost:8025";
+const ORIGIN = process.env["E2E_BASE_URL"] ?? "http://localhost:3000";
 const PASSWORD = "playwright-pass-1";
 const SUPER_ADMIN_EMAIL = process.env["SEED_SUPER_ADMIN_EMAIL"] ?? "admin@platform.local";
 const SUPER_ADMIN_PASSWORD = process.env["SEED_SUPER_ADMIN_PASSWORD"] ?? "Admin12345!";
@@ -45,7 +46,7 @@ async function registerVerified(
       locale,
       callbackURL: `/${locale}/account`,
     },
-    headers: { origin: "http://localhost:3000" },
+    headers: { origin: ORIGIN },
   });
   expect(signUp.ok()).toBeTruthy();
   const link = await verificationLink(request, email);

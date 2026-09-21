@@ -11,6 +11,7 @@ import {
   renderBookingEmail,
   type RenderContext,
 } from "@/modules/notifications/render/booking-email";
+import { renderPushMessage } from "@/modules/notifications/render/push";
 
 export type DispatchDeps = { queue: JobQueue; now?: () => Date };
 
@@ -130,6 +131,21 @@ export async function persistPlan(
           });
         }
 
+        if (item.channel === "PUSH") {
+          const url = await manageUrlFor(tx, model, item.recipient, item.recipient.locale);
+          const push = await renderPushMessage(item.type, model, item.recipient, url);
+          return tx.notification.create({
+            data: {
+              ...common,
+              status: "QUEUED",
+              recipient: item.recipient.key,
+              subject: push.title,
+              payload: push as unknown as Prisma.InputJsonValue,
+            },
+            select: { id: true, status: true, channel: true },
+          });
+        }
+
         const manageUrl = await manageUrlFor(tx, model, item.recipient, item.recipient.locale);
         const rendered = await renderBookingEmail(item.type, model, item.recipient, {
           ...options.render,
@@ -167,6 +183,9 @@ export async function persistPlan(
       else result.created += 1;
       if (created.status === "QUEUED" && created.channel === "EMAIL") {
         await deps.queue.send(JOBS.sendEmail, { notificationId: created.id });
+      }
+      if (created.status === "QUEUED" && created.channel === "PUSH") {
+        await deps.queue.send(JOBS.sendPush, { notificationId: created.id });
       }
     } catch (error) {
       if (isUniqueViolation(error)) {

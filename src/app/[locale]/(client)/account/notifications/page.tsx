@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
 import { NotificationPreferencesForm } from "@/components/account/notification-preferences-form";
+import { PushToggle } from "@/components/account/push-toggle";
 import { resolveLocaleParam } from "@/i18n/params";
 import { getNotificationPreferences } from "@/modules/account";
 
@@ -30,7 +31,8 @@ export default async function NotificationsPage({
     <section>
       <h1 className="text-2xl font-semibold tracking-tight">{t("title")}</h1>
       <p className="mt-1 text-sm text-muted-foreground">{t("subtitle")}</p>
-      <div className="mt-6">
+      <div className="mt-6 space-y-6">
+        <PushToggle />
         <NotificationPreferencesForm
           initial={preferences}
           action={updateNotificationPreferencesAction}

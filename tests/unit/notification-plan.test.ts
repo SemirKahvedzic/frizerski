@@ -10,7 +10,7 @@ import { renderIcs } from "@/modules/notifications/render/ics";
 
 const prefsOn = {
   emailEnabled: true,
-  pushEnabled: false,
+  pushEnabled: true,
   reminder24h: true,
   reminder1h: true,
   marketingEmails: false,
@@ -24,6 +24,7 @@ const guest: Recipient = {
   locale: "bs",
   userId: null,
   prefs: null,
+  pushSubscriptions: 0,
 };
 const owner: Recipient = {
   key: "user:u-owner",
@@ -33,6 +34,7 @@ const owner: Recipient = {
   locale: "en",
   userId: "u-owner",
   prefs: prefsOn,
+  pushSubscriptions: 1,
 };
 const employee: Recipient = {
   key: "user:u-emp",
@@ -42,16 +44,20 @@ const employee: Recipient = {
   locale: "bs",
   userId: "u-emp",
   prefs: { ...prefsOn, emailEnabled: false },
+  pushSubscriptions: 0,
+};
+
+const settingsOn = {
+  emailNotificationsEnabled: true,
+  pushNotificationsEnabled: true,
+  notifyAdminsOnNewBooking: true,
+  notifyEmployeeOnNewBooking: true,
+  reminder24hEnabled: true,
+  reminder1hEnabled: true,
 };
 
 const model = (overrides: Partial<PlanModel> = {}): PlanModel => ({
-  settings: {
-    emailNotificationsEnabled: true,
-    notifyAdminsOnNewBooking: true,
-    notifyEmployeeOnNewBooking: true,
-    reminder24hEnabled: true,
-    reminder1hEnabled: true,
-  },
+  settings: settingsOn,
   customer: guest,
   admins: [owner],
   employee,
@@ -69,8 +75,10 @@ describe("notification plan", () => {
     expect(summary(items)).toEqual([
       "BOOKING_CONFIRMED/EMAIL/customer:c1",
       "STAFF_NEW_BOOKING/EMAIL/user:u-owner",
+      "STAFF_NEW_BOOKING/PUSH/user:u-owner",
       "STAFF_NEW_BOOKING/IN_APP/user:u-owner",
       "STAFF_NEW_BOOKING/EMAIL/user:u-emp!recipient.emailDisabled",
+      "STAFF_NEW_BOOKING/PUSH/user:u-emp!recipient.noSubscription",
       "STAFF_NEW_BOOKING/IN_APP/user:u-emp",
     ]);
   });
@@ -80,27 +88,23 @@ describe("notification plan", () => {
       { kind: "booking.created", status: "PENDING" },
       model({
         settings: {
-          emailNotificationsEnabled: true,
+          ...settingsOn,
           notifyAdminsOnNewBooking: false,
           notifyEmployeeOnNewBooking: false,
-          reminder24hEnabled: true,
-          reminder1hEnabled: true,
         },
       }),
     );
     expect(summary(items)).toEqual(["BOOKING_PENDING/EMAIL/customer:c1"]);
   });
 
-  it("records SKIPPED rows when the salon disabled email entirely", () => {
+  it("records SKIPPED rows when the salon disabled email or push entirely", () => {
     const items = buildPlan(
       { kind: "booking.cancelled", byStaff: true },
       model({
         settings: {
+          ...settingsOn,
           emailNotificationsEnabled: false,
-          notifyAdminsOnNewBooking: true,
-          notifyEmployeeOnNewBooking: true,
-          reminder24hEnabled: true,
-          reminder1hEnabled: true,
+          pushNotificationsEnabled: false,
         },
       }),
     );
@@ -108,6 +112,9 @@ describe("notification plan", () => {
       items
         .filter((i) => i.channel === "EMAIL")
         .every((i) => i.skipReason === "salon.emailDisabled"),
+    ).toBe(true);
+    expect(
+      items.filter((i) => i.channel === "PUSH").every((i) => i.skipReason === "salon.pushDisabled"),
     ).toBe(true);
     expect(items.some((i) => i.channel === "IN_APP" && !i.skipReason)).toBe(true);
   });
@@ -127,16 +134,25 @@ describe("notification plan", () => {
     });
   });
 
-  it("applies reminder preferences for account holders but not for guests", () => {
+  it("sends push to account holders with a device and respects their reminder preferences", () => {
     const client: Recipient = {
       ...guest,
       key: "user:u-client",
       userId: "u-client",
       prefs: { ...prefsOn, reminder1h: false },
+      pushSubscriptions: 2,
     };
+    expect(summary(buildPlan({ kind: "booking.confirmed" }, model({ customer: client })))).toEqual([
+      "BOOKING_CONFIRMED/EMAIL/user:u-client",
+      "BOOKING_CONFIRMED/PUSH/user:u-client",
+      "BOOKING_CONFIRMED/IN_APP/user:u-client",
+    ]);
     expect(
       summary(buildPlan({ kind: "reminder", reminderKind: "H1" }, model({ customer: client }))),
-    ).toEqual(["REMINDER_1H/EMAIL/user:u-client!recipient.reminder1hDisabled"]);
+    ).toEqual([
+      "REMINDER_1H/EMAIL/user:u-client!recipient.reminder1hDisabled",
+      "REMINDER_1H/PUSH/user:u-client!recipient.reminder1hDisabled",
+    ]);
     expect(summary(buildPlan({ kind: "reminder", reminderKind: "H1" }, model()))).toEqual([
       "REMINDER_1H/EMAIL/customer:c1",
     ]);
@@ -144,7 +160,7 @@ describe("notification plan", () => {
       summary(
         buildPlan(
           { kind: "reminder", reminderKind: "H24" },
-          model({ settings: { ...model().settings, reminder24hEnabled: false } }),
+          model({ settings: { ...settingsOn, reminder24hEnabled: false } }),
         ),
       ),
     ).toEqual(["REMINDER_24H/EMAIL/customer:c1!salon.reminder24hDisabled"]);

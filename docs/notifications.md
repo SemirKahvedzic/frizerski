@@ -280,3 +280,10 @@ Concurrency defaults: `notification.*` 10, `reminder.send` 10, `image.*` 2. Mult
 - **Manage links**: the plaintext guest token is never stored, so each guest email mints its own `BookingAccessToken` (7 days after the appointment ends) inside the notification transaction. Account holders are linked to `/account/bookings`; staff to the calendar day view.
 - **Deviation from §4:** `superseded` events (payload version ≠ current booking version) still notify staff; only the customer-facing items are recorded as `SKIPPED / superseded`, because the newer event notifies the customer again.
 - **Not yet:** push channel (Phase 11), platform Jobs page (§10), in-app bell UI, per-tenant email providers.
+
+## 12. Implementation notes (Phase 11)
+
+- **Shipped:** `PushSubscription` model, `PushProvider` port with `webpush` / `fake` / `off` adapters, `PUSH` plan items with skip reasons (`salon.pushDisabled`, `recipient.pushDisabled`, `recipient.noSubscription`, reminder switches), `notification.sendPush` job, subscription endpoints, public VAPID key endpoint, `public/sw.js`, manifest and offline page, the account "Push on this device" card.
+- **Payload** follows §7 (`title`, `body`, `url`, `tag`, `data`); the service worker uses `tag` + `renotify` so a moved booking replaces the earlier notification.
+- **Deviation:** the 7-day purge of failed subscriptions is not scheduled yet (it belongs to the `maintenance.daily` job planned with the platform Jobs page); failed rows are simply excluded from delivery.
+- **iOS:** push works only for the installed PWA (iOS 16.4+); the toggle explains this when the browser lacks `PushManager`.

@@ -1,8 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { NextIntlClientProvider } from "next-intl";
 
 import { HydrationMarker } from "@/components/hydration-marker";
+import { RegisterServiceWorker } from "@/components/pwa/register-service-worker";
 import { getTranslations } from "next-intl/server";
 
 import { resolveLocaleParam } from "@/i18n/params";
@@ -23,8 +24,19 @@ export async function generateMetadata({ params }: LayoutProps<"/[locale]">): Pr
   return {
     title: { default: t("appName"), template: `%s · ${t("appName")}` },
     description: t("tagline"),
+    manifest: "/manifest.webmanifest",
+    appleWebApp: { capable: true, statusBarStyle: "default", title: t("appName") },
+    icons: {
+      icon: [
+        { url: "/icons/icon.svg", type: "image/svg+xml" },
+        { url: "/icons/icon-192.png", sizes: "192x192" },
+      ],
+      apple: "/icons/apple-touch-icon.png",
+    },
   };
 }
+
+export const viewport: Viewport = { themeColor: "#111827", width: "device-width", initialScale: 1 };
 
 export default async function LocaleLayout({ children, params }: LayoutProps<"/[locale]">) {
   const locale = await resolveLocaleParam(params);
@@ -37,6 +49,7 @@ export default async function LocaleLayout({ children, params }: LayoutProps<"/[
       <body className="flex min-h-full flex-col">
         <NextIntlClientProvider>
           <HydrationMarker />
+          <RegisterServiceWorker />
           {children}
         </NextIntlClientProvider>
       </body>

@@ -5,6 +5,7 @@
 export const JOBS = {
   dispatch: "notification.dispatch",
   sendEmail: "notification.sendEmail",
+  sendPush: "notification.sendPush",
   reminderSend: "reminder.send",
   reminderSweep: "reminder.sweep",
 } as const;

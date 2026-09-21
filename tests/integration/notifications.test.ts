@@ -198,6 +198,7 @@ describe("notifications pipeline", () => {
         "BOOKING_CONFIRMED/EMAIL/QUEUED",
         "STAFF_NEW_BOOKING/EMAIL/QUEUED",
         "STAFF_NEW_BOOKING/IN_APP/SENT",
+        "STAFF_NEW_BOOKING/PUSH/SKIPPED",
       ].sort(),
     );
 
@@ -212,7 +213,7 @@ describe("notifications pipeline", () => {
 
     // Re-dispatching the same event is a no-op.
     await dispatchBookingEvent(events[0]!, { queue });
-    expect(await prisma.notification.count({ where: { bookingId: booking.id } })).toBe(3);
+    expect(await prisma.notification.count({ where: { bookingId: booking.id } })).toBe(4);
 
     expect(await drainEmails()).toBe(2);
     const guestMail = fake.lastTo(guestEmail);
