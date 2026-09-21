@@ -43,12 +43,17 @@ function Button({
   className,
   variant = "default",
   size = "default",
+  nativeButton,
   ...props
 }: ButtonPrimitive.Props & VariantProps<typeof buttonVariants>) {
+  // When `render` swaps in a link or other element, tell Base UI it is not a
+  // native <button> so it applies role/keyboard semantics instead of warning.
+  const isNative = nativeButton ?? props.render === undefined;
   return (
     <ButtonPrimitive
       data-slot="button"
       className={cn(buttonVariants({ variant, size, className }))}
+      nativeButton={isNative}
       {...props}
     />
   );
